@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whitepaper — Halal Chain Bank</title>
+    <link rel="icon" href="favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body { background: #f8f4ea; }
+        .arabic-font { font-family: 'Amiri', serif; }
+    </style>
+</head>
+<body>
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <img src="logo.png" alt="Halal Chain Bank" class="h-10" onerror="this.src='https://placehold.co/200x60/1a1a1a/FFD700?text=HCB'">
+                <span class="text-xl font-bold arabic-font">Halal Chain Bank</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="index.html" class="text-gray-600 hover:text-gray-900">Главная</a>
+                <a href="actions.html" class="text-gray-600 hover:text-gray-900">99 дел</a>
+                <a href="confession.html" class="text-gray-600 hover:text-gray-900">Тауба</a>
+                <a href="whitepaper.html" class="text-yellow-600 font-semibold">Whitepaper</a>
+                <button id="wallet-btn" class="bg-gray-900 text-white px-4 py-2 rounded-lg">Connect Wallet</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-12 max-w-4xl">
+        <h1 class="text-4xl font-bold text-center mb-2">Whitepaper</h1>
+        <p class="text-center text-gray-500 mb-8">Halal Chain Bank — первый децентрализованный халяльный банк на Solana</p>
+
+        <div class="bg-white rounded-xl shadow-lg p-6 md:p-8 space-y-6">
+            <section>
+                <h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4">1. Введение</h2>
+                <p class="text-gray-700 leading-relaxed">Halal Chain Bank сочетает исламские финансы и блокчейн. Проект основан на принципах: отсутствие рибы (процентов), справедливость (адль), благотворительность (садака).</p>
+            </section>
+
+            <section>
+                <h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4">2. Токены</h2>
+                <div class="space-y-4">
+                    <div><span class="font-bold text-green-700">SABU</span> (Savings Asset Bank Ummah) — суннитский токен добра. Сжигается за терпение и дела по сунне.</div>
+                    <div><span class="font-bold text-blue-700">MUJI</span> (Mint Utility Junction Interbank) — шиитский токен добра. Сжигается за молитвы и поминовение Кербелы.</div>
+                    <div><span class="font-bold text-gray-900">ADL</span> (Arbitrage DAO Liquidity) — токен справедливости. Сжигается для таубы и поддержания баланса.</div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4">3. Экономика</h2>
+                <ul class="list-disc list-inside text-gray-700 space-y-2">
+                    <li>Эмиссия каждого токена: 10 млрд (фикс, без доп. выпуска)</li>
+                    <li>Ликвидность заблокирована в пулах Meteora</li>
+                    <li>Комиссии направляются в фонд уммы (мечети, благотворительность)</li>
+                    <li>Сжигание токенов = совершение добрых дел</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4">4. Механика «противников»</h2>
+                <p class="text-gray-700 leading-relaxed">Спекулянты могут скупать токены, создавая дефицит для верующих. Это повышает цену и комиссии, часть которых идёт на благотворительность. Таким образом, даже противники участвуют в садаке.</p>
+            </section>
+
+            <section>
+                <h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4">5. Дорожная карта</h2>
+                <ul class="list-disc list-inside text-gray-700 space-y-2">
+                    <li>✅ Запуск токенов SABU, MUJI, ADL</li>
+                    <li>✅ Создание пулов ликвидности (Meteora)</li>
+                    <li>🔄 99 добрых дел (в разработке)</li>
+                    <li>🔄 Тауба (покаяние) через сжигание ADL</li>
+                    <li>⏳ DAO управление держателями ADL</li>
+                    <li>⏳ Мобильное приложение с намазами и Кораном</li>
+                </ul>
+            </section>
+        </div>
+    </main>
+
+    <footer class="bg-gray-900 text-white mt-12 py-6 text-center text-sm">
+        <p>© 2025 Halal Chain Bank — Халяльный блокчейн-банк</p>
+        <p class="text-gray-400 mt-1">وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا</p>
+    </footer>
+
+    <script>
+        document.getElementById('wallet-btn').addEventListener('click', () => {
+            if (window.solana && window.solana.isPhantom) window.solana.connect();
+            else alert("Установите Phantom: https://phantom.app/");
+        });
+    </script>
+</body>
+</html>
