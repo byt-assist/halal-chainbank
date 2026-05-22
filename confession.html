@@ -3,125 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тауба — покаяние — Halal Chain Bank</title>
+    <title>Tawbah - Halal Chain Bank</title>
     <link rel="icon" href="favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body { background: linear-gradient(135deg, #FDF5E6 0%, #F0E6D2 100%); }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #FDF5E6 0%, #F0E6D2 100%); }
         .arabic-font { font-family: 'Amiri', serif; }
+        .wallet-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+        .wallet-modal.active { display: flex; }
     </style>
 </head>
 <body>
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <img src="logo.png" alt="Halal Chain Bank" class="h-10" onerror="this.src='https://placehold.co/200x60/1a1a1a/FFD700?text=HCB'">
-                <span class="text-xl font-bold arabic-font">Halal Chain Bank</span>
-            </div>
-            <div class="flex items-center space-x-4">
-                <a href="index.html" class="text-gray-600 hover:text-gray-900">Главная</a>
-                <a href="actions.html" class="text-gray-600 hover:text-gray-900">99 дел</a>
-                <a href="confession.html" class="text-yellow-600 font-semibold">Тауба</a>
-                <a href="whitepaper.html" class="text-gray-600 hover:text-gray-900">Whitepaper</a>
-                <button id="wallet-btn" class="bg-gray-900 text-white px-4 py-2 rounded-lg">Connect Wallet</button>
-            </div>
+
+<div id="wallet-modal" class="wallet-modal">
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4"><button onclick="closeWalletModal()" class="float-right"><i class="fas fa-times"></i></button>
+        <h3 class="text-xl font-bold mb-4" data-key="connect_wallet">Connect Wallet</h3>
+        <button onclick="connectWallet('phantom')" class="w-full p-3 border rounded-xl mb-2">Phantom</button>
+        <button onclick="connectWallet('solflare')" class="w-full p-3 border rounded-xl mb-2">Solflare</button>
+        <button onclick="connectWallet('backpack')" class="w-full p-3 border rounded-xl">Backpack</button>
+    </div>
+</div>
+
+<header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+        <div class="flex items-center space-x-3"><img src="logo.png" class="h-10"><span class="text-xl font-bold arabic-font">Halal Chain Bank</span></div>
+        <div class="flex items-center space-x-3">
+            <select id="lang-select" class="bg-gray-100 border rounded-lg px-3 py-1.5 text-sm">
+                <option value="en">English</option><option value="ru">Русский</option><option value="ar">العربية</option>
+                <option value="ur">اردو</option><option value="fa">فارسی</option><option value="tr">Türkçe</option>
+            </select>
+            <button id="wallet-btn" class="bg-gray-900 text-white px-4 py-2 rounded-lg"><i class="fas fa-wallet"></i><span id="wallet-address" data-key="connect_wallet">Connect Wallet</span></button>
         </div>
-    </header>
+    </div>
+    <div class="border-t"><div class="container mx-auto px-4 flex gap-4">
+        <a href="index.html" data-key="nav_home">Главная</a>
+        <a href="actions.html" data-key="nav_actions">99 Добрых дел</a>
+        <a href="confession.html" class="border-b-3 border-yellow-500 font-semibold" data-key="nav_confession">Тауба</a>
+        <a href="whitepaper.html" data-key="nav_whitepaper">Whitepaper</a>
+    </div></div>
+</header>
 
-    <main class="container mx-auto px-4 py-12 max-w-2xl">
-        <div class="text-center mb-8">
-            <i class="fas fa-hand-peace fa-3x text-yellow-600"></i>
-            <h1 class="text-3xl font-bold mt-4 arabic-font">التوبة</h1>
-            <p class="text-gray-600">Тауба — покаяние перед Аллахом через блокчейн</p>
-        </div>
+<main class="container mx-auto px-4 py-12 max-w-2xl">
+    <div class="text-center mb-8"><i class="fas fa-hand-peace fa-3x text-yellow-600"></i><h1 class="text-3xl font-bold mt-4 arabic-font">التوبة</h1><p data-key="confession_subtitle">Тауба — покаяние перед Аллахом через блокчейн</p></div>
+    <div class="bg-white rounded-xl shadow-lg p-6">
+        <p class="text-gray-700 mb-6 italic" data-key="ayah">«Скажи: "О рабы Мои, которые преступили против себя, не отчаивайтесь в милости Аллаха..."» (Коран, 39:53)</p>
+        <div class="mb-4"><label data-key="sin_label" class="block font-semibold mb-1">Ваш грех:</label><textarea id="sin-text" rows="3" class="w-full border rounded-lg p-3" placeholder="Например: нарушил пост, солгал..."></textarea></div>
+        <div class="mb-4"><label data-key="amount_label" class="block font-semibold mb-1">Количество ADL для сжигания:</label><input type="number" id="adl-amount" value="1" step="0.1" class="w-full border rounded-lg p-3"><p class="text-xs text-gray-400 mt-1" data-key="adl_note">1 ADL ≈ $104 (очищает 1 грех)</p></div>
+        <button id="burn-btn" class="w-full bg-black text-white py-3 rounded-lg"><i class="fas fa-fire"></i> <span data-key="burn_btn">Сжечь ADL и совершить тауба</span></button>
+        <div class="mt-8"><h3 class="font-semibold mb-3" data-key="history_label">Прошлые грехи (очищены):</h3><div id="history" class="space-y-2 text-sm text-gray-500"></div></div>
+    </div>
+</main>
 
-        <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
-            <p class="text-gray-700 mb-6 leading-relaxed">
-                «Скажи: "О рабы Мои, которые преступили против себя, не отчаивайтесь в милости Аллаха. 
-                Воистину, Аллах прощает все грехи, ибо Он — Прощающий, Милосердный"» (Коран, 39:53)
-            </p>
+<footer class="bg-gray-900 text-white mt-12 py-6 text-center text-sm"><p>© 2025 Halal Chain Bank — <span data-key="footer_text">Халяльный блокчейн-банк</span></p></footer>
 
-            <div class="border-t border-b border-gray-200 py-4 my-4">
-                <label class="block text-gray-700 font-semibold mb-2">Ваш грех (анонимно):</label>
-                <textarea id="sin-text" rows="3" class="w-full border border-gray-300 rounded-lg p-3" placeholder="Например: нарушил пост, солгал, не совершил намаз..."></textarea>
-            </div>
+<script>
+const translations = {
+    en: { connect_wallet:"Connect Wallet", nav_home:"Home", nav_actions:"99 Good Deeds", nav_confession:"Tawbah", nav_whitepaper:"Whitepaper", confession_subtitle:"Tawbah — repentance before Allah through blockchain", ayah:'"Say: O My servants who have transgressed against themselves, do not despair of the mercy of Allah..." (Quran 39:53)', sin_label:"Your sin:", amount_label:"Amount of ADL to burn:", adl_note:"1 ADL ≈ $104 (cleans 1 sin)", burn_btn:"Burn ADL and make Tawbah", history_label:"Past sins (cleansed):", footer_text:"Halal blockchain bank" },
+    ru: { connect_wallet:"Подключить кошелёк", nav_home:"Главная", nav_actions:"99 Добрых дел", nav_confession:"Тауба", nav_whitepaper:"Whitepaper", confession_subtitle:"Тауба — покаяние перед Аллахом через блокчейн", ayah:'«Скажи: "О рабы Мои, которые преступили против себя, не отчаивайтесь в милости Аллаха..."» (Коран, 39:53)', sin_label:"Ваш грех:", amount_label:"Количество ADL для сжигания:", adl_note:"1 ADL ≈ $104 (очищает 1 грех)", burn_btn:"Сжечь ADL и совершить тауба", history_label:"Прошлые грехи (очищены):", footer_text:"Халяльный блокчейн-банк" },
+    ar: { connect_wallet:"ربط المحفظة", nav_home:"الرئيسية", nav_actions:"99 عملاً صالحاً", nav_confession:"توبة", nav_whitepaper:"الورقة البيضاء", confession_subtitle:"التوبة — التوبة إلى الله عبر البلوكتشين", ayah:'«قل يا عبادي الذين أسرفوا على أنفسهم لا تقنطوا من رحمة الله...» (القرآن 39:53)', sin_label:"خطيئتك:", amount_label:"كمية ADL للحرق:", adl_note:"1 ADL ≈ $104 (يطهر خطيئة واحدة)", burn_btn:"احرق ADL وتوب", history_label:"الخطايا السابقة (المطهَّرة):", footer_text:"بنك حلال على البلوكتشين" },
+    ur: { connect_wallet:"والیٹ منسلک کریں", nav_home:"مرکزی", nav_actions:"۹۹ نیک اعمال", nav_confession:"توبہ", nav_whitepaper:"وائٹ پیپر", confession_subtitle:"توبہ — بلاک چین کے ذریعے اللہ سے توبہ", ayah:'«کہہ دو: اے میرے بندو جنہوں نے اپنی جانوں پر زیادتی کی، اللہ کی رحمت سے مایوس نہ ہو...» (قرآن 39:53)', sin_label:"آپ کا گناہ:", amount_label:"ADL جلانے کی مقدار:", adl_note:"1 ADL ≈ $104 (ایک گناہ صاف کرتا ہے)", burn_btn:"ADL جلائیں اور توبہ کریں", history_label:"پچھلے گناہ (صاف شدہ):", footer_text:"حلال بلاک چین بینک" },
+    fa: { connect_wallet:"اتصال کیف پول", nav_home:"خانه", nav_actions:"۹۹ کار نیک", nav_confession:"توبه", nav_whitepaper:"وایت پیپر", confession_subtitle:"توبه — توبه به درگاه خدا از طریق بلاکچین", ayah:'«بگو: ای بندگان من که بر خود اسراف کرده‌اید، از رحمت خدا نومید نشوید...» (قرآن ۳۹:۵۳)', sin_label:"گناه شما:", amount_label:"مقدار ADL برای سوزاندن:", adl_note:"1 ADL ≈ $۱۰۴ (یک گناه را پاک می‌کند)", burn_btn:"ADL را بسوزانید و توبه کنید", history_label:"گناهان گذشته (پاک شده):", footer_text:"بانک بلاکچینی حلال" },
+    tr: { connect_wallet:"Cüzdan Bağla", nav_home:"Ana Sayfa", nav_actions:"99 İyilik", nav_confession:"Tövbe", nav_whitepaper:"Beyaz Kağıt", confession_subtitle:"Tövbe — blockchain üzerinden Allah'a tövbe", ayah:'«De ki: Ey kendi aleyhlerinde haddi aşan kullarım! Allah'ın rahmetinden ümidinizi kesmeyin...» (Kuran 39:53)', sin_label:"Günahınız:", amount_label:"Yakılacak ADL miktarı:", adl_note:"1 ADL ≈ $104 (1 günahı temizler)", burn_btn:"ADL Yak ve Tövbe Et", history_label:"Geçmiş günahlar (temizlendi):", footer_text:"Helal blockchain bankası" }
+};
+let currentLang = localStorage.getItem('lang') || 'en';
+function applyLanguage() { document.querySelectorAll('[data-key]').forEach(el => { const key = el.getAttribute('data-key'); if(translations[currentLang][key]) el.innerText = translations[currentLang][key]; }); }
+document.getElementById('lang-select').value = currentLang;
+document.getElementById('lang-select').addEventListener('change', (e) => { currentLang = e.target.value; localStorage.setItem('lang', currentLang); applyLanguage(); });
+applyLanguage();
 
-            <div class="mb-6">
-                <label class="block text-gray-700 font-semibold mb-2">Количество ADL для сжигания:</label>
-                <input type="number" id="adl-amount" value="1" min="0.1" step="0.1" class="w-full border border-gray-300 rounded-lg p-3">
-                <p class="text-xs text-gray-400 mt-1">1 ADL ≈ $104 (очищает 1 грех)</p>
-            </div>
+let wallet = null;
+async function connectWallet(type) { if(type==='phantom'&&window.solana?.isPhantom){await window.solana.connect(); wallet=window.solana;}else if(type==='solflare'&&window.solflare){await window.solflare.connect(); wallet=window.solflare;}else if(type==='backpack'&&window.backpack){await window.backpack.connect(); wallet=window.backpack;}else{alert("Install Phantom/Solflare/Backpack");return;}document.getElementById('wallet-address').innerText=wallet.publicKey.toString().slice(0,4)+'...'+wallet.publicKey.toString().slice(-4);closeWalletModal();}
+function openWalletModal(){document.getElementById('wallet-modal').classList.add('active');}
+function closeWalletModal(){document.getElementById('wallet-modal').classList.remove('active');}
+document.getElementById('wallet-btn').addEventListener('click', openWalletModal);
 
-            <button id="burn-adl-btn" class="w-full bg-black hover:bg-gray-800 text-white font-bold py-3 rounded-lg transition flex items-center justify-center gap-2">
-                <i class="fas fa-fire"></i> Сжечь ADL и совершить тауба
-            </button>
-
-            <div id="sins-list" class="mt-8">
-                <h3 class="font-semibold mb-3">📜 Ваши прошлые грехи (очищены):</h3>
-                <div id="history" class="space-y-2 text-sm text-gray-500"></div>
-            </div>
-        </div>
-    </main>
-
-    <footer class="bg-gray-900 text-white mt-12 py-6 text-center text-sm">
-        <p>© 2025 Halal Chain Bank — Халяльный блокчейн-банк</p>
-    </footer>
-
-    <script>
-        function loadHistory() {
-            const sins = JSON.parse(localStorage.getItem('tauba_history') || '[]');
-            const container = document.getElementById('history');
-            if (sins.length === 0) {
-                container.innerHTML = '<p class="text-gray-400">Нет записей. Совершите тауба.</p>';
-                return;
-            }
-            container.innerHTML = sins.reverse().map(s => `
-                <div class="border-b border-gray-100 py-2">
-                    <span class="text-gray-600">${new Date(s.date).toLocaleDateString()}</span>
-                    <p class="text-gray-800">${s.text.substring(0, 80)}${s.text.length > 80 ? '...' : ''}</p>
-                    <span class="text-xs text-gray-400">Сожжено: ${s.amount} ADL</span>
-                </div>
-            `).join('');
-        }
-
-        document.getElementById('burn-adl-btn').addEventListener('click', async () => {
-            const sinText = document.getElementById('sin-text').value.trim();
-            const amount = parseFloat(document.getElementById('adl-amount').value);
-
-            if (!sinText) {
-                alert("Напишите свой грех для покаяния.");
-                return;
-            }
-            if (isNaN(amount) || amount <= 0) {
-                alert("Укажите количество ADL для сжигания.");
-                return;
-            }
-
-            if (confirm(`Вы уверены? Сожжётся ${amount} ADL (~${(amount * 104).toFixed(2)}$). Грех будет записан и очищен.`)) {
-                // Сохраняем в историю
-                const sins = JSON.parse(localStorage.getItem('tauba_history') || '[]');
-                sins.push({
-                    text: sinText,
-                    amount: amount,
-                    date: new Date().toISOString()
-                });
-                localStorage.setItem('tauba_history', JSON.stringify(sins));
-                
-                // Очищаем форму
-                document.getElementById('sin-text').value = '';
-                document.getElementById('adl-amount').value = '1';
-                loadHistory();
-                alert("✅ Тауба принята. Аллах — Прощающий, Милосердный.");
-            }
-        });
-
-        document.getElementById('wallet-btn').addEventListener('click', () => {
-            if (window.solana && window.solana.isPhantom) window.solana.connect();
-            else alert("Установите Phantom: https://phantom.app/");
-        });
-
-        loadHistory();
-    </script>
+function loadHistory(){const sins=JSON.parse(localStorage.getItem('tauba_history')||'[]');const container=document.getElementById('history');if(!sins.length){container.innerHTML='<p class="text-gray-400">Нет записей. Совершите тауба.</p>';return;}container.innerHTML=sins.slice().reverse().map(s=>`<div class="border-b py-2"><span class="text-gray-600">${new Date(s.date).toLocaleDateString()}</span><p>${s.text.substring(0,80)}</p><span class="text-xs text-gray-400">Сожжено: ${s.amount} ADL</span></div>`).join('');}
+document.getElementById('burn-btn').addEventListener('click',()=>{const text=document.getElementById('sin-text').value.trim();const amount=parseFloat(document.getElementById('adl-amount').value);if(!text){alert("Напишите грех.");return;}if(isNaN(amount)||amount<=0){alert("Укажите количество ADL.");return;}if(confirm(`Сжечь ${amount} ADL (~$${(amount*104).toFixed(2)})?`)){const sins=JSON.parse(localStorage.getItem('tauba_history')||'[]');sins.push({text,amount,date:new Date().toISOString()});localStorage.setItem('tauba_history',JSON.stringify(sins));document.getElementById('sin-text').value='';document.getElementById('adl-amount').value='1';loadHistory();alert("✅ Тауба принята.");}});
+loadHistory();
+</script>
 </body>
 </html>
