@@ -3,90 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Whitepaper — Halal Chain Bank</title>
+    <title>Whitepaper - Halal Chain Bank</title>
     <link rel="icon" href="favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body { background: #f8f4ea; }
+        body { font-family: 'Inter', sans-serif; background: #f8f4ea; }
         .arabic-font { font-family: 'Amiri', serif; }
+        .wallet-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+        .wallet-modal.active { display: flex; }
     </style>
 </head>
 <body>
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <img src="logo.png" alt="Halal Chain Bank" class="h-10" onerror="this.src='https://placehold.co/200x60/1a1a1a/FFD700?text=HCB'">
-                <span class="text-xl font-bold arabic-font">Halal Chain Bank</span>
-            </div>
-            <div class="flex items-center space-x-4">
-                <a href="index.html" class="text-gray-600 hover:text-gray-900">Главная</a>
-                <a href="actions.html" class="text-gray-600 hover:text-gray-900">99 дел</a>
-                <a href="confession.html" class="text-gray-600 hover:text-gray-900">Тауба</a>
-                <a href="whitepaper.html" class="text-yellow-600 font-semibold">Whitepaper</a>
-                <button id="wallet-btn" class="bg-gray-900 text-white px-4 py-2 rounded-lg">Connect Wallet</button>
-            </div>
+
+<div id="wallet-modal" class="wallet-modal">
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4"><button onclick="closeWalletModal()" class="float-right"><i class="fas fa-times"></i></button>
+        <h3 class="text-xl font-bold mb-4" data-key="connect_wallet">Connect Wallet</h3>
+        <button onclick="connectWallet('phantom')" class="w-full p-3 border rounded-xl mb-2">Phantom</button>
+        <button onclick="connectWallet('solflare')" class="w-full p-3 border rounded-xl mb-2">Solflare</button>
+        <button onclick="connectWallet('backpack')" class="w-full p-3 border rounded-xl">Backpack</button>
+    </div>
+</div>
+
+<header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+        <div class="flex items-center space-x-3"><img src="logo.png" class="h-10"><span class="text-xl font-bold arabic-font">Halal Chain Bank</span></div>
+        <div class="flex items-center space-x-3">
+            <select id="lang-select" class="bg-gray-100 border rounded-lg px-3 py-1.5 text-sm">
+                <option value="en">English</option><option value="ru">Русский</option><option value="ar">العربية</option>
+                <option value="ur">اردو</option><option value="fa">فارسی</option><option value="tr">Türkçe</option>
+            </select>
+            <button id="wallet-btn" class="bg-gray-900 text-white px-4 py-2 rounded-lg"><i class="fas fa-wallet"></i><span id="wallet-address" data-key="connect_wallet">Connect Wallet</span></button>
         </div>
-    </header>
+    </div>
+    <div class="border-t"><div class="container mx-auto px-4 flex gap-4">
+        <a href="index.html" data-key="nav_home">Главная</a>
+        <a href="actions.html" data-key="nav_actions">99 Добрых дел</a>
+        <a href="confession.html" data-key="nav_confession">Тауба</a>
+        <a href="whitepaper.html" class="border-b-3 border-yellow-500 font-semibold" data-key="nav_whitepaper">Whitepaper</a>
+    </div></div>
+</header>
 
-    <main class="container mx-auto px-4 py-12 max-w-4xl">
-        <h1 class="text-4xl font-bold text-center mb-2">Whitepaper</h1>
-        <p class="text-center text-gray-500 mb-8">Halal Chain Bank — первый децентрализованный халяльный банк на Solana</p>
+<main class="container mx-auto px-4 py-12 max-w-4xl">
+    <h1 class="text-4xl font-bold text-center mb-2" data-key="wp_title">Whitepaper</h1>
+    <p class="text-center text-gray-500 mb-8" data-key="wp_subtitle">Halal Chain Bank — первый децентрализованный халяльный банк на Solana</p>
+    <div class="bg-white rounded-xl shadow-lg p-6 md:p-8 space-y-6">
+        <section><h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4" data-key="sec1_title">1. Введение</h2><p class="text-gray-700" data-key="sec1_text">Halal Chain Bank сочетает исламские финансы и блокчейн. Проект основан на принципах: отсутствие рибы (процентов), справедливость (адль), благотворительность (садака).</p></section>
+        <section><h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4" data-key="sec2_title">2. Токены</h2><div class="space-y-2"><div><span class="font-bold text-green-700">SABU</span> — суннитский токен добра. Сжигается за терпение и дела по сунне.</div><div><span class="font-bold text-blue-700">MUJI</span> — шиитский токен добра. Сжигается за молитвы и поминовение Кербелы.</div><div><span class="font-bold text-gray-900">ADL</span> — токен справедливости. Сжигается для таубы.</div></div></section>
+        <section><h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4" data-key="sec3_title">3. Экономика</h2><ul class="list-disc list-inside text-gray-700 space-y-1"><li>Эмиссия каждого токена: 10 млрд (фикс)</li><li>Ликвидность заблокирована в пулах Meteora</li><li>Комиссии направляются в фонд уммы</li><li>Сжигание токенов = добрые дела</li></ul></section>
+        <section><h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4" data-key="sec4_title">4. Механика «противников»</h2><p class="text-gray-700">Спекулянты создают дефицит, повышая цену. Часть комиссий идёт на благотворительность.</p></section>
+        <section><h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4" data-key="sec5_title">5. Дорожная карта</h2><ul class="list-disc list-inside text-gray-700 space-y-1"><li>✅ Запуск токенов и пулов</li><li>🔄 99 добрых дел (в разработке)</li><li>🔄 Тауба через ADL</li><li>⏳ DAO управление</li></ul></section>
+    </div>
+</main>
 
-        <div class="bg-white rounded-xl shadow-lg p-6 md:p-8 space-y-6">
-            <section>
-                <h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4">1. Введение</h2>
-                <p class="text-gray-700 leading-relaxed">Halal Chain Bank сочетает исламские финансы и блокчейн. Проект основан на принципах: отсутствие рибы (процентов), справедливость (адль), благотворительность (садака).</p>
-            </section>
+<footer class="bg-gray-900 text-white mt-12 py-6 text-center text-sm"><p>© 2025 Halal Chain Bank — <span data-key="footer_text">Халяльный блокчейн-банк</span></p></footer>
 
-            <section>
-                <h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4">2. Токены</h2>
-                <div class="space-y-4">
-                    <div><span class="font-bold text-green-700">SABU</span> (Savings Asset Bank Ummah) — суннитский токен добра. Сжигается за терпение и дела по сунне.</div>
-                    <div><span class="font-bold text-blue-700">MUJI</span> (Mint Utility Junction Interbank) — шиитский токен добра. Сжигается за молитвы и поминовение Кербелы.</div>
-                    <div><span class="font-bold text-gray-900">ADL</span> (Arbitrage DAO Liquidity) — токен справедливости. Сжигается для таубы и поддержания баланса.</div>
-                </div>
-            </section>
+<script>
+const translations = {
+    en: { connect_wallet:"Connect Wallet", nav_home:"Home", nav_actions:"99 Good Deeds", nav_confession:"Tawbah", nav_whitepaper:"Whitepaper", wp_title:"Whitepaper", wp_subtitle:"Halal Chain Bank — First decentralized halal bank on Solana", sec1_title:"1. Introduction", sec1_text:"Halal Chain Bank combines Islamic finance and blockchain. Based on principles: no riba (interest), justice (adl), charity (sadaqah).", sec2_title:"2. Tokens", sec3_title:"3. Economy", sec3_text:"", sec4_title:"4. 'Opponents' Mechanism", sec4_text:"Speculators create scarcity, raising the price. Part of fees goes to charity.", sec5_title:"5. Roadmap", footer_text:"Halal blockchain bank" },
+    ru: { connect_wallet:"Подключить кошелёк", nav_home:"Главная", nav_actions:"99 Добрых дел", nav_confession:"Тауба", nav_whitepaper:"Whitepaper", wp_title:"Whitepaper", wp_subtitle:"Halal Chain Bank — первый децентрализованный халяльный банк на Solana", sec1_title:"1. Введение", sec1_text:"Halal Chain Bank сочетает исламские финансы и блокчейн. Основан на принципах: отсутствие рибы, справедливость (адль), благотворительность.", sec2_title:"2. Токены", sec3_title:"3. Экономика", sec4_title:"4. Механика «противников»", sec4_text:"Спекулянты создают дефицит, повышая цену. Часть комиссий идёт на благотворительность.", sec5_title:"5. Дорожная карта", footer_text:"Халяльный блокчейн-банк" },
+    ar: { connect_wallet:"ربط المحفظة", nav_home:"الرئيسية", nav_actions:"99 عملاً صالحاً", nav_confession:"توبة", nav_whitepaper:"الورقة البيضاء", wp_title:"الورقة البيضاء", wp_subtitle:"بنك الحلال تشين — أول بنك لامركزي حلال على سولانا", sec1_title:"١. مقدمة", sec1_text:"يجمع بنك الحلال تشين بين التمويل الإسلامي والبلوكتشين. يقوم على مبادئ: لا ربا، العدل، الصدقة.", sec2_title:"٢. التوكنات", sec3_title:"٣. الاقتصاد", sec4_title:"٤. آلية 'الخصوم'", sec4_text:"يخلق المضاربون ندرة، مما يرفع السعر. جزء من الرسوم يذهب للصدقة.", sec5_title:"٥. خارطة الطريق", footer_text:"بنك حلال على البلوكتشين" },
+    ur: { connect_wallet:"والیٹ منسلک کریں", nav_home:"مرکزی", nav_actions:"۹۹ نیک اعمال", nav_confession:"توبہ", nav_whitepaper:"وائٹ پیپر", wp_title:"وائٹ پیپر", wp_subtitle:"حلال چین بینک — سولانا پر پہلا غیر مرکزی حلال بینک", sec1_title:"۱. تعارف", sec1_text:"حلال چین بینک اسلامی مالیات اور بلاک چین کو یکجا کرتا ہے۔ اصول: سود نہیں، عدل، صدقہ۔", sec2_title:"۲. ٹوکنز", sec3_title:"۳. معیشت", sec4_title:"۴. 'مخالفین' کا طریقہ کار", sec4_text:"سپیکولیٹرز قلت پیدا کرتے ہیں، قیمت بڑھاتے ہیں۔ فیس کا حصہ صدقہ جات میں جاتا ہے۔", sec5_title:"۵. روڈ میپ", footer_text:"حلال بلاک چین بینک" },
+    fa: { connect_wallet:"اتصال کیف پول", nav_home:"خانه", nav_actions:"۹۹ کار نیک", nav_confession:"توبه", nav_whitepaper:"وایت پیپر", wp_title:"وایت پیپر", wp_subtitle:"بانک زنجیره‌ای حلال — اولین بانک غیرمتمرکز حلال بر روی سولانا", sec1_title:"۱. مقدمه", sec1_text:"بانک زنجیره‌ای حلال مالی اسلامی و بلاکچین را ترکیب می‌کند. اصول: بدون ربا، عدل، صدقه.", sec2_title:"۲. توکن‌ها", sec3_title:"۳. اقتصاد", sec4_title:"۴. مکانیسم 'مخالفان'", sec4_text:"سفته‌بازان کمبود ایجاد می‌کنند و قیمت را بالا می‌برند. بخشی از کارمزدها به صدقه می‌رود.", sec5_title:"۵. نقشه راه", footer_text:"بانک بلاکچینی حلال" },
+    tr: { connect_wallet:"Cüzdan Bağla", nav_home:"Ana Sayfa", nav_actions:"99 İyilik", nav_confession:"Tövbe", nav_whitepaper:"Beyaz Kağıt", wp_title:"Beyaz Kağıt", wp_subtitle:"Helal Zincir Bankası — Solana'daki ilk merkeziyetsiz helal banka", sec1_title:"1. Giriş", sec1_text:"Helal Zincir Bankası, İslami finans ve blockchain'i birleştirir. İlkeler: riba yok, adalet, sadaka.", sec2_title:"2. Tokenlar", sec3_title:"3. Ekonomi", sec4_title:"4. 'Rakipler' Mekanizması", sec4_text:"Spekülatörler kıtlık yaratır, fiyatı yükseltir. Ücretlerin bir kısmı sadakaya gider.", sec5_title:"5. Yol Haritası", footer_text:"Helal blockchain bankası" }
+};
+let currentLang = localStorage.getItem('lang') || 'en';
+function applyLanguage() { document.querySelectorAll('[data-key]').forEach(el => { const key = el.getAttribute('data-key'); if(translations[currentLang][key]) el.innerText = translations[currentLang][key]; }); }
+document.getElementById('lang-select').value = currentLang;
+document.getElementById('lang-select').addEventListener('change', (e) => { currentLang = e.target.value; localStorage.setItem('lang', currentLang); applyLanguage(); });
+applyLanguage();
 
-            <section>
-                <h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4">3. Экономика</h2>
-                <ul class="list-disc list-inside text-gray-700 space-y-2">
-                    <li>Эмиссия каждого токена: 10 млрд (фикс, без доп. выпуска)</li>
-                    <li>Ликвидность заблокирована в пулах Meteora</li>
-                    <li>Комиссии направляются в фонд уммы (мечети, благотворительность)</li>
-                    <li>Сжигание токенов = совершение добрых дел</li>
-                </ul>
-            </section>
-
-            <section>
-                <h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4">4. Механика «противников»</h2>
-                <p class="text-gray-700 leading-relaxed">Спекулянты могут скупать токены, создавая дефицит для верующих. Это повышает цену и комиссии, часть которых идёт на благотворительность. Таким образом, даже противники участвуют в садаке.</p>
-            </section>
-
-            <section>
-                <h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4">5. Дорожная карта</h2>
-                <ul class="list-disc list-inside text-gray-700 space-y-2">
-                    <li>✅ Запуск токенов SABU, MUJI, ADL</li>
-                    <li>✅ Создание пулов ликвидности (Meteora)</li>
-                    <li>🔄 99 добрых дел (в разработке)</li>
-                    <li>🔄 Тауба (покаяние) через сжигание ADL</li>
-                    <li>⏳ DAO управление держателями ADL</li>
-                    <li>⏳ Мобильное приложение с намазами и Кораном</li>
-                </ul>
-            </section>
-        </div>
-    </main>
-
-    <footer class="bg-gray-900 text-white mt-12 py-6 text-center text-sm">
-        <p>© 2025 Halal Chain Bank — Халяльный блокчейн-банк</p>
-        <p class="text-gray-400 mt-1">وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا</p>
-    </footer>
-
-    <script>
-        document.getElementById('wallet-btn').addEventListener('click', () => {
-            if (window.solana && window.solana.isPhantom) window.solana.connect();
-            else alert("Установите Phantom: https://phantom.app/");
-        });
-    </script>
+let wallet = null;
+async function connectWallet(type) { if(type==='phantom'&&window.solana?.isPhantom){await window.solana.connect(); wallet=window.solana;}else if(type==='solflare'&&window.solflare){await window.solflare.connect(); wallet=window.solflare;}else if(type==='backpack'&&window.backpack){await window.backpack.connect(); wallet=window.backpack;}else{alert("Install Phantom/Solflare/Backpack");return;}document.getElementById('wallet-address').innerText=wallet.publicKey.toString().slice(0,4)+'...'+wallet.publicKey.toString().slice(-4);closeWalletModal();}
+function openWalletModal(){document.getElementById('wallet-modal').classList.add('active');}
+function closeWalletModal(){document.getElementById('wallet-modal').classList.remove('active');}
+document.getElementById('wallet-btn').addEventListener('click', openWalletModal);
+</script>
 </body>
 </html>
