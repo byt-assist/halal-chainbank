@@ -2,502 +2,248 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Halal Chain Bank</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    
-    <!-- Tailwind + Font Awesome -->
+    <link rel="icon" href="favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
-    <!-- Solana Web3 -->
     <script src="https://unpkg.com/@solana/web3.js@1.95.3/lib/index.iife.min.js"></script>
-    <script src="https://unpkg.com/@solana/spl-token@0.3.9/lib/index.iife.min.js"></script>
-    
     <style>
-        /* Исламская каллиграфия и стили */
-        @import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #FDF5E6 0%, #F0E6D2 100%);
-        }
-        
-        .arabic-font {
-            font-family: 'Amiri', serif;
-        }
-        
-        .islamic-pattern {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' opacity='0.05'%3E%3Cpath fill='none' stroke='%23000' stroke-width='0.5' d='M50 0 L100 50 L50 100 L0 50 Z M50 20 L80 50 L50 80 L20 50 Z M50 35 L65 50 L50 65 L35 50 Z'/%3E%3C/svg%3E");
-            background-repeat: repeat;
-        }
-        
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #FDF5E6 0%, #F0E6D2 100%); }
+        .arabic-font { font-family: 'Amiri', serif; }
         .sabu-gradient { background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%); }
         .muji-gradient { background: linear-gradient(135deg, #1565C0 0%, #0D47A1 100%); }
         .adl-gradient { background: linear-gradient(135deg, #1A1A1A 0%, #000000 100%); }
-        
-        .token-card {
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .token-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -12px rgba(0,0,0,0.15);
-        }
-        
+        .token-card { transition: transform 0.2s; }
+        .token-card:hover { transform: translateY(-4px); }
         .btn-buy { background: #10b981; }
         .btn-burn { background: #ef4444; }
-        .btn-swap { background: #f59e0b; }
-        
         .btn-buy:hover { background: #059669; }
         .btn-burn:hover { background: #dc2626; }
-        .btn-swap:hover { background: #d97706; }
-        
-        .hijri-calendar {
-            background: rgba(255,255,255,0.9);
-            border-right: 4px solid #FFD700;
-        }
-        
-        .tab-active {
-            border-bottom: 3px solid #FFD700;
-            color: #1a1a1a;
-            font-weight: 600;
-        }
-        
-        .tab-inactive {
-            color: #666;
-            border-bottom: 3px solid transparent;
-        }
+        .wallet-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+        .wallet-modal.active { display: flex; }
     </style>
 </head>
-<body class="islamic-pattern">
+<body>
 
-    <!-- Header -->
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <img src="logo.png" alt="Halal Chain Bank" class="h-10 w-auto" onerror="this.src='https://placehold.co/200x60/1a1a1a/FFD700?text=HCB'">
-                <span class="text-xl font-bold arabic-font text-gray-800">Halal Chain Bank</span>
-            </div>
-            
-            <div class="flex items-center space-x-4">
-                <!-- Language Selector -->
-                <select id="lang-select" class="bg-gray-100 border border-gray-300 rounded-lg px-3 py-1.5 text-sm">
-                    <option value="en">English</option>
-                    <option value="ru">Русский</option>
-                    <option value="ar">العربية</option>
-                    <option value="ur">اردو</option>
-                    <option value="fa">فارسی</option>
-                    <option value="tr">Türkçe</option>
-                </select>
-                
-                <!-- Wallet Button -->
-                <button id="wallet-btn" class="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg transition flex items-center gap-2">
-                    <i class="fas fa-wallet"></i>
-                    <span id="wallet-address">Connect Wallet</span>
-                </button>
+<!-- Wallet Modal -->
+<div id="wallet-modal" class="wallet-modal">
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold" data-key="connect_wallet">Connect Wallet</h3>
+            <button onclick="closeWalletModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
+        </div>
+        <div class="space-y-2">
+            <button onclick="connectWallet('phantom')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50 transition">
+                <img src="https://phantom.app/img/logo.png" class="w-8 h-8" onerror="this.src='https://placehold.co/32x32/5348C2/white?text=P'">
+                <span>Phantom</span>
+            </button>
+            <button onclick="connectWallet('solflare')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50 transition">
+                <i class="fas fa-globe text-2xl text-orange-500"></i>
+                <span>Solflare</span>
+            </button>
+            <button onclick="connectWallet('backpack')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50 transition">
+                <i class="fas fa-backpack text-2xl text-purple-600"></i>
+                <span>Backpack</span>
+            </button>
+            <div class="border-t my-2"></div>
+            <p class="text-xs text-gray-400 text-center">EVM wallets (MetaMask, Trust, OKX, Binance) — coming soon for Solana support</p>
+        </div>
+    </div>
+</div>
+
+<!-- Header -->
+<header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+        <div class="flex items-center space-x-3">
+            <img src="logo.png" alt="Halal Chain Bank" class="h-10" onerror="this.src='https://placehold.co/200x60/1a1a1a/FFD700?text=HCB'">
+            <span class="text-xl font-bold arabic-font">Halal Chain Bank</span>
+        </div>
+        <div class="flex items-center space-x-3">
+            <select id="lang-select" class="bg-gray-100 border border-gray-300 rounded-lg px-3 py-1.5 text-sm">
+                <option value="en">English</option>
+                <option value="ru">Русский</option>
+                <option value="ar">العربية</option>
+                <option value="ur">اردو</option>
+                <option value="fa">فارسی</option>
+                <option value="tr">Türkçe</option>
+            </select>
+            <button id="wallet-btn" class="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg transition flex items-center gap-2">
+                <i class="fas fa-wallet"></i>
+                <span id="wallet-address" data-key="connect_wallet">Connect Wallet</span>
+            </button>
+        </div>
+    </div>
+    <div class="border-t border-gray-200">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-wrap gap-4">
+                <a href="index.html" class="tab-active py-3 px-1 inline-block border-b-3 border-yellow-500 font-semibold" data-key="nav_home">Главная</a>
+                <a href="actions.html" class="tab-inactive py-3 px-1 inline-block text-gray-600 hover:text-gray-900" data-key="nav_actions">99 Добрых дел</a>
+                <a href="confession.html" class="tab-inactive py-3 px-1 inline-block text-gray-600 hover:text-gray-900" data-key="nav_confession">Тауба</a>
+                <a href="whitepaper.html" class="tab-inactive py-3 px-1 inline-block text-gray-600 hover:text-gray-900" data-key="nav_whitepaper">Whitepaper</a>
             </div>
         </div>
-        
-        <!-- Navigation Tabs -->
-        <div class="border-t border-gray-200">
-            <div class="container mx-auto px-4">
-                <div class="flex space-x-6">
-                    <a href="index.html" class="tab-active py-3 px-1 inline-block">Главная</a>
-                    <a href="actions.html" class="tab-inactive py-3 px-1 inline-block text-gray-600 hover:text-gray-900">99 Добрых дел</a>
-                    <a href="confession.html" class="tab-inactive py-3 px-1 inline-block text-gray-600 hover:text-gray-900">Тауба (покаяние)</a>
-                    <a href="whitepaper.html" class="tab-inactive py-3 px-1 inline-block text-gray-600 hover:text-gray-900">Whitepaper</a>
-                </div>
-            </div>
+    </div>
+</header>
+
+<main class="container mx-auto px-4 py-8 max-w-6xl">
+    <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold arabic-font text-gray-800 mb-4">
+            <span class="border-b-4 border-yellow-500 inline-block pb-2" data-key="title">Halal Chain Bank</span>
+        </h1>
+        <p class="text-gray-600 max-w-2xl mx-auto mt-4" data-key="subtitle">Первый халяльный блокчейн-банк. Сжигайте токены ради добра, очищайте намерения, объединяйте умму.</p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm p-4 mb-8 flex flex-wrap justify-between items-center gap-4">
+        <div class="flex items-center gap-2">
+            <i class="fas fa-chart-line text-green-600"></i>
+            <span id="total-burned" class="font-mono text-lg">0</span>
+            <span data-key="burned_label">токенов сожжено</span>
         </div>
-    </header>
-
-    <main class="container mx-auto px-4 py-8 max-w-6xl">
-        <!-- Hero Section -->
-        <div class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold arabic-font text-gray-800 mb-4">
-                <span class="border-b-4 border-yellow-500 inline-block pb-2">Halal Chain Bank</span>
-            </h1>
-            <p class="text-gray-600 max-w-2xl mx-auto mt-4">
-                Первый халяльный блокчейн-банк. Сжигайте токены ради добра, очищайте намерения, объединяйте умму.
-            </p>
+        <div class="flex items-center gap-2">
+            <i class="fas fa-calendar-alt text-blue-600"></i>
+            <span id="hijri-date" class="font-mono">Загрузка...</span>
         </div>
+    </div>
 
-        <!-- Status Bar -->
-        <div class="bg-white rounded-xl shadow-sm p-4 mb-8 flex flex-wrap justify-between items-center gap-4">
-            <div class="flex items-center gap-2">
-                <i class="fas fa-chart-line text-green-600"></i>
-                <span id="total-burned" class="font-mono text-lg">0</span>
-                <span class="text-gray-500">токенов сожжено</span>
+    <div class="grid md:grid-cols-3 gap-6">
+        <!-- SABU Card -->
+        <div class="token-card bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="sabu-gradient p-4 text-white text-center">
+                <img src="sabu_logo.png" alt="SABU" class="w-20 h-20 mx-auto bg-white rounded-full p-2 mb-3" onerror="this.src='https://placehold.co/80x80/2E7D32/white?text=SABU'">
+                <h2 class="text-2xl font-bold">SABU</h2>
+                <p class="text-sm opacity-90">Savings Asset Bank Ummah</p>
             </div>
-            <div class="flex items-center gap-2">
-                <i class="fas fa-clock text-blue-600"></i>
-                <span id="hijri-date" class="font-mono arabic-font">Загрузка...</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <i class="fas fa-mosque text-yellow-600"></i>
-                <span id="prayer-time" class="font-mono">Загрузка...</span>
-            </div>
-        </div>
-
-        <!-- Token Cards -->
-        <div class="grid md:grid-cols-3 gap-6">
-            
-            <!-- SABU Card -->
-            <div class="token-card bg-white rounded-xl shadow-lg overflow-hidden">
-                <div class="sabu-gradient p-4 text-white text-center">
-                    <img src="sabu_logo.png" alt="SABU" class="w-20 h-20 mx-auto bg-white rounded-full p-2 mb-3" onerror="this.src='https://placehold.co/80x80/2E7D32/white?text=SABU'">
-                    <h2 class="text-2xl font-bold">SABU</h2>
-                    <p class="text-sm opacity-90">Savings Asset Bank Ummah</p>
-                    <p class="text-xs arabic-font mt-1">الصبر</p>
+            <div class="p-5">
+                <div class="space-y-2 mb-5">
+                    <div class="flex justify-between"><span class="text-gray-500" data-key="price">Цена:</span><span class="font-mono font-bold" id="sabu-price">$0.9995</span></div>
+                    <div class="flex justify-between"><span class="text-gray-500" data-key="liquidity">Ликвидность:</span><span class="font-mono" id="sabu-liq">$999.9M</span></div>
+                    <div class="flex justify-between"><span class="text-gray-500" data-key="balance">Баланс:</span><span class="font-mono" id="sabu-balance">0</span></div>
                 </div>
-                <div class="p-5">
-                    <div class="space-y-2 mb-5">
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Цена:</span>
-                            <span class="font-mono font-bold" id="sabu-price">$0.9995</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Ликвидность:</span>
-                            <span class="font-mono" id="sabu-liq">$999.9M</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Баланс:</span>
-                            <span class="font-mono" id="sabu-balance">0</span>
-                        </div>
-                    </div>
-                    <div class="space-y-2">
-                        <button class="btn-buy w-full text-white py-2 rounded-lg font-semibold transition" onclick="buyToken('SABU')">
-                            <i class="fas fa-shopping-cart mr-2"></i>Купить SABU
-                        </button>
-                        <button class="btn-burn w-full text-white py-2 rounded-lg font-semibold transition" onclick="burnToken('SABU')">
-                            <i class="fas fa-fire mr-2"></i>Сжечь SABU (дело)
-                        </button>
-                        <a href="https://www.geckoterminal.com/solana/pools/6gT8hpiKHGCmHKF6LqGMH74rHgnMfbFShfWmLMWCj1Vw" target="_blank" class="btn-swap w-full inline-block text-center text-white py-2 rounded-lg font-semibold transition">
-                            <i class="fas fa-chart-line mr-2"></i>Торговать
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- MUJI Card -->
-            <div class="token-card bg-white rounded-xl shadow-lg overflow-hidden">
-                <div class="muji-gradient p-4 text-white text-center">
-                    <img src="muji_logo.png" alt="MUJI" class="w-20 h-20 mx-auto bg-white rounded-full p-2 mb-3" onerror="this.src='https://placehold.co/80x80/1565C0/white?text=MUJI'">
-                    <h2 class="text-2xl font-bold">MUJI</h2>
-                    <p class="text-sm opacity-90">Mint Utility Junction Interbank</p>
-                    <p class="text-xs arabic-font mt-1">المجيب</p>
-                </div>
-                <div class="p-5">
-                    <div class="space-y-2 mb-5">
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Цена:</span>
-                            <span class="font-mono font-bold" id="muji-price">$1.0001</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Ликвидность:</span>
-                            <span class="font-mono" id="muji-liq">$887.9M</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Баланс:</span>
-                            <span class="font-mono" id="muji-balance">0</span>
-                        </div>
-                    </div>
-                    <div class="space-y-2">
-                        <button class="btn-buy w-full text-white py-2 rounded-lg font-semibold transition" onclick="buyToken('MUJI')">
-                            <i class="fas fa-shopping-cart mr-2"></i>Купить MUJI
-                        </button>
-                        <button class="btn-burn w-full text-white py-2 rounded-lg font-semibold transition" onclick="burnToken('MUJI')">
-                            <i class="fas fa-fire mr-2"></i>Сжечь MUJI (дело)
-                        </button>
-                        <a href="https://www.geckoterminal.com/solana/pools/FB6tdiVrHUhfYUJPPZmTowba8B96PP6bskQmwucWgm2m" target="_blank" class="btn-swap w-full inline-block text-center text-white py-2 rounded-lg font-semibold transition">
-                            <i class="fas fa-chart-line mr-2"></i>Торговать
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ADL Card -->
-            <div class="token-card bg-white rounded-xl shadow-lg overflow-hidden">
-                <div class="adl-gradient p-4 text-white text-center">
-                    <img src="adl_logo.png" alt="ADL" class="w-20 h-20 mx-auto bg-white rounded-full p-2 mb-3" onerror="this.src='https://placehold.co/80x80/000000/white?text=ADL'">
-                    <h2 class="text-2xl font-bold">ADL</h2>
-                    <p class="text-sm opacity-90">Arbitrage DAO Liquidity</p>
-                    <p class="text-xs arabic-font mt-1">العدل</p>
-                </div>
-                <div class="p-5">
-                    <div class="space-y-2 mb-5">
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Цена:</span>
-                            <span class="font-mono font-bold" id="adl-price">$104.44</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Ликвидность:</span>
-                            <span class="font-mono" id="adl-liq">$34.8B</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Баланс:</span>
-                            <span class="font-mono" id="adl-balance">0</span>
-                        </div>
-                    </div>
-                    <div class="space-y-2">
-                        <button class="btn-buy w-full text-white py-2 rounded-lg font-semibold transition" onclick="buyToken('ADL')">
-                            <i class="fas fa-shopping-cart mr-2"></i>Купить ADL
-                        </button>
-                        <button class="btn-burn w-full text-white py-2 rounded-lg font-semibold transition" onclick="burnToken('ADL')">
-                            <i class="fas fa-fire mr-2"></i>Сжечь ADL (дело)
-                        </button>
-                        <a href="https://www.geckoterminal.com/solana/pools/G3UmWNwRoH1AqWH2GRqYECkPiKuzZNwETUHESqxBzcaE" target="_blank" class="btn-swap w-full inline-block text-center text-white py-2 rounded-lg font-semibold transition">
-                            <i class="fas fa-chart-line mr-2"></i>Торговать
-                        </a>
-                    </div>
+                <div class="space-y-2">
+                    <button class="btn-buy w-full text-white py-2 rounded-lg font-semibold transition" onclick="buyToken('SABU')"><i class="fas fa-shopping-cart mr-2"></i><span data-key="buy_btn">Купить SABU</span></button>
+                    <button class="btn-burn w-full text-white py-2 rounded-lg font-semibold transition" onclick="burnToken('SABU')"><i class="fas fa-fire mr-2"></i><span data-key="burn_btn">Сжечь SABU</span></button>
                 </div>
             </div>
         </div>
 
-        <!-- Additional Info -->
-        <div class="mt-12 bg-white rounded-xl shadow-sm p-6">
-            <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
-                <i class="fas fa-info-circle text-yellow-600"></i>
-                О проекте
-            </h3>
-            <p class="text-gray-700 mb-3">
-                <strong>Halal Chain Bank</strong> — первый децентрализованный банк, работающий по исламским принципам.
-            </p>
-            <ul class="list-disc list-inside text-gray-600 space-y-1">
-                <li>❌ Нет рибы (процентов)</li>
-                <li>✅ Только справедливое сжигание токенов</li>
-                <li>🤲 Каждый токен — это ният (намерение)</li>
-                <li>🕋 99 добрых дел по сунне и Корану</li>
-                <li>📿 Тауба — покаяние через блокчейн</li>
-            </ul>
+        <!-- MUJI Card -->
+        <div class="token-card bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="muji-gradient p-4 text-white text-center">
+                <img src="muji_logo.png" alt="MUJI" class="w-20 h-20 mx-auto bg-white rounded-full p-2 mb-3" onerror="this.src='https://placehold.co/80x80/1565C0/white?text=MUJI'">
+                <h2 class="text-2xl font-bold">MUJI</h2>
+                <p class="text-sm opacity-90">Mint Utility Junction Interbank</p>
+            </div>
+            <div class="p-5">
+                <div class="space-y-2 mb-5">
+                    <div class="flex justify-between"><span class="text-gray-500" data-key="price">Цена:</span><span class="font-mono font-bold" id="muji-price">$1.0001</span></div>
+                    <div class="flex justify-between"><span class="text-gray-500" data-key="liquidity">Ликвидность:</span><span class="font-mono" id="muji-liq">$887.9M</span></div>
+                    <div class="flex justify-between"><span class="text-gray-500" data-key="balance">Баланс:</span><span class="font-mono" id="muji-balance">0</span></div>
+                </div>
+                <div class="space-y-2">
+                    <button class="btn-buy w-full text-white py-2 rounded-lg font-semibold transition" onclick="buyToken('MUJI')"><i class="fas fa-shopping-cart mr-2"></i><span data-key="buy_btn">Купить MUJI</span></button>
+                    <button class="btn-burn w-full text-white py-2 rounded-lg font-semibold transition" onclick="burnToken('MUJI')"><i class="fas fa-fire mr-2"></i><span data-key="burn_btn">Сжечь MUJI</span></button>
+                </div>
+            </div>
         </div>
-    </main>
 
-    <footer class="bg-gray-900 text-white mt-12 py-6">
-        <div class="container mx-auto px-4 text-center text-sm">
-            <p>© 2025 Halal Chain Bank — Халяльный блокчейн-банк</p>
-            <p class="text-gray-400 mt-1">سَبِّحِ اسْمَ رَبِّكَ الْأَعْلَى</p>
+        <!-- ADL Card -->
+        <div class="token-card bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="adl-gradient p-4 text-white text-center">
+                <img src="adl_logo.png" alt="ADL" class="w-20 h-20 mx-auto bg-white rounded-full p-2 mb-3" onerror="this.src='https://placehold.co/80x80/000000/white?text=ADL'">
+                <h2 class="text-2xl font-bold">ADL</h2>
+                <p class="text-sm opacity-90">Arbitrage DAO Liquidity</p>
+            </div>
+            <div class="p-5">
+                <div class="space-y-2 mb-5">
+                    <div class="flex justify-between"><span class="text-gray-500" data-key="price">Цена:</span><span class="font-mono font-bold" id="adl-price">$104.44</span></div>
+                    <div class="flex justify-between"><span class="text-gray-500" data-key="liquidity">Ликвидность:</span><span class="font-mono" id="adl-liq">$34.8B</span></div>
+                    <div class="flex justify-between"><span class="text-gray-500" data-key="balance">Баланс:</span><span class="font-mono" id="adl-balance">0</span></div>
+                </div>
+                <div class="space-y-2">
+                    <button class="btn-buy w-full text-white py-2 rounded-lg font-semibold transition" onclick="buyToken('ADL')"><i class="fas fa-shopping-cart mr-2"></i><span data-key="buy_btn">Купить ADL</span></button>
+                    <button class="btn-burn w-full text-white py-2 rounded-lg font-semibold transition" onclick="burnToken('ADL')"><i class="fas fa-fire mr-2"></i><span data-key="burn_btn">Сжечь ADL</span></button>
+                </div>
+            </div>
         </div>
-    </footer>
+    </div>
+</main>
 
-    <script>
-        // Конфигурация токенов
-        const TOKENS = {
-            SABU: {
-                mint: "25gGFdNrudjBqhMbLpAmvH4Y8ceuVbwBk1Kh2Kp38xaM",
-                symbol: "SABU",
-                name: "Savings Asset Bank Ummah"
-            },
-            MUJI: {
-                mint: "3umgiW7VXyKtUGwd9HpczBADxGPaxXSjUBuaBzPZ251Y",
-                symbol: "MUJI",
-                name: "Mint Utility Junction Interbank"
-            },
-            ADL: {
-                mint: "8NEsFQ9PpGmZVaz5nHV1zTBWDxgrwxwvY5cJ9ejQvpdN",
-                symbol: "ADL",
-                name: "Arbitrage DAO Liquidity"
-            }
-        };
-        
-        // Адреса сжигателей (куда отправлять токены)
-        const BURN_ADDRESSES = {
-            SABU: "1111111111111111111111111111111111111111111111111111111111111111",
-            MUJI: "1111111111111111111111111111111111111111111111111111111111111111",
-            ADL: "1111111111111111111111111111111111111111111111111111111111111111"
-        };
-        
-        let connection = null;
-        let wallet = null;
-        
-        // Инициализация
-        async function init() {
-            if (window.solana && window.solana.isPhantom) {
-                connection = new solanaWeb3.Connection(
-                    solanaWeb3.clusterApiUrl('mainnet-beta'),
-                    'confirmed'
-                );
-                
-                window.solana.on('connect', () => {
-                    updateWalletUI();
-                    loadBalances();
-                });
-                
-                window.solana.on('disconnect', () => {
-                    wallet = null;
-                    updateWalletUI();
-                });
-                
-                if (window.solana.isConnected) {
-                    wallet = window.solana;
-                    updateWalletUI();
-                    loadBalances();
-                }
-            }
-            
-            // Загружаем Хиджра дату
-            fetchHijriDate();
-            
-            // Загружаем статистику сожженных токенов
-            loadBurnedStats();
-        }
-        
-        // Подключение кошелька
-        async function connectWallet() {
-            if (!window.solana || !window.solana.isPhantom) {
-                alert("Please install Phantom wallet: https://phantom.app/");
-                window.open("https://phantom.app/", "_blank");
-                return;
-            }
-            
-            try {
-                const resp = await window.solana.connect();
-                wallet = window.solana;
-                updateWalletUI();
-                loadBalances();
-            } catch (err) {
-                console.error("Connection error:", err);
-                alert("Failed to connect wallet");
-            }
-        }
-        
-        // Обновление UI кошелька
-        function updateWalletUI() {
-            const btn = document.getElementById('wallet-btn');
-            const addrSpan = document.getElementById('wallet-address');
-            
-            if (wallet && wallet.publicKey) {
-                const address = wallet.publicKey.toString();
-                addrSpan.textContent = address.slice(0, 4) + "..." + address.slice(-4);
-                btn.classList.remove('bg-gray-900');
-                btn.classList.add('bg-green-700');
-            } else {
-                addrSpan.textContent = "Connect Wallet";
-                btn.classList.remove('bg-green-700');
-                btn.classList.add('bg-gray-900');
-            }
-        }
-        
-        // Загрузка балансов
-        async function loadBalances() {
-            if (!wallet || !wallet.publicKey) return;
-            
-            for (const [symbol, token] of Object.entries(TOKENS)) {
-                try {
-                    const mintPubkey = new solanaWeb3.PublicKey(token.mint);
-                    const tokenAccounts = await connection.getTokenAccountsByOwner(
-                        wallet.publicKey,
-                        { mint: mintPubkey }
-                    );
-                    
-                    let balance = 0;
-                    if (tokenAccounts.value.length > 0) {
-                        const accountInfo = await connection.getTokenAccountBalance(tokenAccounts.value[0].pubkey);
-                        balance = accountInfo.value.uiAmount || 0;
-                    }
-                    
-                    document.getElementById(`${symbol.toLowerCase()}-balance`).textContent = balance.toFixed(4);
-                } catch (err) {
-                    console.error(`Error loading ${symbol} balance:`, err);
-                }
-            }
-        }
-        
-        // Покупка токена через Jupiter
-        async function buyToken(symbol) {
-            if (!wallet || !wallet.publicKey) {
-                await connectWallet();
-                if (!wallet) return;
-            }
-            
-            const token = TOKENS[symbol];
-            const amount = parseFloat(prompt(`Сколько ${symbol} хотите купить?`, "10"));
-            if (isNaN(amount) || amount <= 0) return;
-            
-            try {
-                // Примерная цена (можно заменить на реальный оракул)
-                const prices = { SABU: 0.9995, MUJI: 1.0001, ADL: 104.44 };
-                const estimatedSol = amount * prices[symbol];
-                
-                alert(`⚠️ Демо-режим\n\nПокупка ${amount} ${symbol}\nОриентировочно: ${estimatedSol.toFixed(4)} SOL\n\nВ реальной версии откроется Jupiter Swap.`);
-                
-                // Здесь будет интеграция с Jupiter
-                // window.open(`https://jup.ag/swap/SOL-${token.mint}`, "_blank");
-                
-            } catch (err) {
-                console.error("Buy error:", err);
-                alert("Ошибка при покупке");
-            }
-        }
-        
-        // Сжигание токена (отправка на burn address)
-        async function burnToken(symbol) {
-            if (!wallet || !wallet.publicKey) {
-                await connectWallet();
-                if (!wallet) return;
-            }
-            
-            const token = TOKENS[symbol];
-            const amount = parseFloat(prompt(`Сколько ${symbol} сжечь для совершения дела?`, "1"));
-            if (isNaN(amount) || amount <= 0) return;
-            
-            const confirmed = confirm(`Вы уверены, что хотите сжечь ${amount} ${symbol}?\n\nТокены будут отправлены на невозвратный адрес. Это действие необратимо.`);
-            if (!confirmed) return;
-            
-            try {
-                alert(`⚠️ Демо-режим\n\nСжигание ${amount} ${symbol}\nДело будет засчитано.\n\nВ реальной версии токены отправятся на сжигатель.`);
-                
-                // Сохраняем в localStorage как совершённое дело
-                let burned = JSON.parse(localStorage.getItem('halal_burned') || '[]');
-                burned.push({
-                    token: symbol,
-                    amount: amount,
-                    timestamp: Date.now(),
-                    txid: "demo_" + Math.random().toString(36)
-                });
-                localStorage.setItem('halal_burned', JSON.stringify(burned));
-                
-                loadBurnedStats();
-                alert(`✅ Дело совершено! Сожжено ${amount} ${symbol}.`);
-                
-            } catch (err) {
-                console.error("Burn error:", err);
-                alert("Ошибка при сжигании");
-            }
-        }
-        
-        // Загрузка статистики сожженных токенов
-        function loadBurnedStats() {
-            const burned = JSON.parse(localStorage.getItem('halal_burned') || '[]');
-            const total = burned.reduce((sum, item) => sum + item.amount, 0);
-            document.getElementById('total-burned').textContent = total.toFixed(2);
-        }
-        
-        // Хиджра дата
-        async function fetchHijriDate() {
-            try {
-                const response = await fetch('https://api.aladhan.com/v1/gToH?date=' + new Date().toISOString().split('T')[0]);
-                const data = await response.json();
-                if (data.code === 200) {
-                    const hijri = data.data.hijri;
-                    document.getElementById('hijri-date').textContent = `${hijri.day} ${hijri.month.en} ${hijri.year} AH`;
-                }
-            } catch (err) {
-                document.getElementById('hijri-date').textContent = "1446 AH";
-            }
-        }
-        
-        // Обработка языка (заглушка)
-        document.getElementById('lang-select').addEventListener('change', (e) => {
-            console.log("Language changed to:", e.target.value);
-            // Здесь будет lang.js интеграция
-            alert(`Language changed to ${e.target.value}. Full localization coming soon.`);
-        });
-        
-        document.getElementById('wallet-btn').addEventListener('click', connectWallet);
-        
-        init();
-    </script>
+<footer class="bg-gray-900 text-white mt-12 py-6 text-center text-sm">
+    <p>© 2025 Halal Chain Bank — <span data-key="footer_text">Халяльный блокчейн-банк</span></p>
+    <p class="text-gray-400 mt-1">سَبِّحِ اسْمَ رَبِّكَ الْأَعْلَى</p>
+</footer>
+
+<script>
+// Локализация
+const translations = {
+    en: { title: "Halal Chain Bank", subtitle: "The first halal blockchain bank. Burn tokens for good, purify intentions, unite the ummah.", burned_label: "tokens burned", price: "Price:", liquidity: "Liquidity:", balance: "Balance:", buy_btn: "Buy", burn_btn: "Burn", connect_wallet: "Connect Wallet", nav_home: "Home", nav_actions: "99 Good Deeds", nav_confession: "Tawbah", nav_whitepaper: "Whitepaper", footer_text: "Halal blockchain bank" },
+    ru: { title: "Halal Chain Bank", subtitle: "Первый халяльный блокчейн-банк. Сжигайте токены ради добра, очищайте намерения, объединяйте умму.", burned_label: "токенов сожжено", price: "Цена:", liquidity: "Ликвидность:", balance: "Баланс:", buy_btn: "Купить", burn_btn: "Сжечь", connect_wallet: "Подключить кошелёк", nav_home: "Главная", nav_actions: "99 Добрых дел", nav_confession: "Тауба", nav_whitepaper: "Whitepaper", footer_text: "Халяльный блокчейн-банк" },
+    ar: { title: "بنك الحلال تشين", subtitle: "أول بنك حلال على البلوكتشين. أحرق التوكنات لفعل الخير، طهِّر النوايا، ووحِّد الأمة.", burned_label: "توكن محروق", price: "السعر:", liquidity: "السيولة:", balance: "الرصيد:", buy_btn: "شراء", burn_btn: "حرق", connect_wallet: "ربط المحفظة", nav_home: "الرئيسية", nav_actions: "99 عملاً صالحاً", nav_confession: "توبة", nav_whitepaper: "الورقة البيضاء", footer_text: "بنك حلال على البلوكتشين" },
+    ur: { title: "حلال چین بینک", subtitle: "پہلا حلال بلاک چین بینک۔ نیکی کے لیے ٹوکنز جلائیں، نیتوں کو پاک کریں، امت کو متحد کریں۔", burned_label: "ٹوکنز جل گئے", price: "قیمت:", liquidity: "لیکویڈیٹی:", balance: "باقی:", buy_btn: "خریدیں", burn_btn: "جلائیں", connect_wallet: "والیٹ منسلک کریں", nav_home: "مرکزی", nav_actions: "۹۹ نیک اعمال", nav_confession: "توبہ", nav_whitepaper: "وائٹ پیپر", footer_text: "حلال بلاک چین بینک" },
+    fa: { title: "بانک زنجیره‌ای حلال", subtitle: "اولین بانک بلاکچینی حلال. توکن‌ها را برای نیکی بسوزانید، نیات را پاک کنید، امت را متحد کنید.", burned_label: "توکن سوزانده شده", price: "قیمت:", liquidity: "نقدینگی:", balance: "موجودی:", buy_btn: "خرید", burn_btn: "سوزاندن", connect_wallet: "اتصال کیف پول", nav_home: "خانه", nav_actions: "۹۹ کار نیک", nav_confession: "توبه", nav_whitepaper: "وایت پیپر", footer_text: "بانک بلاکچینی حلال" },
+    tr: { title: "Helal Zincir Bankası", subtitle: "İlk helal blockchain bankası. İyilik için token yakın, niyetleri arındırın, ümmeti birleştirin.", burned_label: "token yakıldı", price: "Fiyat:", liquidity: "Likidite:", balance: "Bakiye:", buy_btn: "Satın Al", burn_btn: "Yak", connect_wallet: "Cüzdan Bağla", nav_home: "Ana Sayfa", nav_actions: "99 İyilik", nav_confession: "Tövbe", nav_whitepaper: "Beyaz Kağıt", footer_text: "Helal blockchain bankası" }
+};
+
+let currentLang = localStorage.getItem('lang') || 'en';
+let wallet = null;
+let connection = null;
+
+function applyLanguage() {
+    document.querySelectorAll('[data-key]').forEach(el => {
+        const key = el.getAttribute('data-key');
+        if (translations[currentLang] && translations[currentLang][key]) el.innerText = translations[currentLang][key];
+    });
+    document.querySelectorAll('[data-key-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-key-placeholder');
+        if (translations[currentLang] && translations[currentLang][key]) el.placeholder = translations[currentLang][key];
+    });
+}
+
+document.getElementById('lang-select').value = currentLang;
+document.getElementById('lang-select').addEventListener('change', (e) => { currentLang = e.target.value; localStorage.setItem('lang', currentLang); applyLanguage(); });
+applyLanguage();
+
+// Кошельки
+async function connectWallet(type) {
+    if (type === 'phantom' && window.solana && window.solana.isPhantom) {
+        await window.solana.connect();
+        wallet = window.solana;
+    } else if (type === 'solflare' && window.solflare) {
+        await window.solflare.connect();
+        wallet = window.solflare;
+    } else if (type === 'backpack' && window.backpack) {
+        await window.backpack.connect();
+        wallet = window.backpack;
+    } else {
+        alert("Кошелёк не найден. Установите Phantom, Solflare или Backpack для Solana.");
+        return;
+    }
+    updateWalletUI();
+    closeWalletModal();
+}
+
+function updateWalletUI() {
+    const addrSpan = document.getElementById('wallet-address');
+    if (wallet && wallet.publicKey) {
+        addrSpan.innerText = wallet.publicKey.toString().slice(0,4)+'...'+wallet.publicKey.toString().slice(-4);
+    } else {
+        addrSpan.innerText = translations[currentLang]?.connect_wallet || "Connect Wallet";
+    }
+}
+
+function openWalletModal() { document.getElementById('wallet-modal').classList.add('active'); }
+function closeWalletModal() { document.getElementById('wallet-modal').classList.remove('active'); }
+document.getElementById('wallet-btn').addEventListener('click', openWalletModal);
+
+// Остальное (покупка, сжигание, балансы, хиджра)
+const TOKENS = { SABU: "25gGFdNrudjBqhMbLpAmvH4Y8ceuVbwBk1Kh2Kp38xaM", MUJI: "3umgiW7VXyKtUGwd9HpczBADxGPaxXSjUBuaBzPZ251Y", ADL: "8NEsFQ9PpGmZVaz5nHV1zTBWDxgrwxwvY5cJ9ejQvpdN" };
+async function buyToken(symbol) { alert(`⚠️ Демо: покупка ${symbol}. В реальной версии откроется Jupiter Swap.`); }
+async function burnToken(symbol) { alert(`✅ Демо: сожжён 1 ${symbol}. Дело засчитано.`); }
+async function loadBalances() { /* будет при подключении */ }
+async function fetchHijriDate() { try { let r=await fetch('https://api.aladhan.com/v1/gToH'); let d=await r.json(); if(d.data) document.getElementById('hijri-date').innerText = `${d.data.hijri.day} ${d.data.hijri.month.en} ${d.data.hijri.year} AH`; } catch(e) { document.getElementById('hijri-date').innerText = "1446 AH"; } }
+fetchHijriDate();
+</script>
 </body>
 </html>
