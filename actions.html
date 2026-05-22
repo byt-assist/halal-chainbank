@@ -3,85 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>99 добрых дел — Halal Chain Bank</title>
+    <title>99 Good Deeds - Halal Chain Bank</title>
     <link rel="icon" href="favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Amiri&display=swap');
-        body { background: linear-gradient(135deg, #FDF5E6 0%, #F0E6D2 100%); }
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #FDF5E6 0%, #F0E6D2 100%); }
         .arabic-font { font-family: 'Amiri', serif; }
+        .sabu-badge { background: #2E7D32; }
+        .muji-badge { background: #1565C0; }
+        .adl-badge { background: #1A1A1A; }
+        .wallet-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+        .wallet-modal.active { display: flex; }
     </style>
 </head>
 <body>
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <img src="logo.png" alt="Halal Chain Bank" class="h-10" onerror="this.src='https://placehold.co/200x60/1a1a1a/FFD700?text=HCB'">
-                <span class="text-xl font-bold arabic-font">Halal Chain Bank</span>
-            </div>
-            <div class="flex items-center space-x-4">
-                <a href="index.html" class="text-gray-600 hover:text-gray-900">Главная</a>
-                <a href="actions.html" class="text-yellow-600 font-semibold">99 дел</a>
-                <a href="confession.html" class="text-gray-600 hover:text-gray-900">Тауба</a>
-                <a href="whitepaper.html" class="text-gray-600 hover:text-gray-900">Whitepaper</a>
-                <button id="wallet-btn" class="bg-gray-900 text-white px-4 py-2 rounded-lg">Connect Wallet</button>
+
+<!-- Wallet Modal -->
+<div id="wallet-modal" class="wallet-modal">
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold" data-key="connect_wallet">Connect Wallet</h3>
+            <button onclick="closeWalletModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
+        </div>
+        <div class="space-y-2">
+            <button onclick="connectWallet('phantom')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><img src="https://phantom.app/img/logo.png" class="w-8 h-8" onerror="this.src='https://placehold.co/32x32/5348C2/white?text=P'"><span>Phantom</span></button>
+            <button onclick="connectWallet('solflare')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-globe text-2xl text-orange-500"></i><span>Solflare</span></button>
+            <button onclick="connectWallet('backpack')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-backpack text-2xl text-purple-600"></i><span>Backpack</span></button>
+        </div>
+    </div>
+</div>
+
+<!-- Header -->
+<header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+        <div class="flex items-center space-x-3">
+            <img src="logo.png" alt="Halal Chain Bank" class="h-10" onerror="this.src='https://placehold.co/200x60/1a1a1a/FFD700?text=HCB'">
+            <span class="text-xl font-bold arabic-font">Halal Chain Bank</span>
+        </div>
+        <div class="flex items-center space-x-3">
+            <select id="lang-select" class="bg-gray-100 border border-gray-300 rounded-lg px-3 py-1.5 text-sm">
+                <option value="en">English</option>
+                <option value="ru">Русский</option>
+                <option value="ar">العربية</option>
+                <option value="ur">اردو</option>
+                <option value="fa">فارسی</option>
+                <option value="tr">Türkçe</option>
+            </select>
+            <button id="wallet-btn" class="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg transition flex items-center gap-2">
+                <i class="fas fa-wallet"></i>
+                <span id="wallet-address" data-key="connect_wallet">Connect Wallet</span>
+            </button>
+        </div>
+    </div>
+    <div class="border-t border-gray-200">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-wrap gap-4">
+                <a href="index.html" class="text-gray-600 hover:text-gray-900 py-3 px-1" data-key="nav_home">Главная</a>
+                <a href="actions.html" class="border-b-3 border-yellow-500 font-semibold py-3 px-1" data-key="nav_actions">99 Добрых дел</a>
+                <a href="confession.html" class="text-gray-600 hover:text-gray-900 py-3 px-1" data-key="nav_confession">Тауба</a>
+                <a href="whitepaper.html" class="text-gray-600 hover:text-gray-900 py-3 px-1" data-key="nav_whitepaper">Whitepaper</a>
             </div>
         </div>
-    </header>
+    </div>
+</header>
 
-    <main class="container mx-auto px-4 py-12 max-w-4xl text-center">
-        <i class="fas fa-praying-hands text-6xl text-yellow-600 mb-6"></i>
-        <h1 class="text-4xl font-bold mb-4">99 добрых дел (أعمال صالحة)</h1>
-        <p class="text-gray-600 mb-8">3 раздела по 33 дела — для суннитов, шиитов и всех мусульман.</p>
-        
-        <div class="bg-white rounded-xl shadow-lg p-8">
-            <i class="fas fa-code-branch text-4xl text-gray-400 mb-4"></i>
-            <h2 class="text-2xl font-semibold mb-2">В разработке</h2>
-            <p class="text-gray-500">99 дел будут доступны в ближайшее время. Каждое дело требует сжигания SABU, MUJI или ADL.</p>
-            <div class="mt-6 h-2 bg-gray-200 rounded-full w-48 mx-auto">
-                <div class="h-2 bg-yellow-500 rounded-full w-0"></div>
+<main class="container mx-auto px-4 py-12 max-w-6xl">
+    <div class="text-center mb-8">
+        <i class="fas fa-praying-hands text-5xl text-yellow-600 mb-4"></i>
+        <h1 class="text-4xl font-bold mb-2" data-key="actions_title">99 добрых дел</h1>
+        <p class="text-gray-600" data-key="actions_subtitle">Сжигайте токены SABU, MUJI или ADL для совершения каждого дела</p>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="flex justify-center gap-3 mb-8 flex-wrap">
+        <button onclick="filterActions('all')" class="filter-btn px-5 py-2 rounded-full bg-gray-200 hover:bg-gray-300 transition" data-key="filter_all">Все (99)</button>
+        <button onclick="filterActions('sabu')" class="filter-btn px-5 py-2 rounded-full bg-green-100 text-green-700 hover:bg-green-200 transition">SABU (33)</button>
+        <button onclick="filterActions('muji')" class="filter-btn px-5 py-2 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200 transition">MUJI (33)</button>
+        <button onclick="filterActions('adl')" class="filter-btn px-5 py-2 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition">ADL (33)</button>
+    </div>
+
+    <!-- Actions Grid -->
+    <div id="actions-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+    <div class="text-center mt-12 text-gray-500 text-sm" data-key="coming_soon">Больше дел в разработке. 99 дел будут доступны в ближайшее время.</div>
+</main>
+
+<footer class="bg-gray-900 text-white mt-12 py-6 text-center text-sm">
+    <p>© 2025 Halal Chain Bank — <span data-key="footer_text">Халяльный блокчейн-банк</span></p>
+</footer>
+
+<script>
+// Локализация
+const translations = {
+    en: { connect_wallet: "Connect Wallet", nav_home: "Home", nav_actions: "99 Good Deeds", nav_confession: "Tawbah", nav_whitepaper: "Whitepaper", actions_title: "99 Good Deeds", actions_subtitle: "Burn SABU, MUJI or ADL tokens to perform each deed", filter_all: "All (99)", coming_soon: "More deeds coming soon. All 99 deeds will be available shortly.", footer_text: "Halal blockchain bank", burn_btn: "Burn", amount: "Amount:" },
+    ru: { connect_wallet: "Подключить кошелёк", nav_home: "Главная", nav_actions: "99 Добрых дел", nav_confession: "Тауба", nav_whitepaper: "Whitepaper", actions_title: "99 добрых дел", actions_subtitle: "Сжигайте токены SABU, MUJI или ADL для совершения каждого дела", filter_all: "Все (99)", coming_soon: "Больше дел в разработке. 99 дел будут доступны в ближайшее время.", footer_text: "Халяльный блокчейн-банк", burn_btn: "Сжечь", amount: "Количество:" },
+    ar: { connect_wallet: "ربط المحفظة", nav_home: "الرئيسية", nav_actions: "99 عملاً صالحاً", nav_confession: "توبة", nav_whitepaper: "الورقة البيضاء", actions_title: "99 عملاً صالحاً", actions_subtitle: "أحرق توكنات SABU أو MUJI أو ADL لأداء كل عمل", filter_all: "الكل (99)", coming_soon: "المزيد قريباً. جميع الأعمال الـ99 ستكون متاحة قريباً.", footer_text: "بنك حلال على البلوكتشين", burn_btn: "حرق", amount: "الكمية:" },
+    ur: { connect_wallet: "والیٹ منسلک کریں", nav_home: "مرکزی", nav_actions: "۹۹ نیک اعمال", nav_confession: "توبہ", nav_whitepaper: "وائٹ پیپر", actions_title: "۹۹ نیک اعمال", actions_subtitle: "ہر عمل کے لیے SABU، MUJI یا ADL ٹوکنز جلائیں", filter_all: "سب (۹۹)", coming_soon: "مزید اعمال جلد آرہے ہیں۔ تمام ۹۹ اعمال جلد دستیاب ہوں گے۔", footer_text: "حلال بلاک چین بینک", burn_btn: "جلائیں", amount: "مقدار:" },
+    fa: { connect_wallet: "اتصال کیف پول", nav_home: "خانه", nav_actions: "۹۹ کار نیک", nav_confession: "توبه", nav_whitepaper: "وایت پیپر", actions_title: "۹۹ کار نیک", actions_subtitle: "برای انجام هر کار، توکن‌های SABU، MUJI یا ADL را بسوزانید", filter_all: "همه (۹۹)", coming_soon: "کارهای بیشتر به زودی. همه ۹۹ کار به زودی در دسترس خواهند بود.", footer_text: "بانک بلاکچینی حلال", burn_btn: "سوزاندن", amount: "مقدار:" },
+    tr: { connect_wallet: "Cüzdan Bağla", nav_home: "Ana Sayfa", nav_actions: "99 İyilik", nav_confession: "Tövbe", nav_whitepaper: "Beyaz Kağıt", actions_title: "99 İyilik", actions_subtitle: "Her iyilik için SABU, MUJI veya ADL tokenlarını yakın", filter_all: "Tümü (99)", coming_soon: "Daha fazla iyilik yakında. 99 iyilik kısa sürede hazır olacak.", footer_text: "Helal blockchain bankası", burn_btn: "Yak", amount: "Miktar:" }
+};
+
+let currentLang = localStorage.getItem('lang') || 'en';
+let wallet = null;
+
+function applyLanguage() {
+    document.querySelectorAll('[data-key]').forEach(el => {
+        const key = el.getAttribute('data-key');
+        if (translations[currentLang] && translations[currentLang][key]) el.innerText = translations[currentLang][key];
+    });
+}
+
+document.getElementById('lang-select').value = currentLang;
+document.getElementById('lang-select').addEventListener('change', (e) => { currentLang = e.target.value; localStorage.setItem('lang', currentLang); applyLanguage(); renderActions(); });
+applyLanguage();
+
+// Кошельки
+async function connectWallet(type) {
+    if (type === 'phantom' && window.solana?.isPhantom) { await window.solana.connect(); wallet = window.solana; }
+    else if (type === 'solflare' && window.solflare) { await window.solflare.connect(); wallet = window.solflare; }
+    else if (type === 'backpack' && window.backpack) { await window.backpack.connect(); wallet = window.backpack; }
+    else { alert("Install Phantom, Solflare or Backpack"); return; }
+    document.getElementById('wallet-address').innerText = wallet.publicKey.toString().slice(0,4)+'...'+wallet.publicKey.toString().slice(-4);
+    closeWalletModal();
+}
+function openWalletModal() { document.getElementById('wallet-modal').classList.add('active'); }
+function closeWalletModal() { document.getElementById('wallet-modal').classList.remove('active'); }
+document.getElementById('wallet-btn').addEventListener('click', openWalletModal);
+
+// Дела (первые 12 для примера)
+const actionsData = {
+    sabu: [
+        { id: 1, name_en: "Say Bismillah", name_ru: "Сказать Бисмиллях", amount: 0.1 },
+        { id: 2, name_en: "Perform Wudu", name_ru: "Совершить вуду", amount: 0.5 },
+        { id: 3, name_en: "Pray 1 Rakat Sunnah", name_ru: "Прочитать 1 ракаат сунны", amount: 1 },
+        { id: 4, name_en: "Wish good to a Muslim", name_ru: "Пожелать добра мусульманину", amount: 0.5 },
+        { id: 5, name_en: "Control anger", name_ru: "Удержать гнев", amount: 2 }
+    ],
+    muji: [
+        { id: 34, name_en: "Dua for Ahl al-Bayt", name_ru: "Дуа за Ахль аль-Бейт", amount: 0.5 },
+        { id: 35, name_en: "Mourn Karbala", name_ru: "Оплакать Кербелу", amount: 1 },
+        { id: 36, name_en: "Read Ziyarat Ashura", name_ru: "Прочитать зияр Ашура", amount: 2 }
+    ],
+    adl: [
+        { id: 67, name_en: "Forgive someone", name_ru: "Простить обидчика", amount: 1 },
+        { id: 68, name_en: "Reconcile people", name_ru: "Примирить ссорящихся", amount: 5 },
+        { id: 69, name_en: "Speak truth", name_ru: "Сказать правду", amount: 0.5 }
+    ]
+};
+
+let currentFilter = 'all';
+function filterActions(type) { currentFilter = type; renderActions(); }
+function renderActions() {
+    const container = document.getElementById('actions-grid');
+    let allActions = [];
+    if (currentFilter === 'all' || currentFilter === 'sabu') allActions.push(...actionsData.sabu.map(a => ({ ...a, type: 'sabu' })));
+    if (currentFilter === 'all' || currentFilter === 'muji') allActions.push(...actionsData.muji.map(a => ({ ...a, type: 'muji' })));
+    if (currentFilter === 'all' || currentFilter === 'adl') allActions.push(...actionsData.adl.map(a => ({ ...a, type: 'adl' })));
+    
+    container.innerHTML = allActions.map(a => `
+        <div class="bg-white rounded-xl shadow-md p-4 border-l-4 ${a.type === 'sabu' ? 'border-green-600' : a.type === 'muji' ? 'border-blue-600' : 'border-gray-800'}">
+            <div class="flex justify-between items-start mb-2">
+                <h3 class="font-bold">${currentLang === 'ru' ? a.name_ru : a.name_en}</h3>
+                <span class="text-xs px-2 py-1 rounded-full text-white ${a.type === 'sabu' ? 'bg-green-600' : a.type === 'muji' ? 'bg-blue-600' : 'bg-gray-800'}">${a.type.toUpperCase()}</span>
             </div>
-            <p class="text-sm text-gray-400 mt-4">Статус: наполнение контента</p>
+            <div class="flex justify-between items-center mt-3">
+                <span class="text-sm text-gray-500">${translations[currentLang]?.amount || "Amount:"} ${a.amount} ${a.type.toUpperCase()}</span>
+                <button onclick="burnForAction('${a.type}', ${a.amount})" class="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded-lg text-sm transition">${translations[currentLang]?.burn_btn || "Burn"}</button>
+            </div>
         </div>
-        
-        <div class="mt-8 grid md:grid-cols-3 gap-4 text-left">
-            <div class="bg-white/50 rounded-lg p-4">
-                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mb-2">
-                    <span class="text-green-700 font-bold">1-33</span>
-                </div>
-                <h3 class="font-bold">SABU (сунниты)</h3>
-                <p class="text-sm text-gray-500">Терпение, следование сунне</p>
-            </div>
-            <div class="bg-white/50 rounded-lg p-4">
-                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mb-2">
-                    <span class="text-blue-700 font-bold">34-66</span>
-                </div>
-                <h3 class="font-bold">MUJI (шииты)</h3>
-                <p class="text-sm text-gray-500">Молитва, имамат, Кербела</p>
-            </div>
-            <div class="bg-white/50 rounded-lg p-4">
-                <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mb-2">
-                    <span class="text-gray-700 font-bold">67-99</span>
-                </div>
-                <h3 class="font-bold">ADL (общие)</h3>
-                <p class="text-sm text-gray-500">Справедливость, тауба</p>
-            </div>
-        </div>
-    </main>
+    `).join('');
+}
 
-    <footer class="bg-gray-900 text-white mt-12 py-6 text-center text-sm">
-        <p>© 2025 Halal Chain Bank — Халяльный блокчейн-банк</p>
-    </footer>
-
-    <script>
-        document.getElementById('wallet-btn').addEventListener('click', () => {
-            if (window.solana && window.solana.isPhantom) {
-                window.solana.connect();
-            } else {
-                alert("Установите Phantom: https://phantom.app/");
-            }
-        });
-    </script>
+function burnForAction(type, amount) {
+    if (!wallet) { openWalletModal(); return; }
+    alert(`✅ Демо: сожжено ${amount} ${type.toUpperCase()} для совершения дела. В реальной версии токены отправятся на сжигатель.`);
+}
+renderActions();
+</script>
 </body>
 </html>
