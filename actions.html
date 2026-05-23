@@ -14,7 +14,7 @@
         .wallet-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
         .wallet-modal.active { display: flex; }
         @keyframes sparkle { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
-        @keyframes flame { 0% { text-shadow: 0 0 2px #ff6600; } 50% { text-shadow: 0 0 15px #ff3300, 0 0 5px #ffcc00; } 100% { text-shadow: 0 0 2px #ff6600; } }
+        @keyframes flame { 0% { text-shadow: 0 0 2px #ff6600; } 50% { text-shadow: 0 0 15px #ff3300; } 100% { text-shadow: 0 0 2px #ff6600; } }
         .burn-animation { animation: flame 0.3s ease-in-out; }
         .sparkle { position: fixed; pointer-events: none; z-index: 1000; width: 20px; height: 20px; background: radial-gradient(circle, gold, orange); border-radius: 50%; animation: sparkle 0.6s ease-out forwards; }
         .deed-card { transition: all 0.2s; }
@@ -27,7 +27,7 @@
 <div id="wallet-modal" class="wallet-modal">
     <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
         <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-bold" data-key="connect_wallet">Connect Wallet</h3>
+            <h3 class="text-xl font-bold">Подключить кошелёк</h3>
             <button onclick="closeWalletModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
         </div>
         <div class="space-y-2">
@@ -46,9 +46,12 @@
         </div>
         <div class="flex items-center gap-3">
             <select id="lang-select" class="bg-gray-100 border rounded-lg px-3 py-1.5 text-sm">
-                <option value="ru">Русский</option><option value="en">English</option>
-                <option value="ar">العربية</option><option value="ur">اردو</option>
-                <option value="fa">فارسی</option><option value="tr">Türkçe</option>
+                <option value="ru">Русский</option>
+                <option value="en">English</option>
+                <option value="ar">العربية</option>
+                <option value="ur">اردو</option>
+                <option value="fa">فارسی</option>
+                <option value="tr">Türkçe</option>
             </select>
             <button id="wallet-btn" class="bg-gray-900 text-white px-4 py-2 rounded-lg"><i class="fas fa-wallet"></i><span id="wallet-address">Подключить</span></button>
         </div>
@@ -70,14 +73,12 @@
         <p class="text-gray-600">Сжигайте токены с намерением (ният). Каждое дело записывается в вашу книгу.</p>
     </div>
 
-    <!-- Progress Section -->
     <div class="bg-white rounded-xl shadow-sm p-4 mb-6 flex flex-wrap justify-between items-center">
         <div><i class="fas fa-chart-simple text-yellow-600"></i> <span class="font-semibold">Выполнено:</span> <span id="progress-count">0</span>/99</div>
         <div id="badge-display" class="bg-gray-100 px-3 py-1 rounded-full text-sm">🕊️ В начале пути</div>
     </div>
     <div class="w-full bg-gray-200 rounded-full h-2 mb-6"><div id="progress-bar" class="bg-green-600 h-2 rounded-full" style="width:0%"></div></div>
 
-    <!-- Filters -->
     <div class="flex justify-center gap-3 flex-wrap mb-8">
         <button onclick="filterActions('all')" class="filter-btn px-4 py-2 rounded-full bg-gray-200">Все (99)</button>
         <button onclick="filterActions('sabu')" class="filter-btn px-4 py-2 rounded-full bg-green-100 text-green-700">SABU (33)</button>
@@ -94,81 +95,265 @@
 // ==================== АДРЕСА ТОКЕНОВ ====================
 const TOKENS = { SABU: "25gGFdNrudjBqhMbLpAmvH4Y8ceuVbwBk1Kh2Kp38xaM", MUJI: "3umgiW7VXyKtUGwd9HpczBADxGPaxXSjUBuaBzPZ251Y", ADL: "8NEsFQ9PpGmZVaz5nHV1zTBWDxgrwxwvY5cJ9ejQvpdN" };
 
-// ==================== 99 ДЕЛ (33 SABU + 33 MUJI + 33 ADL) ====================
+// ==================== 99 ДЕЛ С ПЕРЕВОДАМИ ====================
 const actionsData = {
     sabu: [
-        "Сказать Бисмиллях","Совершить вуду","1 ракаат сунны","Пожелать добра","Удержать гнев","Помочь бедному","Накормить голодного","Посетить больного","Убрать препятствие","Подарить одежду","Улыбнуться брату","Помочь путнику","Вернуть долг","Напомнить о намазе","Страница Корана","Дуа за умму","Проснуться на тахаджуд","Пост 1 день","Садака тайно","Научить полезному","Примирить ссорящихся","Защитить слабого","Быть справедливым","Не подслушивать","Хранить тайну","Выполнить обещание","Пожелать мира","Сказать истину","Избегать сплетен","Помочь сироте","Посетить мечеть","Хадж (виртуально)","Очистить 33 греха"
-    ].map((n,i)=>({name_ru:n,name_en:["Bismillah","Wudu","Sunnah Rakat","Wish good","Control anger","Help poor","Feed hungry","Visit sick","Remove obstacle","Give clothes","Smile","Help traveler","Repay debt","Remind prayer","Quran page","Dua for Ummah","Tahajjud","Fast 1 day","Secret sadaqah","Teach","Reconcile","Protect weak","Be just","No eavesdrop","Keep secret","Keep promise","Wish peace","Speak truth","Avoid gossip","Help orphan","Visit mosque","Hajj virtual","Cleanse 33 sins"][i], amount:[0.1,0.5,1,0.5,2,5,5,3,1,10,0.2,2,5,0.5,2,1,3,10,5,2,10,15,5,1,2,3,0.5,1,2,20,1,100,33][i]})),
+        { ru:"Сказать Бисмиллях", en:"Say Bismillah", amount:0.1 },
+        { ru:"Совершить вуду", en:"Perform Wudu", amount:0.5 },
+        { ru:"Прочитать 1 ракаат сунны", en:"Pray 1 Rakat Sunnah", amount:1 },
+        { ru:"Пожелать добра мусульманину", en:"Wish good to a Muslim", amount:0.5 },
+        { ru:"Удержать гнев", en:"Control anger", amount:2 },
+        { ru:"Помочь бедному", en:"Help the poor", amount:5 },
+        { ru:"Накормить голодного", en:"Feed the hungry", amount:5 },
+        { ru:"Посетить больного", en:"Visit the sick", amount:3 },
+        { ru:"Убрать препятствие с дороги", en:"Remove obstacle", amount:1 },
+        { ru:"Подарить одежду", en:"Give clothes", amount:10 },
+        { ru:"Улыбнуться брату", en:"Smile at brother", amount:0.2 },
+        { ru:"Помочь путнику", en:"Help a traveler", amount:2 },
+        { ru:"Вернуть долг", en:"Repay debt", amount:5 },
+        { ru:"Напомнить о намазе", en:"Remind of prayer", amount:0.5 },
+        { ru:"Прочитать страницу Корана", en:"Read Quran page", amount:2 },
+        { ru:"Сделать дуа за умму", en:"Make dua for Ummah", amount:1 },
+        { ru:"Проснуться на тахаджуд", en:"Wake for Tahajjud", amount:3 },
+        { ru:"Поститься 1 день", en:"Fast 1 day", amount:10 },
+        { ru:"Дать садака тайно", en:"Give secret sadaqah", amount:5 },
+        { ru:"Научить полезному", en:"Teach something", amount:2 },
+        { ru:"Примирить ссорящихся", en:"Reconcile people", amount:10 },
+        { ru:"Защитить слабого", en:"Protect the weak", amount:15 },
+        { ru:"Быть справедливым", en:"Be just", amount:5 },
+        { ru:"Не подслушивать", en:"Don't eavesdrop", amount:1 },
+        { ru:"Хранить тайну", en:"Keep a secret", amount:2 },
+        { ru:"Выполнить обещание", en:"Keep promise", amount:3 },
+        { ru:"Пожелать мира всем", en:"Wish peace for all", amount:0.5 },
+        { ru:"Сказать правду", en:"Speak truth", amount:1 },
+        { ru:"Избегать сплетен", en:"Avoid gossip", amount:2 },
+        { ru:"Помочь сироте", en:"Help an orphan", amount:20 },
+        { ru:"Посетить мечеть", en:"Visit mosque", amount:1 },
+        { ru:"Совершить хадж (вирт.)", en:"Perform Hajj (virtual)", amount:100 },
+        { ru:"Очистить 33 греха", en:"Cleanse 33 sins", amount:33 }
+    ],
     muji: [
-        "Дуа за Ахль аль-Бейт","Оплакать Кербелу","Зияр Ашура","Посетить Кербелу","Почитать имама Али","Почитать Фатиму","Почитать Хусейна","Почитать Махди","Сказать 'Яа Али'","Сказать 'Яа Хусейн'","Сказать 'Яа Захра'","Дуа о справедливости","Поминовение Ашуры","1 салават","100 салаватов","Помочь бедному шииту","Защитить общину","Посетить мечеть","Правда о Кербеле","Научить о Кербеле","Поминовение Хусейна","Дуа за скорбящих","Пожертвовать на мавзолей","Пост Ашура","Пост Арбаин","Зияр Кербелы","Такбир","Тасбих","Дуа о единстве","Уважать имамов","История имамов","Плакать по Хусейну","Очистить 33 греха"
-    ].map((n,i)=>({name_ru:n,name_en:["Dua Ahl al-Bayt","Mourn Karbala","Ziyarat Ashura","Visit Karbala","Honor Imam Ali","Honor Fatima","Honor Hussein","Honor Mahdi","Ya Ali","Ya Hussain","Ya Zahra","Pray for justice","Ashura commemoration","1 Salawat","100 Salawat","Help poor Shia","Protect community","Visit mosque","Truth about Karbala","Teach about Karbala","Hussein commemoration","Pray for mourners","Donate to shrine","Ashura fast","Arba'een fast","Karbala Ziyarat","Takbir","Tasbih","Pray for unity","Respect Imams","Imams history","Cry for Hussein","Cleanse 33 sins"][i], amount:[0.5,1,2,50,1,1,2,3,0.2,0.2,0.2,1,5,0.1,5,5,20,1,2,5,3,2,10,10,10,3,0.1,0.1,1,2,5,5,33][i]})),
+        { ru:"Дуа за Ахль аль-Бейт", en:"Dua for Ahl al-Bayt", amount:0.5 },
+        { ru:"Оплакать Кербелу", en:"Mourn Karbala", amount:1 },
+        { ru:"Прочитать зияр Ашура", en:"Read Ziyarat Ashura", amount:2 },
+        { ru:"Посетить Кербелу (вирт.)", en:"Visit Karbala (virtual)", amount:50 },
+        { ru:"Почитать имама Али", en:"Honor Imam Ali", amount:1 },
+        { ru:"Почитать Фатиму", en:"Honor Fatima", amount:1 },
+        { ru:"Почитать Хусейна", en:"Honor Hussein", amount:2 },
+        { ru:"Почитать имама Махди", en:"Honor Imam Mahdi", amount:3 },
+        { ru:"Сказать 'Яа Али'", en:"Say 'Ya Ali'", amount:0.2 },
+        { ru:"Сказать 'Яа Хусейн'", en:"Say 'Ya Hussain'", amount:0.2 },
+        { ru:"Сказать 'Яа Захра'", en:"Say 'Ya Zahra'", amount:0.2 },
+        { ru:"Сделать дуа о справедливости", en:"Pray for justice", amount:1 },
+        { ru:"Поминовение Ашуры", en:"Commemorate Ashura", amount:5 },
+        { ru:"Прочитать 1 салават", en:"Recite 1 Salawat", amount:0.1 },
+        { ru:"Прочитать 100 салаватов", en:"Recite 100 Salawat", amount:5 },
+        { ru:"Помочь бедному шииту", en:"Help poor Shia", amount:5 },
+        { ru:"Защитить шиитскую общину", en:"Protect Shia community", amount:20 },
+        { ru:"Посетить мечеть (вирт.)", en:"Visit mosque (virtual)", amount:1 },
+        { ru:"Сказать правду о Кербеле", en:"Speak truth about Karbala", amount:2 },
+        { ru:"Научить о Кербеле", en:"Teach about Karbala", amount:5 },
+        { ru:"Поминовение Хусейна", en:"Commemorate Hussein", amount:3 },
+        { ru:"Сделать дуа за скорбящих", en:"Pray for mourners", amount:2 },
+        { ru:"Пожертвовать на мавзолей", en:"Donate to shrine", amount:10 },
+        { ru:"Пост в день Ашура", en:"Fast on Ashura", amount:10 },
+        { ru:"Пост в день Арбаин", en:"Fast on Arba'een", amount:10 },
+        { ru:"Прочитать зияр Кербелы", en:"Read Karbala Ziyarat", amount:3 },
+        { ru:"Совершить такбир", en:"Say Takbir", amount:0.1 },
+        { ru:"Совершить тасбих", en:"Say Tasbih", amount:0.1 },
+        { ru:"Сделать дуа о единстве", en:"Pray for unity", amount:1 },
+        { ru:"Уважать имамов", en:"Respect Imams", amount:2 },
+        { ru:"Изучать историю имамов", en:"Study Imams' history", amount:5 },
+        { ru:"Плакать по Хусейну", en:"Cry for Hussein", amount:5 },
+        { ru:"Очистить 33 греха", en:"Cleanse 33 sins", amount:33 }
+    ],
     adl: [
-        "Простить обидчика","Примирить врагов","Сказать правду","Пожертвовать на мечеть","Помочь обиженному","Честность в сделке","Не брать взятку","Вернуть чужое","Честное свидетельство","Не обманывать","Платить вовремя","Соблюдать договор","Не нарушать обещание","Уважать старших","Заботиться о младших","Не обижать слабого","Защитить соседа","Не воровать","Не убивать","Не лжесвидетельствовать","Соблюдать закон","Платить закят","Помочь должнику","Освободить раба (вирт.)","Посадить дерево","Убрать мусор","Накормить животное","Вылечить больного","Научить детей","Построить колодец","Помочь беженцам","Защитить природу","Очистить 33 греха"
-    ].map((n,i)=>({name_ru:n,name_en:["Forgive","Reconcile","Speak truth","Donate to mosque","Help wronged","Honest trade","No bribe","Return lost","Honest testimony","No cheat","Pay on time","Keep contract","Keep promise","Respect elders","Care for young","Don't harm weak","Protect neighbor","Don't steal","Don't kill","No false testimony","Obey law","Pay Zakat","Help debtor","Free slave","Plant tree","Pick up trash","Feed animal","Heal sick","Teach children","Build well","Help refugees","Protect nature","Cleanse 33 sins"][i], amount:[1,10,0.5,5,10,2,5,2,3,2,1,2,2,1,1,3,2,10,50,10,1,20,5,30,2,0.5,1,10,3,30,20,5,33][i]}))
+        { ru:"Простить обидчика", en:"Forgive offender", amount:1 },
+        { ru:"Примирить врагов", en:"Reconcile enemies", amount:10 },
+        { ru:"Сказать правду", en:"Speak truth", amount:0.5 },
+        { ru:"Пожертвовать на мечеть", en:"Donate to mosque", amount:5 },
+        { ru:"Помочь несправедливо обиженному", en:"Help the wronged", amount:10 },
+        { ru:"Быть честным в сделке", en:"Be honest in trade", amount:2 },
+        { ru:"Не брать взятку", en:"Don't take bribe", amount:5 },
+        { ru:"Вернуть чужое", en:"Return lost item", amount:2 },
+        { ru:"Свидетельствовать честно", en:"Testify honestly", amount:3 },
+        { ru:"Не обманывать", en:"Don't cheat", amount:2 },
+        { ru:"Платить вовремя", en:"Pay on time", amount:1 },
+        { ru:"Соблюдать договор", en:"Keep contract", amount:2 },
+        { ru:"Не нарушать обещание", en:"Don't break promise", amount:2 },
+        { ru:"Уважать старших", en:"Respect elders", amount:1 },
+        { ru:"Заботиться о младших", en:"Care for younger", amount:1 },
+        { ru:"Не обижать слабого", en:"Don't harm weak", amount:3 },
+        { ru:"Защитить соседа", en:"Protect neighbor", amount:2 },
+        { ru:"Не воровать", en:"Don't steal", amount:10 },
+        { ru:"Не убивать", en:"Don't kill", amount:50 },
+        { ru:"Не лжесвидетельствовать", en:"No false testimony", amount:10 },
+        { ru:"Соблюдать закон", en:"Obey law", amount:1 },
+        { ru:"Платить закят", en:"Pay Zakat", amount:20 },
+        { ru:"Помочь должнику", en:"Help a debtor", amount:5 },
+        { ru:"Освободить раба (вирт.)", en:"Free a slave (virtual)", amount:30 },
+        { ru:"Посадить дерево", en:"Plant a tree", amount:2 },
+        { ru:"Убрать мусор", en:"Pick up trash", amount:0.5 },
+        { ru:"Накормить животное", en:"Feed an animal", amount:1 },
+        { ru:"Вылечить больного", en:"Heal the sick", amount:10 },
+        { ru:"Научить детей", en:"Teach children", amount:3 },
+        { ru:"Построить колодец", en:"Build a well", amount:30 },
+        { ru:"Помочь беженцам", en:"Help refugees", amount:20 },
+        { ru:"Защитить природу", en:"Protect nature", amount:5 },
+        { ru:"Очистить 33 греха", en:"Cleanse 33 sins", amount:33 }
+    ]
 };
 
-let wallet = null, currentFilter = 'all', currentLang = 'ru';
-const translations = { ru: { burn:"Сжечь" }, en: { burn:"Burn" }, ar: { burn:"حرق" }, ur: { burn:"جلائیں" }, fa: { burn:"سوزاندن" }, tr: { burn:"Yak" } };
-function t(key) { return translations[currentLang]?.[key] || key; }
+// ==================== СОСТОЯНИЕ ====================
+let wallet = null;
+let currentFilter = 'all';
+let currentLang = 'ru';
 
+// ==================== ФУНКЦИИ ====================
 function updateProgress() {
-    let completed = JSON.parse(localStorage.getItem('completed_deeds')||'[]');
+    let completed = JSON.parse(localStorage.getItem('completed_deeds') || '[]');
     let count = completed.length;
     document.getElementById('progress-count').innerText = count;
-    document.getElementById('progress-bar').style.width = (count/99)*100+'%';
-    let badge = '', emoji='';
-    if(count>=99){badge='Сиддик'; emoji='🏆';}else if(count>=66){badge='Абид'; emoji='📿';}else if(count>=33){badge='Праведник'; emoji='🌟';}else if(count>=10){badge='Начинающий'; emoji='🌱';}else{ badge='В начале пути'; emoji='🕊️';}
+    document.getElementById('progress-bar').style.width = (count/99)*100 + '%';
+    let badge = '', emoji = '';
+    if (count >= 99) { badge = 'Сиддик'; emoji = '🏆'; }
+    else if (count >= 66) { badge = 'Абид'; emoji = '📿'; }
+    else if (count >= 33) { badge = 'Праведник'; emoji = '🌟'; }
+    else if (count >= 10) { badge = 'Начинающий'; emoji = '🌱'; }
+    else { badge = 'В начале пути'; emoji = '🕊️'; }
     document.getElementById('badge-display').innerHTML = `${emoji} ${badge}`;
 }
 
-function sparkle(x,y){for(let i=0;i<12;i++){let d=document.createElement('div');d.className='sparkle';d.style.left=(x+Math.random()*40-20)+'px';d.style.top=(y+Math.random()*40-20)+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),600);}}
-function playSound(){let audio=new Audio("https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3");audio.volume=0.3;audio.play().catch(e=>console.log);}
+function sparkle(x, y) {
+    for (let i = 0; i < 12; i++) {
+        let d = document.createElement('div');
+        d.className = 'sparkle';
+        d.style.left = (x + Math.random() * 40 - 20) + 'px';
+        d.style.top = (y + Math.random() * 40 - 20) + 'px';
+        document.body.appendChild(d);
+        setTimeout(() => d.remove(), 600);
+    }
+}
 
-async function burnDeed(symbol, amount, deedId, deedName, btnElement){
-    if(!wallet){openWalletModal();return;}
-    if(!confirm(`📿 НИЯТ: совершить дело "${deedName}"\nСжечь ${amount} ${symbol}\nРади довольства Аллаха.`)) return;
-    let btn=btnElement; if(btn){btn.classList.add('burn-animation'); setTimeout(()=>btn.classList.remove('burn-animation'),500);}
-    try{
-        let conn=new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'),'confirmed');
-        let fromMint=new solanaWeb3.PublicKey(TOKENS[symbol]);
-        let toSym=symbol==='ADL'?'SABU':'ADL';
-        let toAddr=new solanaWeb3.PublicKey(TOKENS[toSym]);
-        let accs=await conn.getTokenAccountsByOwner(wallet.publicKey,{mint:fromMint});
-        if(accs.value.length===0){alert(`Нет ${symbol}`);return;}
-        let tx=new solanaWeb3.Transaction().add(solanaWeb3.Token.createTransferInstruction(solanaWeb3.TOKEN_PROGRAM_ID,accs.value[0].pubkey,toAddr,wallet.publicKey,[],amount*Math.pow(10,9)));
-        let sig=await solanaWeb3.sendAndConfirmTransaction(conn,tx,[wallet]);
-        let completed=JSON.parse(localStorage.getItem('completed_deeds')||'[]');
-        if(!completed.includes(deedId)) completed.push(deedId);
-        localStorage.setItem('completed_deeds',JSON.stringify(completed));
+function playSound() {
+    let audio = new Audio("https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3");
+    audio.volume = 0.3;
+    audio.play().catch(e => console.log);
+}
+
+async function burnDeed(symbol, amount, deedId, deedName, btnElement) {
+    if (!wallet) { openWalletModal(); return; }
+    if (!confirm(`📿 НИЯТ: совершить дело "${deedName}"\nСжечь ${amount} ${symbol}\nРади довольства Аллаха.`)) return;
+    
+    let btn = btnElement;
+    if (btn) { btn.classList.add('burn-animation'); setTimeout(() => btn.classList.remove('burn-animation'), 500); }
+    
+    try {
+        let conn = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'), 'confirmed');
+        let fromMint = new solanaWeb3.PublicKey(TOKENS[symbol]);
+        let toSym = symbol === 'ADL' ? 'SABU' : 'ADL';
+        let toAddr = new solanaWeb3.PublicKey(TOKENS[toSym]);
+        let accounts = await conn.getTokenAccountsByOwner(wallet.publicKey, { mint: fromMint });
+        if (accounts.value.length === 0) { alert(`Нет ${symbol} токенов`); return; }
+        
+        let tx = new solanaWeb3.Transaction().add(
+            solanaWeb3.Token.createTransferInstruction(
+                solanaWeb3.TOKEN_PROGRAM_ID,
+                accounts.value[0].pubkey,
+                toAddr,
+                wallet.publicKey,
+                [],
+                amount * Math.pow(10, 9)
+            )
+        );
+        let sig = await solanaWeb3.sendAndConfirmTransaction(conn, tx, [wallet]);
+        
+        let completed = JSON.parse(localStorage.getItem('completed_deeds') || '[]');
+        if (!completed.includes(deedId)) completed.push(deedId);
+        localStorage.setItem('completed_deeds', JSON.stringify(completed));
         updateProgress();
-        let rect=btn.getBoundingClientRect();
-        sparkle(rect.left+rect.width/2,rect.top+rect.height/2);
+        
+        let rect = btn.getBoundingClientRect();
+        sparkle(rect.left + rect.width/2, rect.top + rect.height/2);
         playSound();
+        
         alert(`✅ ДЕЛО ИСПОЛНЕНО!\n${deedName}\nСожжено ${amount} ${symbol}\nПрогресс: ${completed.length}/99\nTXID: ${sig.slice(0,16)}...`);
         renderActions();
-    }catch(e){alert(`Ошибка: ${e.message}`);}
+    } catch(e) { alert(`Ошибка: ${e.message}`); }
 }
 
-function renderActions(){
-    let container=document.getElementById('actions-grid');
-    let items=[];
-    let completed=JSON.parse(localStorage.getItem('completed_deeds')||'[]');
-    if(currentFilter==='all'||currentFilter==='sabu') actionsData.sabu.forEach((a,i)=>{items.push({...a,type:'sabu',id:`sabu_${i}`,amount:a.amount})});
-    if(currentFilter==='all'||currentFilter==='muji') actionsData.muji.forEach((a,i)=>{items.push({...a,type:'muji',id:`muji_${i}`,amount:a.amount})});
-    if(currentFilter==='all'||currentFilter==='adl') actionsData.adl.forEach((a,i)=>{items.push({...a,type:'adl',id:`adl_${i}`,amount:a.amount})});
-    container.innerHTML=items.map(a=>`<div class="deed-card bg-white rounded-xl shadow-md p-4 border-l-4 ${completed.includes(a.id)?'border-yellow-500 bg-yellow-50':'border-gray-200'}">
-        <div class="flex justify-between items-start"><h3 class="font-bold text-sm">${currentLang==='ru'?a.name_ru:a.name_en}</h3><span class="text-xs px-2 py-1 rounded-full text-white ${a.type==='sabu'?'bg-green-600':a.type==='muji'?'bg-blue-600':'bg-gray-800'}">${a.type.toUpperCase()}</span></div>
-        <div class="flex justify-between items-center mt-3"><span class="text-sm text-gray-500">${a.amount} ${a.type.toUpperCase()}</span>
-        ${completed.includes(a.id)?'<span class="text-green-600 text-sm"><i class="fas fa-check-circle"></i> Выполнено</span>':`<button onclick="burnDeed('${a.type.toUpperCase()}',${a.amount},'${a.id}','${currentLang==='ru'?a.name_ru:a.name_en}',this)" class="bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600">${t('burn')}</button>`}</div>
-    </div>`).join('');
+function renderActions() {
+    let container = document.getElementById('actions-grid');
+    let items = [];
+    let completed = JSON.parse(localStorage.getItem('completed_deeds') || '[]');
+    
+    if (currentFilter === 'all' || currentFilter === 'sabu') {
+        actionsData.sabu.forEach((a, i) => {
+            items.push({ ...a, type: 'sabu', id: `sabu_${i}`, amount: a.amount });
+        });
+    }
+    if (currentFilter === 'all' || currentFilter === 'muji') {
+        actionsData.muji.forEach((a, i) => {
+            items.push({ ...a, type: 'muji', id: `muji_${i}`, amount: a.amount });
+        });
+    }
+    if (currentFilter === 'all' || currentFilter === 'adl') {
+        actionsData.adl.forEach((a, i) => {
+            items.push({ ...a, type: 'adl', id: `adl_${i}`, amount: a.amount });
+        });
+    }
+    
+    container.innerHTML = items.map(a => {
+        let deedName = currentLang === 'ru' ? a.ru : a.en;
+        let isCompleted = completed.includes(a.id);
+        return `
+            <div class="deed-card bg-white rounded-xl shadow-md p-4 border-l-4 ${isCompleted ? 'border-yellow-500 bg-yellow-50' : 'border-gray-200'}">
+                <div class="flex justify-between items-start">
+                    <h3 class="font-bold text-sm">${deedName}</h3>
+                    <span class="text-xs px-2 py-1 rounded-full text-white ${a.type === 'sabu' ? 'bg-green-600' : a.type === 'muji' ? 'bg-blue-600' : 'bg-gray-800'}">${a.type.toUpperCase()}</span>
+                </div>
+                <div class="flex justify-between items-center mt-3">
+                    <span class="text-sm text-gray-500">${a.amount} ${a.type.toUpperCase()}</span>
+                    ${isCompleted ? 
+                        '<span class="text-green-600 text-sm"><i class="fas fa-check-circle"></i> Выполнено</span>' : 
+                        `<button onclick="burnDeed('${a.type.toUpperCase()}', ${a.amount}, '${a.id}', '${deedName}', this)" class="bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600">Сжечь</button>`
+                    }
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
-function filterActions(t){currentFilter=t;renderActions();}
-async function connectWallet(type){if(type==='phantom'&&window.solana?.isPhantom){await window.solana.connect();wallet=window.solana;}else{alert("Установите Phantom");return;}document.getElementById('wallet-address').innerText=wallet.publicKey.toString().slice(0,4)+'...'+wallet.publicKey.toString().slice(-4);closeWalletModal();}
-function openWalletModal(){document.getElementById('wallet-modal').classList.add('active');}
-function closeWalletModal(){document.getElementById('wallet-modal').classList.remove('active');}
-document.getElementById('wallet-btn').onclick=openWalletModal;
-document.getElementById('lang-select').onchange=(e)=>{currentLang=e.target.value;renderActions();};
+function filterActions(type) { currentFilter = type; renderActions(); }
+
+// ==================== КОШЕЛЬКИ ====================
+async function connectWallet(type) {
+    if (type === 'phantom' && window.solana?.isPhantom) {
+        await window.solana.connect();
+        wallet = window.solana;
+    } else if (type === 'solflare' && window.solflare) {
+        await window.solflare.connect();
+        wallet = window.solflare;
+    } else if (type === 'backpack' && window.backpack) {
+        await window.backpack.connect();
+        wallet = window.backpack;
+    } else {
+        alert("Установите Phantom, Solflare или Backpack");
+        return;
+    }
+    document.getElementById('wallet-address').innerText = wallet.publicKey.toString().slice(0,4) + '...' + wallet.publicKey.toString().slice(-4);
+    closeWalletModal();
+}
+
+function openWalletModal() { document.getElementById('wallet-modal').classList.add('active'); }
+function closeWalletModal() { document.getElementById('wallet-modal').classList.remove('active'); }
+
+// ==================== ЗАПУСК ====================
+document.getElementById('wallet-btn').onclick = openWalletModal;
+document.getElementById('lang-select').onchange = (e) => {
+    currentLang = e.target.value;
+    renderActions();
+};
 updateProgress();
 renderActions();
 </script>
