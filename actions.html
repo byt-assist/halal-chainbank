@@ -17,11 +17,12 @@
         @keyframes flame { 0% { text-shadow: 0 0 2px #ff6600; } 50% { text-shadow: 0 0 15px #ff3300; } 100% { text-shadow: 0 0 2px #ff6600; } }
         .burn-animation { animation: flame 0.3s ease-in-out; }
         .sparkle { position: fixed; pointer-events: none; z-index: 1000; width: 20px; height: 20px; background: radial-gradient(circle, gold, orange); border-radius: 50%; animation: sparkle 0.6s ease-out forwards; }
+        .deed-card { transition: all 0.2s; }
     </style>
 </head>
 <body>
 
-<!-- Modal кошелька -->
+<!-- Wallet Modal -->
 <div id="wallet-modal" class="wallet-modal">
     <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
         <div class="flex justify-between items-center mb-4">
@@ -36,12 +37,12 @@
     </div>
 </div>
 
-<!-- Шапка -->
+<!-- Header -->
 <header class="bg-white shadow-md sticky top-0 z-50">
     <div class="container mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
         <div class="flex items-center space-x-3">
             <img src="logo.png" class="h-10" onerror="this.src='https://placehold.co/200x60/1a1a1a/FFD700?text=HCB'">
-            <span class="text-xl font-bold amiri">Halal Chain Bank</span>
+            <span class="text-xl font-bold arabic-font">Halal Chain Bank</span>
         </div>
         <div class="flex items-center gap-3">
             <select id="lang-select" class="bg-gray-100 border rounded-lg px-3 py-1.5 text-sm">
@@ -51,16 +52,18 @@
                 <option value="ur">اردو</option>
                 <option value="fa">فارسی</option>
                 <option value="tr">Türkçe</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
             </select>
             <button id="wallet-btn" class="bg-gray-900 text-white px-4 py-2 rounded-lg"><i class="fas fa-wallet"></i><span id="wallet-address">Подключить</span></button>
         </div>
     </div>
     <div class="border-t">
         <div class="container mx-auto px-4 flex gap-4">
-            <a href="index.html" class="text-gray-600 py-3 px-1">Главная</a>
-            <a href="actions.html" class="border-b-2 border-yellow-500 font-semibold py-3 px-1">99 Добрых дел</a>
-            <a href="confession.html" class="text-gray-600 py-3 px-1">Тауба</a>
-            <a href="whitepaper.html" class="text-gray-600 py-3 px-1">Whitepaper</a>
+            <a href="index.html" class="text-gray-600 py-3 px-1" data-key="nav_home">Главная</a>
+            <a href="actions.html" class="border-b-2 border-yellow-500 font-semibold py-3 px-1" data-key="nav_actions">99 Добрых дел</a>
+            <a href="confession.html" class="text-gray-600 py-3 px-1" data-key="nav_confession">Тауба</a>
+            <a href="whitepaper.html" class="text-gray-600 py-3 px-1" data-key="nav_whitepaper">Whitepaper</a>
         </div>
     </div>
 </header>
@@ -68,20 +71,20 @@
 <main class="container mx-auto px-4 py-8 max-w-6xl">
     <div class="text-center mb-8">
         <i class="fas fa-praying-hands text-5xl text-yellow-600"></i>
-        <h1 class="text-3xl font-bold mt-2">99 добрых дел</h1>
-        <p class="text-gray-600">Сжигайте токены с намерением (ният). Каждое дело записывается в вашу книгу.</p>
+        <h1 class="text-3xl font-bold mt-2" data-key="title">99 добрых дел</h1>
+        <p class="text-gray-600" data-key="subtitle">Сжигайте токены с намерением (ният). Каждое дело записывается в вашу книгу.</p>
     </div>
 
-    <!-- Прогресс -->
+    <!-- Progress -->
     <div class="bg-white rounded-xl shadow-sm p-4 mb-6 flex flex-wrap justify-between items-center">
-        <div><i class="fas fa-chart-simple text-yellow-600"></i> <span class="font-semibold">Выполнено:</span> <span id="progress-count">0</span>/99</div>
-        <div id="badge-display" class="bg-gray-100 px-3 py-1 rounded-full text-sm">🕊️ В начале пути</div>
+        <div><i class="fas fa-chart-simple text-yellow-600"></i> <span class="font-semibold" data-key="completed_label">Выполнено:</span> <span id="progress-count">0</span>/99</div>
+        <div id="badge-display" class="bg-gray-100 px-3 py-1 rounded-full text-sm">🕊️ <span data-key="badge_start">В начале пути</span></div>
     </div>
     <div class="w-full bg-gray-200 rounded-full h-2 mb-6"><div id="progress-bar" class="bg-green-600 h-2 rounded-full" style="width:0%"></div></div>
 
-    <!-- Фильтры -->
+    <!-- Filters -->
     <div class="flex justify-center gap-3 flex-wrap mb-8">
-        <button onclick="filterActions('all')" class="filter-btn px-4 py-2 rounded-full bg-gray-200">Все (99)</button>
+        <button onclick="filterActions('all')" class="filter-btn px-4 py-2 rounded-full bg-gray-200" data-key="filter_all">Все (99)</button>
         <button onclick="filterActions('sabu')" class="filter-btn px-4 py-2 rounded-full bg-green-100 text-green-700">SABU (33)</button>
         <button onclick="filterActions('muji')" class="filter-btn px-4 py-2 rounded-full bg-blue-100 text-blue-700">MUJI (33)</button>
         <button onclick="filterActions('adl')" class="filter-btn px-4 py-2 rounded-full bg-gray-100 text-gray-700">ADL (33)</button>
@@ -90,7 +93,9 @@
     <div id="actions-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
 </main>
 
-<footer class="bg-gray-900 text-white mt-12 py-6 text-center text-sm">© 2025 Halal Chain Bank — Халяльный блокчейн-банк</footer>
+<footer class="bg-gray-900 text-white mt-12 py-6 text-center text-sm">
+    <p>© 2025 Halal Chain Bank — <span data-key="footer">Халяльный блокчейн-банк</span></p>
+</footer>
 
 <script>
 // ==================== АДРЕСА ТОКЕНОВ ====================
@@ -100,35 +105,50 @@ const TOKENS = {
     ADL: "8NEsFQ9PpGmZVaz5nHV1zTBWDxgrwxwvY5cJ9ejQvpdN"
 };
 
-// ==================== 99 ДЕЛ (только русский текст, чтобы сразу работало) ====================
-const actionsData = {
-    sabu: [
-        "Сказать Бисмиллях","Совершить вуду","Прочитать 1 ракаат сунны","Пожелать добра мусульманину","Удержать гнев",
-        "Помочь бедному","Накормить голодного","Посетить больного","Убрать препятствие с дороги","Подарить одежду",
-        "Улыбнуться брату","Помочь путнику","Вернуть долг","Напомнить о намазе","Прочитать страницу Корана",
-        "Сделать дуа за умму","Проснуться на тахаджуд","Поститься 1 день","Дать садака тайно","Научить полезному",
-        "Примирить ссорящихся","Защитить слабого","Быть справедливым","Не подслушивать","Хранить тайну",
-        "Выполнить обещание","Пожелать мира всем","Сказать правду","Избегать сплетен","Помочь сироте",
-        "Посетить мечеть","Совершить хадж (виртуально)","Очистить 33 греха"
-    ],
-    muji: [
-        "Дуа за Ахль аль-Бейт","Оплакать Кербелу","Прочитать зияр Ашура","Посетить Кербелу (виртуально)","Почитать имама Али",
-        "Почитать Фатиму","Почитать Хусейна","Почитать имама Махди","Сказать 'Яа Али'","Сказать 'Яа Хусейн'",
-        "Сказать 'Яа Захра'","Сделать дуа о справедливости","Поминовение Ашуры","Прочитать 1 салават","Прочитать 100 салаватов",
-        "Помочь бедному шииту","Защитить шиитскую общину","Посетить мечеть (виртуально)","Сказать правду о Кербеле","Научить о Кербеле",
-        "Поминовение Хусейна","Сделать дуа за скорбящих","Пожертвовать на мавзолей","Пост в день Ашура","Пост в день Арбаин",
-        "Прочитать зияр Кербелы","Совершить такбир","Совершить тасбих","Сделать дуа о единстве","Уважать имамов",
-        "Изучать историю имамов","Плакать по Хусейну","Очистить 33 греха"
-    ],
-    adl: [
-        "Простить обидчика","Примирить врагов","Сказать правду","Пожертвовать на мечеть","Помочь несправедливо обиженному",
-        "Быть честным в сделке","Не брать взятку","Вернуть чужое","Свидетельствовать честно","Не обманывать",
-        "Платить вовремя","Соблюдать договор","Не нарушать обещание","Уважать старших","Заботиться о младших",
-        "Не обижать слабого","Защитить соседа","Не воровать","Не убивать","Не лжесвидетельствовать",
-        "Соблюдать закон","Платить закят","Помочь должнику","Освободить раба (виртуально)","Посадить дерево",
-        "Убрать мусор","Накормить животное","Вылечить больного","Научить детей","Построить колодец",
-        "Помочь беженцам","Защитить природу","Очистить 33 греха"
-    ]
+// ==================== ПЕРЕВОДЫ ДЛЯ ИНТЕРФЕЙСА ====================
+const uiText = {
+    ru: { nav_home:"Главная", nav_actions:"99 Добрых дел", nav_confession:"Тауба", nav_whitepaper:"Whitepaper", title:"99 добрых дел", subtitle:"Сжигайте токены с намерением (ният). Каждое дело записывается в вашу книгу.", completed_label:"Выполнено:", badge_start:"В начале пути", filter_all:"Все (99)", footer:"Халяльный блокчейн-банк", burn:"Сжечь", completed:"Выполнено" },
+    en: { nav_home:"Home", nav_actions:"99 Good Deeds", nav_confession:"Tawbah", nav_whitepaper:"Whitepaper", title:"99 Good Deeds", subtitle:"Burn tokens with intention (niyyah). Each deed is recorded in your book.", completed_label:"Completed:", badge_start:"Beginning of the path", filter_all:"All (99)", footer:"Halal blockchain bank", burn:"Burn", completed:"Completed" },
+    ar: { nav_home:"الرئيسية", nav_actions:"99 عملاً صالحاً", nav_confession:"توبة", nav_whitepaper:"الورقة البيضاء", title:"٩٩ عملاً صالحاً", subtitle:"أحرق التوكنات بنية. كل عمل يسجل في كتابك.", completed_label:"مكتمل:", badge_start:"بداية الطريق", filter_all:"الكل (٩٩)", footer:"بنك حلال", burn:"حرق", completed:"مكتمل" },
+    ur: { nav_home:"مرکزی", nav_actions:"۹۹ نیک اعمال", nav_confession:"توبہ", nav_whitepaper:"وائٹ پیپر", title:"۹۹ نیک اعمال", subtitle:"نیت کے ساتھ ٹوکن جلائیں۔ ہر عمل آپ کی کتاب میں درج ہوتا ہے۔", completed_label:"مکمل:", badge_start:"راستے کا آغاز", filter_all:"سب (۹۹)", footer:"حلال بلاک چین بینک", burn:"جلائیں", completed:"مکمل" },
+    fa: { nav_home:"خانه", nav_actions:"۹۹ کار نیک", nav_confession:"توبه", nav_whitepaper:"وایت پیپر", title:"۹۹ کار نیک", subtitle:"توکن‌ها را با نیت بسوزانید. هر کار در کتاب شما ثبت می‌شود.", completed_label:"تکمیل شده:", badge_start:"آغاز راه", filter_all:"همه (۹۹)", footer:"بانک حلال", burn:"سوزاندن", completed:"تکمیل شد" },
+    tr: { nav_home:"Ana Sayfa", nav_actions:"99 İyilik", nav_confession:"Tövbe", nav_whitepaper:"Beyaz Kağıt", title:"99 İyilik", subtitle:"Niyetle token yakın. Her iyilik kitabınıza kaydedilir.", completed_label:"Tamamlanan:", badge_start:"Yolun başlangıcı", filter_all:"Tümü (99)", footer:"Helal blockchain bankası", burn:"Yak", completed:"Tamamlandı" },
+    fr: { nav_home:"Accueil", nav_actions:"99 Bonnes actions", nav_confession:"Tawbah", nav_whitepaper:"Livre blanc", title:"99 Bonnes actions", subtitle:"Brûlez des jetons avec intention (niyyah). Chaque action est enregistrée dans votre livre.", completed_label:"Accompli:", badge_start:"Début du chemin", filter_all:"Tous (99)", footer:"Banque blockchain halal", burn:"Brûler", completed:"Accompli" },
+    de: { nav_home:"Startseite", nav_actions:"99 Gute Taten", nav_confession:"Tawbah", nav_whitepaper:"Whitepaper", title:"99 Gute Taten", subtitle:"Verbrennen Sie Token mit Absicht (Niyyah). Jede Tat wird in Ihrem Buch aufgezeichnet.", completed_label:"Abgeschlossen:", badge_start:"Anfang des Weges", filter_all:"Alle (99)", footer:"Halal Blockchain-Bank", burn:"Verbrennen", completed:"Abgeschlossen" }
+};
+
+// ==================== 99 ДЕЛ НА ВСЕХ ЯЗЫКАХ ====================
+const deedsData = {
+    sabu: {
+        ru: ["Сказать Бисмиллях","Совершить вуду","Прочитать 1 ракаат сунны","Пожелать добра мусульманину","Удержать гнев","Помочь бедному","Накормить голодного","Посетить больного","Убрать препятствие","Подарить одежду","Улыбнуться брату","Помочь путнику","Вернуть долг","Напомнить о намазе","Страница Корана","Дуа за умму","Проснуться на тахаджуд","Пост 1 день","Садака тайно","Научить полезному","Примирить ссорящихся","Защитить слабого","Быть справедливым","Не подслушивать","Хранить тайну","Выполнить обещание","Пожелать мира","Сказать правду","Избегать сплетен","Помочь сироте","Посетить мечеть","Хадж (вирт.)","Очистить 33 греха"],
+        en: ["Say Bismillah","Perform Wudu","Pray 1 Rakat Sunnah","Wish good to a Muslim","Control anger","Help the poor","Feed the hungry","Visit the sick","Remove obstacle","Give clothes","Smile at brother","Help a traveler","Repay debt","Remind of prayer","Read Quran page","Dua for Ummah","Wake for Tahajjud","Fast 1 day","Secret sadaqah","Teach something","Reconcile people","Protect the weak","Be just","Don't eavesdrop","Keep a secret","Keep promise","Wish peace","Speak truth","Avoid gossip","Help an orphan","Visit mosque","Hajj virtual","Cleanse 33 sins"],
+        ar: ["قل بسم الله","توضأ","صل ركعة سنة","تمنى الخير لمسلم","كظم الغيظ","ساعد الفقير","أطعم الجائع","زر المريض","أزل عائق","تصدق بثوب","ابتسم لأخيك","ساعد مسافر","اسدد دينًا","ذكر بالصلاة","اقرأ صفحة قرآن","ادعُ للأمة","استيقظ لتهجد","صم يومًا","تصدق سرًا","علم شيئًا نافعًا","أصلح بين متخاصمين","احمِ الضعيف","كن عادلاً","لا تتنصت","احفظ سرًا","أنجز وعدًا","تمنى السلام","قل الحق","تجنب النميمة","ساعد يتيمًا","زر مسجدًا","حج افتراضي","طهر ٣٣ خطيئة"],
+        ur: ["بسم اللہ کہو","وضو کرو","سنت کی ۱ رکعت پڑھو","مسلمان کو بھلائی کی دعا دو","غصہ روکو","غریب کی مدد کرو","بھوکے کو کھانا کھلاؤ","بیمار کی عیادت کرو","راستے سے رکاوٹ ہٹاؤ","کپڑے دو","بھائی کو مسکرا کر دو","مسافر کی مدد کرو","قرض ادا کرو","نماز کی یاد دلاو","قرآن کا ایک صفحہ پڑھو","امت کے لیے دعا کرو","تہجد کے لیے اٹھو","۱ روزہ رکھو","خفیہ صدقہ دو","کچھ سکھاؤ","جھگڑا کرنے والوں میں صلح کرو","کمزور کی حفاظت کرو","انصاف پسند بنو","کان نہ لگاؤ","راز رکھو","وعدہ پورا کرو","سلامتی کی دعا دو","سچ بولو","چغلی سے بچو","یتیم کی مدد کرو","مسجد جاؤ","ورچوئل حج کرو","۳۳ گناہ صاف کرو"],
+        fa: ["بسم الله بگو","وضو بگیر","۱ رکعت سنت بخوان","به مسلمان نیکی آرزو کن","خشم خود را کنترل کن","به فقیر کمک کن","به گرسنه غذا بده","از بیمار عیادت کن","مانع را از راه بردار","لباس بده","به برادرت لبخند بزن","به مسافر کمک کن","بدهی را بپرداز","نماز را یادآوری کن","یک صفحه قرآن بخوان","برای امت دعا کن","برای تهجد بیدار شو","۱ روز روزه بگیر","صدقه پنهانی بده","چیزی یاد بده","بین مردم صلح برقرار کن","از ضعیف محافظت کن","عادل باش","گوش نده","راز نگه دار","وعده را عملی کن","برای صلح آرزو کن","راست بگو","از غیبت بپرهیز","به یتیم کمک کن","به مسجد برو","حج مجازی","۳۳ گناه را پاک کن"],
+        tr: ["Bismillah de","Abdest al","1 rekat sünnet kıl","Müslümana iyilik dile","Öfkeni kontrol et","Fakire yardım et","Aç olanı doyur","Hastayı ziyaret et","Engeli kaldır","Elbise ver","Kardeşine gülümse","Yolcuya yardım et","Borcu öde","Namazı hatırlat","Bir sayfa Kur'an oku","Ümmet için dua et","Tahajjud için uyan","1 gün oruç tut","Gizli sadaka ver","Bir şey öğret","Kavga edenleri barıştır","Zayıfı koru","Adil ol","Kulak misafiri olma","Sır tut","Sözünü tut","Barış dile","Doğruyu söyle","Dedikodudan kaçın","Yetime yardım et","Camiye git","Sanal hac yap","33 günahı temizle"],
+        fr: ["Dire Bismillah","Faire les ablutions","Prier 1 rakat sunnah","Souhaiter du bien à un musulman","Maîtriser sa colère","Aider le pauvre","Nourrir l'affamé","Visiter le malade","Enlever un obstacle","Donner des vêtements","Sourire à son frère","Aider un voyageur","Rembourser une dette","Rappeler la prière","Lire une page du Coran","Faire dua pour l'oumma","Se lever pour le tahajjud","Jeûner 1 jour","Faire la sadaqah secrète","Enseigner quelque chose","Réconcilier les gens","Protéger le faible","Être juste","Ne pas espionner","Garder un secret","Tenir une promesse","Souhaiter la paix","Dire la vérité","Éviter les commérages","Aider un orphelin","Visiter la mosquée","Hajj virtuel","Purifier 33 péchés"],
+        de: ["Bismillah sagen","Wudu durchführen","1 Rakat Sunnah beten","Einem Muslim Gutes wünschen","Wut kontrollieren","Den Armen helfen","Den Hungrigen füttern","Den Kranken besuchen","Hindernis entfernen","Kleidung spenden","Dem Bruder lächeln","Einem Reisenden helfen","Schulden zurückzahlen","Ans Gebet erinnern","Eine Koranseite lesen","Dua für die Ummah machen","Für Tahajjud aufwachen","1 Tag fasten","Geheime Sadaqah geben","Etwas Nützliches lehren","Streitende versöhnen","Die Schwachen schützen","Gerecht sein","Nicht lauschen","Ein Geheimnis bewahren","Versprechen einhalten","Frieden wünschen","Wahrheit sagen","Klatsch vermeiden","Einer Waise helfen","Moschee besuchen","Virtueller Hadsch","33 Sünden reinigen"]
+    },
+    muji: {
+        ru: ["Дуа за Ахль аль-Бейт","Оплакать Кербелу","Прочитать зияр Ашура","Посетить Кербелу (вирт.)","Почитать имама Али","Почитать Фатиму","Почитать Хусейна","Почитать имама Махди","Сказать 'Яа Али'","Сказать 'Яа Хусейн'","Сказать 'Яа Захра'","Дуа о справедливости","Поминовение Ашуры","1 салават","100 салаватов","Помочь бедному шииту","Защитить общину","Посетить мечеть","Правда о Кербеле","Научить о Кербеле","Поминовение Хусейна","Дуа за скорбящих","Пожертвовать на мавзолей","Пост Ашура","Пост Арбаин","Зияр Кербелы","Такбир","Тасбих","Дуа о единстве","Уважать имамов","История имамов","Плакать по Хусейну","Очистить 33 греха"],
+        en: ["Dua for Ahl al-Bayt","Mourn Karbala","Read Ziyarat Ashura","Visit Karbala (virtual)","Honor Imam Ali","Honor Fatima","Honor Hussein","Honor Imam Mahdi","Say 'Ya Ali'","Say 'Ya Hussain'","Say 'Ya Zahra'","Pray for justice","Commemorate Ashura","1 Salawat","100 Salawat","Help poor Shia","Protect community","Visit mosque","Truth about Karbala","Teach about Karbala","Commemorate Hussein","Pray for mourners","Donate to shrine","Ashura fast","Arba'een fast","Karbala Ziyarat","Takbir","Tasbih","Pray for unity","Respect Imams","Imams history","Cry for Hussein","Cleanse 33 sins"],
+        ar: ["دعاء لأهل البيت","البكاء على كربلاء","قراءة زيارة عاشوراء","زيارة كربلاء (افتراضي)","تعظيم الإمام علي","تعظيم فاطمة","تعظيم الحسين","تعظيم الإمام المهدي","قل 'يا علي'","قل 'يا حسين'","قل 'يا زهراء'","ادعُ للعدالة","إحياء عاشوراء","صلاة واحدة","١٠٠ صلاة","مساعدة شيعي فقير","حماية المجتمع","زيارة مسجد","الحقيقة عن كربلاء","تعليم عن كربلاء","إحياء ذكرى الحسين","الدعاء للحزين","التبرع للضريح","صوم عاشوراء","صوم الأربعين","زيارة كربلاء","تكبير","تسبيح","الدعاء للوحدة","احترام الأئمة","تاريخ الأئمة","البكاء على الحسين","تطهير ٣٣ خطيئة"],
+        ur: ["اہل بیت کے لیے دعا","کربلا کا ماتم","زیارت عاشورہ پڑھو","کربلا کی زیارت (ورچوئل)","امام علی کا احترام","فاطمہ کا احترام","حسین کا احترام","امام مہدی کا احترام","'یا علی' کہو","'یا حسین' کہو","'یا زہرا' کہو","انصاف کے لیے دعا کرو","عاشورہ کی یاد مناؤ","۱ صلوات","۱۰۰ صلوات","غریب شیعہ کی مدد کرو","برادری کی حفاظت کرو","مسجد جاؤ","کربلا کے بارے میں سچ","کربلا کے بارے میں سکھاؤ","حسین کی یاد مناؤ","غموں والوں کے لیے دعا","مزار پر عطیہ کرو","عاشورہ کا روزہ","اربعین کا روزہ","زیارت کربلا","تکبیر","تسبیح","اتحاد کے لیے دعا","اماموں کا احترام","اماموں کی تاریخ","حسین پر رونا","۳۳ گناہ صاف کرو"],
+        fa: ["دعا برای اهل بیت","گریه بر کربلا","خواندن زیارت عاشورا","زیارت کربلا (مجازی)","تکریم امام علی","تکریم فاطمه","تکریم حسین","تکریم امام مهدی","بگو 'یا علی'","بگو 'یا حسین'","بگو 'یا زهرا'","دعا برای عدالت","بزرگداشت عاشورا","۱ صلوات","۱۰۰ صلوات","کمک به شیعه فقیر","حفاظت از جامعه","بازدید از مسجد","حقیقت درباره کربلا","آموزش درباره کربلا","بزرگداشت حسین","دعا برای عزاداران","اهدا به حرم","روزه عاشورا","روزه اربعین","زیارت کربلا","تکبیر","تسبیح","دعا برای وحدت","احترام به امامان","تاریخ امامان","گریه بر حسین","پاک کردن ۳۳ گناه"],
+        tr: ["Ehl-i Beyt için dua","Kerbelâ'ya ağla","Ziyaret Aşura oku","Kerbelâ'yı ziyaret (sanal)","İmam Ali'yi yücelt","Fatıma'yı yücelt","Hüseyin'i yücelt","İmam Mehdi'yi yücelt","'Ya Ali' de","'Ya Hüseyin' de","'Ya Zahra' de","Adalet için dua et","Aşura'yı an","1 Salavat","100 Salavat","Fakir Şii'ye yardım et","Topluluğu koru","Camiye git","Kerbelâ hakkında gerçek","Kerbelâ hakkında öğret","Hüseyin'i an","Yaslılar için dua","Türbeye bağış yap","Aşura orucu","Arba'in orucu","Kerbelâ Ziyareti","Tekbir","Tesbih","Birlik için dua","İmamlara saygı","İmamların tarihi","Hüseyin için ağla","33 günahı temizle"],
+        fr: ["Dua pour Ahl al-Bayt","Pleurer Karbala","Lire Ziyarat Ashura","Visiter Karbala (virtuel)","Honorer l'Imam Ali","Honorer Fatima","Honorer Hussein","Honorer l'Imam Mahdi","Dire 'Ya Ali'","Dire 'Ya Hussain'","Dire 'Ya Zahra'","Prier pour la justice","Commemorer Ashura","1 Salawat","100 Salawat","Aider un pauvre chiite","Protéger la communauté","Visiter la mosquée","Vérité sur Karbala","Enseigner sur Karbala","Commemorer Hussein","Prier pour les endeuillés","Faire un don au mausolée","Jeûne d'Ashura","Jeûne d'Arba'een","Ziyarat de Karbala","Takbir","Tasbih","Prier pour l'unité","Respecter les Imams","Histoire des Imams","Pleurer pour Hussein","Purifier 33 péchés"],
+        de: ["Dua für Ahl al-Bayt","Über Karbala weinen","Ziyarat Ashura lesen","Karbala besuchen (virtuell)","Imam Ali ehren","Fatima ehren","Hussein ehren","Imam Mahdi ehren","'Ya Ali' sagen","'Ya Hussain' sagen","'Ya Zahra' sagen","Für Gerechtigkeit beten","Ashura gedenken","1 Salawat","100 Salawat","Armen Schiiten helfen","Gemeinschaft schützen","Moschee besuchen","Wahrheit über Karbala","Über Karbala lehren","Hussein gedenken","Für Trauernde beten","An das Mausoleum spenden","Ashura Fasten","Arba'een Fasten","Karbala Ziyarat","Takbir","Tasbih","Für Einheit beten","Imame respektieren","Geschichte der Imame","Für Hussein weinen","33 Sünden reinigen"]
+    },
+    adl: {
+        ru: ["Простить обидчика","Примирить врагов","Сказать правду","Пожертвовать на мечеть","Помочь обиженному","Честность в сделке","Не брать взятку","Вернуть чужое","Честное свидетельство","Не обманывать","Платить вовремя","Соблюдать договор","Не нарушать обещание","Уважать старших","Заботиться о младших","Не обижать слабого","Защитить соседа","Не воровать","Не убивать","Не лжесвидетельствовать","Соблюдать закон","Платить закят","Помочь должнику","Освободить раба (вирт.)","Посадить дерево","Убрать мусор","Накормить животное","Вылечить больного","Научить детей","Построить колодец","Помочь беженцам","Защитить природу","Очистить 33 греха"],
+        en: ["Forgive offender","Reconcile enemies","Speak truth","Donate to mosque","Help the wronged","Be honest in trade","Don't take bribe","Return lost item","Testify honestly","Don't cheat","Pay on time","Keep contract","Keep promise","Respect elders","Care for younger","Don't harm weak","Protect neighbor","Don't steal","Don't kill","No false testimony","Obey law","Pay Zakat","Help debtor","Free slave (virtual)","Plant tree","Pick up trash","Feed animal","Heal sick","Teach children","Build well","Help refugees","Protect nature","Cleanse 33 sins"],
+        ar: ["اغفر للمسيء","صلح بين الأعداء","قل الحق","تصدق على المسجد","ساعد المظلوم","كن صادقاً في الصفقة","لا ترتشي","أعد الشيء المفقود","اشهد بالحق","لا تخدع","ادفع في الوقت المحدد","احترم العقد","حافظ على الوعد","احترم الكبار","اهتم بالصغار","لا تؤذي الضعيف","احمِ الجار","لا تسرق","لا تقتل","لا تشهد بالزور","احترم القانون","ادفع الزكاة","ساعد المدين","حرر عبداً (افتراضياً)","ازرع شجرة","أزل القمامة","أطعم حيواناً","اشفِ المريض","علم الأطفال","احفر بئراً","ساعد اللاجئين","احمِ الطبيعة","طهر ٣٣ خطيئة"],
+        ur: ["ظالم کو معاف کرو","دشمنوں میں صلح کرو","سچ بولو","مسجد پر عطیہ کرو","مظلوم کی مدد کرو","تجارت میں ایماندار بنو","رشوت مت لو","کھوئی ہوئی چیز واپس کرو","سچی گواہی دو","دھوکہ مت دو","وقت پر ادائیگی کرو","معاہدے کا احترام کرو","وعدہ پورا کرو","بڑوں کا احترام کرو","چھوٹوں کا خیال رکھو","کمزور کو تکلیف مت دو","پڑوسی کی حفاظت کرو","چوری مت کرو","قتل مت کرو","جھوٹی گواہی مت دو","قانون کا احترام کرو","زکوٰۃ دو","قرضدار کی مدد کرو","غلام آزاد کرو (ورچوئل)","درخت لگاؤ","کوڑا اٹھاؤ","جانور کو کھانا کھلاؤ","بیمار کو شفا دو","بچوں کو سکھاؤ","کنواں کھودو","پناہ گزینوں کی مدد کرو","فطرت کی حفاظت کرو","۳۳ گناہ صاف کرو"],
+        fa: ["گناهکار را ببخش","بین دشمنان صلح برقرار کن","راست بگو","به مسجد کمک کن","به مظلوم کمک کن","در تجارت صادق باش","رشوه نگیر","چیز گمشده را برگردان","شهادت صادق بده","فریب نده","به موقع پرداخت کن","به قرارداد احترام بگذار","وعده را عملی کن","به بزرگترها احترام بگذار","به کوچکترها رسیدگی کن","به ضعیف آسیب نرسان","از همسایه محافظت کن","دزدی نکن","قتل نکن","شهادت دروغ نده","به قانون احترام بگذار","زکات بده","به بدهکار کمک کن","برده آزاد کن (مجازی)","درخت بکار","زباله جمع کن","به حیوان غذا بده","بیمار را شفا بده","به کودکان بیاموز","چاه حفر کن","به پناهندگان کمک کن","از طبیعت محافظت کن","۳۳ گناه را پاک کن"],
+        tr: ["Suçluyu affet","Düşmanları barıştır","Doğruyu söyle","Camiye bağış yap","Mağdura yardım et","Ticarette dürüst ol","Rüşvet alma","Kayıp eşyayı geri ver","Dürüst şahitlik et","Aldatma","Zamanında öde","Sözleşmeye uy","Sözünü tut","Büyüklere saygı göster","Küçüklere özen göster","Zayıfa zarar verme","Komşuyu koru","Çalma","Öldürme","Yalancı şahitlik yapma","Yasaya uy","Zekat ver","Borçluya yardım et","Köle azat et (sanal)","Ağaç dik","Çöpü kaldır","Hayvanı besle","Hastayı iyileştir","Çocuklara öğret","Kuyu kaz","Mültecilere yardım et","Doğayı koru","33 günahı temizle"],
+        fr: ["Pardonner l'offenseur","Réconcilier les ennemis","Dire la vérité","Faire un don à la mosquée","Aider l'opprimé","Être honnête dans les affaires","Ne pas accepter de pot-de-vin","Rendre un objet perdu","Témoigner honnêtement","Ne pas tricher","Payer à temps","Respecter le contrat","Tenir sa promesse","Respecter les aînés","Prendre soin des plus jeunes","Ne pas nuire au faible","Protéger son voisin","Ne pas voler","Ne pas tuer","Ne pas témoigner faussement","Respecter la loi","Payer la Zakat","Aider un débiteur","Libérer un esclave (virtuel)","Planter un arbre","Ramasser les déchets","Nourrir un animal","Guérir un malade","Enseigner aux enfants","Creuser un puits","Aider les réfugiés","Protéger la nature","Purifier 33 péchés"],
+        de: ["Dem Täter vergeben","Feinde versöhnen","Wahrheit sagen","An die Moschee spenden","Dem Unrecht Getanen helfen","Ehrlich im Handel sein","Keine Bestechungsgelder annehmen","Verlorenen Gegenstand zurückgeben","Ehrlich aussagen","Nicht betrügen","Pünktlich zahlen","Vertrag einhalten","Versprechen halten","Ältere respektieren","Für Jüngere sorgen","Den Schwachen nicht verletzen","Den Nachbarn beschützen","Nicht stehlen","Nicht töten","Kein falsches Zeugnis ablegen","Gesetz befolgen","Zakat zahlen","Dem Schuldner helfen","Sklaven befreien (virtuell)","Baum pflanzen","Müll aufsammeln","Tier füttern","Kranken heilen","Kinder lehren","Brunnen graben","Flüchtlingen helfen","Natur schützen","33 Sünden reinigen"]
+    }
 };
 
 const amounts = {
@@ -137,6 +157,7 @@ const amounts = {
     adl: [1,10,0.5,5,10,2,5,2,3,2,1,2,2,1,1,3,2,10,50,10,1,20,5,30,2,0.5,1,10,3,30,20,5,33]
 };
 
+// ==================== СОСТОЯНИЕ ====================
 let wallet = null;
 let currentFilter = 'all';
 let currentLang = 'ru';
@@ -148,11 +169,11 @@ function updateProgress() {
     document.getElementById('progress-count').innerText = count;
     document.getElementById('progress-bar').style.width = (count/99)*100 + '%';
     let badge = '', emoji = '';
-    if (count >= 99) { badge = 'Сиддик'; emoji = '🏆'; }
-    else if (count >= 66) { badge = 'Абид'; emoji = '📿'; }
-    else if (count >= 33) { badge = 'Праведник'; emoji = '🌟'; }
-    else if (count >= 10) { badge = 'Начинающий'; emoji = '🌱'; }
-    else { badge = 'В начале пути'; emoji = '🕊️'; }
+    if (count >= 99) { badge = uiText[currentLang]?.badge_siddiq || 'Сиддик'; emoji = '🏆'; }
+    else if (count >= 66) { badge = uiText[currentLang]?.badge_abid || 'Абид'; emoji = '📿'; }
+    else if (count >= 33) { badge = uiText[currentLang]?.badge_righteous || 'Праведник'; emoji = '🌟'; }
+    else if (count >= 10) { badge = uiText[currentLang]?.badge_beginner || 'Начинающий'; emoji = '🌱'; }
+    else { badge = uiText[currentLang]?.badge_start || 'В начале пути'; emoji = '🕊️'; }
     document.getElementById('badge-display').innerHTML = `${emoji} ${badge}`;
 }
 
@@ -216,25 +237,28 @@ async function burnDeed(symbol, amount, deedId, deedName, btnElement) {
     } catch(e) { alert(`Ошибка: ${e.message}`); }
 }
 
-// ==================== ОТРИСОВКА СПИСКА ====================
+// ==================== ОТРИСОВКА ====================
 function renderActions() {
     let container = document.getElementById('actions-grid');
     let items = [];
     let completed = JSON.parse(localStorage.getItem('completed_deeds') || '[]');
     
     if (currentFilter === 'all' || currentFilter === 'sabu') {
-        for (let i = 0; i < actionsData.sabu.length; i++) {
-            items.push({ name: actionsData.sabu[i], type: 'sabu', id: `sabu_${i}`, amount: amounts.sabu[i] });
+        for (let i = 0; i < deedsData.sabu.ru.length; i++) {
+            let name = deedsData.sabu[currentLang]?.[i] || deedsData.sabu.ru[i];
+            items.push({ name: name, type: 'sabu', id: `sabu_${i}`, amount: amounts.sabu[i] });
         }
     }
     if (currentFilter === 'all' || currentFilter === 'muji') {
-        for (let i = 0; i < actionsData.muji.length; i++) {
-            items.push({ name: actionsData.muji[i], type: 'muji', id: `muji_${i}`, amount: amounts.muji[i] });
+        for (let i = 0; i < deedsData.muji.ru.length; i++) {
+            let name = deedsData.muji[currentLang]?.[i] || deedsData.muji.ru[i];
+            items.push({ name: name, type: 'muji', id: `muji_${i}`, amount: amounts.muji[i] });
         }
     }
     if (currentFilter === 'all' || currentFilter === 'adl') {
-        for (let i = 0; i < actionsData.adl.length; i++) {
-            items.push({ name: actionsData.adl[i], type: 'adl', id: `adl_${i}`, amount: amounts.adl[i] });
+        for (let i = 0; i < deedsData.adl.ru.length; i++) {
+            let name = deedsData.adl[currentLang]?.[i] || deedsData.adl.ru[i];
+            items.push({ name: name, type: 'adl', id: `adl_${i}`, amount: amounts.adl[i] });
         }
     }
     
@@ -247,8 +271,8 @@ function renderActions() {
             <div class="flex justify-between items-center mt-3">
                 <span class="text-sm text-gray-500">${a.amount} ${a.type.toUpperCase()}</span>
                 ${completed.includes(a.id) ? 
-                    '<span class="text-green-600 text-sm"><i class="fas fa-check-circle"></i> Выполнено</span>' : 
-                    `<button onclick="burnDeed('${a.type.toUpperCase()}', ${a.amount}, '${a.id}', '${a.name}', this)" class="bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600">Сжечь</button>`
+                    `<span class="text-green-600 text-sm"><i class="fas fa-check-circle"></i> ${uiText[currentLang]?.completed || 'Выполнено'}</span>` : 
+                    `<button onclick="burnDeed('${a.type.toUpperCase()}', ${a.amount}, '${a.id}', '${a.name}', this)" class="bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600">${uiText[currentLang]?.burn || 'Сжечь'}</button>`
                 }
             </div>
         </div>
@@ -279,17 +303,30 @@ async function connectWallet(type) {
 function openWalletModal() { document.getElementById('wallet-modal').classList.add('active'); }
 function closeWalletModal() { document.getElementById('wallet-modal').classList.remove('active'); }
 
+// ==================== ПРИМЕНЕНИЕ ЯЗЫКА ====================
+function applyLanguage() {
+    document.querySelectorAll('[data-key]').forEach(el => {
+        const key = el.getAttribute('data-key');
+        if (uiText[currentLang] && uiText[currentLang][key]) {
+            el.innerText = uiText[currentLang][key];
+        }
+    });
+    updateProgress();
+    renderActions();
+}
+
 // ==================== ЗАПУСК ====================
 document.getElementById('wallet-btn').onclick = openWalletModal;
 document.getElementById('lang-select').onchange = (e) => {
     currentLang = e.target.value;
-    // Если выбран английский — пока не поддерживаем, но можно добавить позже
-    if (currentLang !== 'ru') {
-        alert('На данный момент доступен только русский язык. Английская версия в разработке.');
-        document.getElementById('lang-select').value = 'ru';
-        currentLang = 'ru';
-    }
+    localStorage.setItem('lang', currentLang);
+    applyLanguage();
 };
+// Загружаем сохранённый язык
+let savedLang = localStorage.getItem('lang');
+if (savedLang && uiText[savedLang]) currentLang = savedLang;
+document.getElementById('lang-select').value = currentLang;
+applyLanguage();
 updateProgress();
 renderActions();
 </script>
