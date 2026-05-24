@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>99 Good Deeds — Halal Chain Bank</title>
+    <title>99 добрых дел — Halal Chain Bank</title>
     <link rel="icon" href="favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -25,7 +25,7 @@
 <div id="wallet-modal" class="wallet-modal">
     <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl max-h-[90vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-bold" data-key="connect_wallet">Connect Wallet</h3>
+            <h3 class="text-xl font-bold" data-key="connect_wallet">Подключить кошелёк</h3>
             <button onclick="closeWalletModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
         </div>
         <div class="space-y-2">
@@ -34,7 +34,7 @@
             <button onclick="connectWallet('solflare')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-globe text-2xl text-orange-500"></i><span>Solflare</span></button>
             <button onclick="connectWallet('backpack')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-backpack text-2xl text-purple-600"></i><span>Backpack</span></button>
         </div>
-        <p class="text-xs text-gray-400 text-center mt-3">Only Phantom, Solflare and Backpack support token burning on Solana.</p>
+        <p class="text-xs text-gray-400 text-center mt-3">Поддерживаются только Solana-кошельки (Phantom, Solflare, Backpack)</p>
     </div>
 </div>
 
@@ -97,6 +97,13 @@
 </footer>
 
 <script>
+// ==================== RPC (Alchemy demo, бесплатно, без ключа) ====================
+const SOLANA_RPC = "https://solana-mainnet.g.alchemy.com/v2/demo";
+
+async function getConnection() {
+    return new solanaWeb3.Connection(SOLANA_RPC, 'confirmed');
+}
+
 // ==================== АДРЕСА ТОКЕНОВ ====================
 const TOKENS = {
     SABU: "25gGFdNrudjBqhMbLpAmvH4Y8ceuVbwBk1Kh2Kp38xaM",
@@ -104,39 +111,13 @@ const TOKENS = {
     ADL: "8NEsFQ9PpGmZVaz5nHV1zTBWDxgrwxwvY5cJ9ejQvpdN"
 };
 
-// ==================== RPC СПИСОК С FALLBACK ====================
-const RPC_ENDPOINTS = [
-    "https://solana-api.projectserum.com",
-    "https://rpc.ankr.com/solana",
-    "https://solana.rpc.nodeshub.online",
-    "https://api.mainnet-beta.solana.com"
-];
-
-let currentRpcIndex = 0;
-
-async function getWorkingConnection() {
-    for (let i = 0; i < RPC_ENDPOINTS.length; i++) {
-        const endpoint = RPC_ENDPOINTS[i];
-        try {
-            const connection = new solanaWeb3.Connection(endpoint, 'confirmed');
-            // Проверяем работоспособность
-            await connection.getSlot();
-            currentRpcIndex = i;
-            return connection;
-        } catch (e) {
-            console.warn(`RPC ${endpoint} failed:`, e);
-        }
-    }
-    throw new Error("No working RPC endpoint found");
-}
-
 // ==================== ПЕРЕВОДЫ ====================
 const uiText = {
     ru: { nav_home:"Главная", nav_actions:"99 Добрых дел", nav_confession:"Тауба", nav_whitepaper:"Whitepaper", title:"99 добрых дел", subtitle:"Сжигайте токены с намерением (ният). Каждое дело записывается в вашу книгу.", completed_label:"Выполнено:", badge_start:"В начале пути", filter_all:"Все (99)", footer:"Халяльный блокчейн-банк", burn:"Сжечь", completed:"Выполнено", connect_wallet:"Подключить кошелёк", msg_no_tokens:"У вас нет токенов. Сначала купите.", msg_burn_confirm:"📿 НИЯТ: совершить дело \"{name}\"\nСжечь {amount} {symbol}\nРади довольства Аллаха. Продолжить?", msg_burn_success:"✅ ДЕЛО ИСПОЛНЕНО!\n{name}\nСожжено {amount} {symbol}\nПрогресс: {progress}/99\nTXID: {txid}", msg_burn_error:"Ошибка: {error}. Убедитесь, что у вас достаточно SOL для комиссии." },
     en: { nav_home:"Home", nav_actions:"99 Good Deeds", nav_confession:"Tawbah", nav_whitepaper:"Whitepaper", title:"99 Good Deeds", subtitle:"Burn tokens with intention (niyyah). Each deed is recorded in your book.", completed_label:"Completed:", badge_start:"Beginning of the path", filter_all:"All (99)", footer:"Halal blockchain bank", burn:"Burn", completed:"Completed", connect_wallet:"Connect Wallet", msg_no_tokens:"You don't have enough tokens.", msg_burn_confirm:"📿 INTENTION (Niyyah): perform the deed \"{name}\"\nBurn {amount} {symbol}\nFor the sake of Allah. Continue?", msg_burn_success:"✅ DEED COMPLETED!\n{name}\nBurned {amount} {symbol}\nProgress: {progress}/99\nTXID: {txid}", msg_burn_error:"Error: {error}. Please make sure you have enough SOL for fees." }
 };
 
-// Названия дел (русские)
+// Названия дел (русские, для английского пока тоже русские)
 const deedsData = {
     sabu: ["Сказать Бисмиллях","Совершить вуду","Прочитать 1 ракаат сунны","Пожелать добра мусульманину","Удержать гнев","Помочь бедному","Накормить голодного","Посетить больного","Убрать препятствие","Подарить одежду","Улыбнуться брату","Помочь путнику","Вернуть долг","Напомнить о намазе","Страница Корана","Дуа за умму","Проснуться на тахаджуд","Пост 1 день","Садака тайно","Научить полезному","Примирить ссорящихся","Защитить слабого","Быть справедливым","Не подслушивать","Хранить тайну","Выполнить обещание","Пожелать мира","Сказать правду","Избегать сплетен","Помочь сироте","Посетить мечеть","Хадж (вирт.)","Очистить 33 греха"],
     muji: ["Дуа за Ахль аль-Бейт","Оплакать Кербелу","Прочитать зияр Ашура","Посетить Кербелу (вирт.)","Почитать имама Али","Почитать Фатиму","Почитать Хусейна","Почитать имама Махди","Сказать 'Яа Али'","Сказать 'Яа Хусейн'","Сказать 'Яа Захра'","Дуа о справедливости","Поминовение Ашуры","1 салават","100 салаватов","Помочь бедному шииту","Защитить общину","Посетить мечеть","Правда о Кербеле","Научить о Кербеле","Поминовение Хусейна","Дуа за скорбящих","Пожертвовать на мавзолей","Пост Ашура","Пост Арбаин","Зияр Кербелы","Такбир","Тасбих","Дуа о единстве","Уважать имамов","История имамов","Плакать по Хусейну","Очистить 33 греха"],
@@ -187,7 +168,7 @@ function playSound() {
     audio.play().catch(e => console.log);
 }
 
-// ==================== СЖИГАНИЕ (реальное, с fallback RPC) ====================
+// ==================== СЖИГАНИЕ ====================
 async function burnDeed(symbol, amount, deedId, deedName, btnElement) {
     if (!wallet || walletType !== 'solana') {
         openWalletModal();
@@ -202,14 +183,12 @@ async function burnDeed(symbol, amount, deedId, deedName, btnElement) {
     if (btn) { btn.classList.add('burn-animation'); setTimeout(() => btn.classList.remove('burn-animation'), 500); }
     
     try {
-        // Получаем рабочий RPC с fallback
-        const connection = await getWorkingConnection();
+        const connection = await getConnection();
         
         const fromMint = new solanaWeb3.PublicKey(TOKENS[symbol]);
         const toSym = symbol === 'ADL' ? 'SABU' : 'ADL';
         const toAddr = new solanaWeb3.PublicKey(TOKENS[toSym]);
         
-        // Получаем ATA пользователя
         const accounts = await connection.getTokenAccountsByOwner(wallet.publicKey, { mint: fromMint });
         if (accounts.value.length === 0) {
             alert(uiText[currentLang]?.msg_no_tokens || "No tokens.");
@@ -218,7 +197,6 @@ async function burnDeed(symbol, amount, deedId, deedName, btnElement) {
         
         const fromATA = accounts.value[0].pubkey;
         
-        // Создаём транзакцию
         const tx = new solanaWeb3.Transaction().add(
             solanaWeb3.Token.createTransferInstruction(
                 solanaWeb3.TOKEN_PROGRAM_ID,
@@ -230,15 +208,12 @@ async function burnDeed(symbol, amount, deedId, deedName, btnElement) {
             )
         );
         
-        // Получаем последний блокхеш
         const { blockhash } = await connection.getLatestBlockhash();
         tx.recentBlockhash = blockhash;
         tx.feePayer = wallet.publicKey;
         
-        // Отправляем транзакцию
         const signature = await solanaWeb3.sendAndConfirmTransaction(connection, tx, [wallet]);
         
-        // Сохраняем выполненное дело
         let completed = JSON.parse(localStorage.getItem('completed_deeds') || '[]');
         if (!completed.includes(deedId)) completed.push(deedId);
         localStorage.setItem('completed_deeds', JSON.stringify(completed));
@@ -295,7 +270,7 @@ function renderActions() {
                     `<span class="text-green-600 text-sm"><i class="fas fa-check-circle"></i> ${uiText[currentLang]?.completed || 'Выполнено'}</span>` : 
                     (canBurn ? 
                         `<button onclick="burnDeed('${a.type.toUpperCase()}', ${a.amount}, '${a.id}', '${escapeHtml(a.name)}', this)" class="bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600">${uiText[currentLang]?.burn || 'Сжечь'}</button>` :
-                        `<button onclick="openWalletModal()" class="bg-gray-400 text-white px-3 py-1 rounded-lg text-sm cursor-pointer">${uiText[currentLang]?.connect_wallet || 'Connect Wallet'}</button>`
+                        `<button onclick="openWalletModal()" class="bg-gray-400 text-white px-3 py-1 rounded-lg text-sm cursor-pointer">${uiText[currentLang]?.connect_wallet || 'Подключить'}</button>`
                     )
                 }
             </div>
