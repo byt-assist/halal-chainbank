@@ -2,8 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>99 добрых дел — Halal Chain Bank</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>99 Good Deeds — Halal Chain Bank</title>
     <link rel="icon" href="favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -17,35 +17,34 @@
         @keyframes flame { 0% { text-shadow: 0 0 2px #ff6600; } 50% { text-shadow: 0 0 15px #ff3300; } 100% { text-shadow: 0 0 2px #ff6600; } }
         .burn-animation { animation: flame 0.3s ease-in-out; }
         .sparkle { position: fixed; pointer-events: none; z-index: 1000; width: 20px; height: 20px; background: radial-gradient(circle, gold, orange); border-radius: 50%; animation: sparkle 0.6s ease-out forwards; }
+        .btn-burn-disabled { background: #9ca3af; cursor: not-allowed; }
     </style>
 </head>
 <body>
 
-<!-- Wallet Modal (10 кошельков) -->
+<!-- Wallet Modal (10 wallets) -->
 <div id="wallet-modal" class="wallet-modal">
     <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl max-h-[90vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-bold">Подключить кошелёк</h3>
+            <h3 class="text-xl font-bold" data-key="connect_wallet">Connect Wallet</h3>
             <button onclick="closeWalletModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
         </div>
         <div class="space-y-2">
-            <div class="text-xs text-gray-400 uppercase mt-2 mb-1">Solana</div>
-            <button onclick="connectWallet('phantom')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><img src="https://phantom.app/img/logo.png" class="w-6 h-6" onerror="this.src='https://placehold.co/24x24/5348C2/white?text=P'"><span>Phantom</span></button>
+            <div class="text-xs text-gray-400 uppercase mt-2 mb-1">Solana (required for burning)</div>
+            <button onclick="connectWallet('phantom')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><img src="https://phantom.app/img/logo.png" class="w-6 h-6"><span>Phantom</span></button>
             <button onclick="connectWallet('solflare')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-globe text-2xl text-orange-500"></i><span>Solflare</span></button>
             <button onclick="connectWallet('backpack')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-backpack text-2xl text-purple-600"></i><span>Backpack</span></button>
-            
-            <div class="text-xs text-gray-400 uppercase mt-2 mb-1">EVM / Multi-chain</div>
-            <button onclick="connectWallet('metamask')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" class="w-6 h-6"><span>MetaMask</span></button>
-            <button onclick="connectWallet('trust')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-check-circle text-2xl text-blue-500"></i><span>Trust Wallet</span></button>
-            <button onclick="connectWallet('okx')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-chart-line text-2xl text-blue-600"></i><span>OKX Wallet</span></button>
-            <button onclick="connectWallet('coinbase')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fab fa-bitcoin text-2xl text-blue-600"></i><span>Coinbase Wallet</span></button>
-            
+            <div class="text-xs text-gray-400 uppercase mt-2 mb-1">EVM / Multi‑chain (view only)</div>
+            <button onclick="connectWallet('metamask')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" class="w-6 h-6"><span>MetaMask</span><span class="text-xs text-gray-400 ml-auto">(view only)</span></button>
+            <button onclick="connectWallet('trust')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-check-circle text-2xl text-blue-500"></i><span>Trust Wallet</span><span class="text-xs text-gray-400 ml-auto">(view only)</span></button>
+            <button onclick="connectWallet('okx')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-chart-line text-2xl text-blue-600"></i><span>OKX Wallet</span><span class="text-xs text-gray-400 ml-auto">(view only)</span></button>
+            <button onclick="connectWallet('coinbase')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fab fa-bitcoin text-2xl text-blue-600"></i><span>Coinbase Wallet</span><span class="text-xs text-gray-400 ml-auto">(view only)</span></button>
             <div class="text-xs text-gray-400 uppercase mt-2 mb-1">Hardware / Desktop</div>
             <button onclick="connectWallet('ledger')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-usb text-2xl text-gray-600"></i><span>Ledger</span></button>
             <button onclick="connectWallet('trezor')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-shield-alt text-2xl text-gray-600"></i><span>Trezor</span></button>
             <button onclick="connectWallet('exodus')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-diamond text-2xl text-purple-500"></i><span>Exodus</span></button>
         </div>
-        <p class="text-xs text-gray-400 text-center mt-3">EVM и hardware кошельки подключаются через WalletConnect</p>
+        <p class="text-xs text-gray-400 text-center mt-3">Only Phantom, Solflare, Backpack support token burning on Solana.</p>
     </div>
 </div>
 
@@ -115,33 +114,18 @@ const TOKENS = {
     ADL: "8NEsFQ9PpGmZVaz5nHV1zTBWDxgrwxwvY5cJ9ejQvpdN"
 };
 
-// ==================== ПЕРЕВОДЫ ИНТЕРФЕЙСА ====================
+// ==================== ПЕРЕВОДЫ ====================
 const uiText = {
-    ru: { nav_home:"Главная", nav_actions:"99 Добрых дел", nav_confession:"Тауба", nav_whitepaper:"Whitepaper", title:"99 добрых дел", subtitle:"Сжигайте токены с намерением (ният). Каждое дело записывается в вашу книгу.", completed_label:"Выполнено:", badge_start:"В начале пути", filter_all:"Все (99)", footer:"Халяльный блокчейн-банк", burn:"Сжечь", completed:"Выполнено" },
-    en: { nav_home:"Home", nav_actions:"99 Good Deeds", nav_confession:"Tawbah", nav_whitepaper:"Whitepaper", title:"99 Good Deeds", subtitle:"Burn tokens with intention (niyyah). Each deed is recorded in your book.", completed_label:"Completed:", badge_start:"Beginning of the path", filter_all:"All (99)", footer:"Halal blockchain bank", burn:"Burn", completed:"Completed" },
-    ar: { nav_home:"الرئيسية", nav_actions:"99 عملاً صالحاً", nav_confession:"توبة", nav_whitepaper:"الورقة البيضاء", title:"٩٩ عملاً صالحاً", subtitle:"أحرق التوكنات بنية. كل عمل يسجل في كتابك.", completed_label:"مكتمل:", badge_start:"بداية الطريق", filter_all:"الكل (٩٩)", footer:"بنك حلال", burn:"حرق", completed:"مكتمل" },
-    ur: { nav_home:"مرکزی", nav_actions:"۹۹ نیک اعمال", nav_confession:"توبہ", nav_whitepaper:"وائٹ پیپر", title:"۹۹ نیک اعمال", subtitle:"نیت کے ساتھ ٹوکن جلائیں۔ ہر عمل آپ کی کتاب میں درج ہوتا ہے۔", completed_label:"مکمل:", badge_start:"راستے کا آغاز", filter_all:"سب (۹۹)", footer:"حلال بلاک چین بینک", burn:"جلائیں", completed:"مکمل" },
-    fa: { nav_home:"خانه", nav_actions:"۹۹ کار نیک", nav_confession:"توبه", nav_whitepaper:"وایت پیپر", title:"۹۹ کار نیک", subtitle:"توکن‌ها را با نیت بسوزانید. هر کار در کتاب شما ثبت می‌شود.", completed_label:"تکمیل شده:", badge_start:"آغاز راه", filter_all:"همه (۹۹)", footer:"بانک حلال", burn:"سوزاندن", completed:"تکمیل شد" },
-    tr: { nav_home:"Ana Sayfa", nav_actions:"99 İyilik", nav_confession:"Tövbe", nav_whitepaper:"Beyaz Kağıt", title:"99 İyilik", subtitle:"Niyetle token yakın. Her iyilik kitabınıza kaydedilir.", completed_label:"Tamamlanan:", badge_start:"Yolun başlangıcı", filter_all:"Tümü (99)", footer:"Helal blockchain bankası", burn:"Yak", completed:"Tamamlandı" },
-    fr: { nav_home:"Accueil", nav_actions:"99 Bonnes actions", nav_confession:"Tawbah", nav_whitepaper:"Livre blanc", title:"99 Bonnes actions", subtitle:"Brûlez des jetons avec intention (niyyah). Chaque action est enregistrée dans votre livre.", completed_label:"Accompli:", badge_start:"Début du chemin", filter_all:"Tous (99)", footer:"Banque blockchain halal", burn:"Brûler", completed:"Accompli" },
-    de: { nav_home:"Startseite", nav_actions:"99 Gute Taten", nav_confession:"Tawbah", nav_whitepaper:"Whitepaper", title:"99 Gute Taten", subtitle:"Verbrennen Sie Token mit Absicht (Niyyah). Jede Tat wird in Ihrem Buch aufgezeichnet.", completed_label:"Abgeschlossen:", badge_start:"Anfang des Weges", filter_all:"Alle (99)", footer:"Halal Blockchain-Bank", burn:"Verbrennen", completed:"Abgeschlossen" }
+    ru: { nav_home:"Главная", nav_actions:"99 Добрых дел", nav_confession:"Тауба", nav_whitepaper:"Whitepaper", title:"99 добрых дел", subtitle:"Сжигайте токены с намерением (ният). Каждое дело записывается в вашу книгу.", completed_label:"Выполнено:", badge_start:"В начале пути", filter_all:"Все (99)", footer:"Халяльный блокчейн-банк", burn:"Сжечь", completed:"Выполнено", connect_wallet:"Подключить кошелёк", msg_no_solana_wallet:"Для сжигания токенов нужен Solana-кошелёк (Phantom, Solflare или Backpack).", msg_no_tokens:"У вас нет токенов. Сначала купите.", msg_burn_confirm:"📿 НИЯТ: совершить дело \"{name}\"\nСжечь {amount} {symbol}\nРади довольства Аллаха. Продолжить?", msg_burn_success:"✅ ДЕЛО ИСПОЛНЕНО!\n{name}\nСожжено {amount} {symbol}\nПрогресс: {progress}/99\nTXID: {txid}", msg_burn_error:"Ошибка: {error}. Убедитесь, что у вас достаточно SOL для комиссии." },
+    en: { nav_home:"Home", nav_actions:"99 Good Deeds", nav_confession:"Tawbah", nav_whitepaper:"Whitepaper", title:"99 Good Deeds", subtitle:"Burn tokens with intention (niyyah). Each deed is recorded in your book.", completed_label:"Completed:", badge_start:"Beginning of the path", filter_all:"All (99)", footer:"Halal blockchain bank", burn:"Burn", completed:"Completed", connect_wallet:"Connect Wallet", msg_no_solana_wallet:"A Solana wallet (Phantom, Solflare or Backpack) is required to burn tokens.", msg_no_tokens:"You don't have enough tokens.", msg_burn_confirm:"📿 INTENTION (Niyyah): perform the deed \"{name}\"\nBurn {amount} {symbol}\nFor the sake of Allah. Continue?", msg_burn_success:"✅ DEED COMPLETED!\n{name}\nBurned {amount} {symbol}\nProgress: {progress}/99\nTXID: {txid}", msg_burn_error:"Error: {error}. Please make sure you have enough SOL for fees." }
 };
 
-// ==================== 99 ДЕЛ (только русские названия для краткости, при переключении языка используются переводы из deedsData) ====================
+// Названия дел (только английские и русские для краткости)
 const deedsData = {
-    sabu: { ru: ["Сказать Бисмиллях","Совершить вуду","Прочитать 1 ракаат сунны","Пожелать добра мусульманину","Удержать гнев","Помочь бедному","Накормить голодного","Посетить больного","Убрать препятствие","Подарить одежду","Улыбнуться брату","Помочь путнику","Вернуть долг","Напомнить о намазе","Страница Корана","Дуа за умму","Проснуться на тахаджуд","Пост 1 день","Садака тайно","Научить полезному","Примирить ссорящихся","Защитить слабого","Быть справедливым","Не подслушивать","Хранить тайну","Выполнить обещание","Пожелать мира","Сказать правду","Избегать сплетен","Помочь сироте","Посетить мечеть","Хадж (вирт.)","Очистить 33 греха"] },
-    muji: { ru: ["Дуа за Ахль аль-Бейт","Оплакать Кербелу","Прочитать зияр Ашура","Посетить Кербелу (вирт.)","Почитать имама Али","Почитать Фатиму","Почитать Хусейна","Почитать имама Махди","Сказать 'Яа Али'","Сказать 'Яа Хусейн'","Сказать 'Яа Захра'","Дуа о справедливости","Поминовение Ашуры","1 салават","100 салаватов","Помочь бедному шииту","Защитить общину","Посетить мечеть","Правда о Кербеле","Научить о Кербеле","Поминовение Хусейна","Дуа за скорбящих","Пожертвовать на мавзолей","Пост Ашура","Пост Арбаин","Зияр Кербелы","Такбир","Тасбих","Дуа о единстве","Уважать имамов","История имамов","Плакать по Хусейну","Очистить 33 греха"] },
-    adl: { ru: ["Простить обидчика","Примирить врагов","Сказать правду","Пожертвовать на мечеть","Помочь обиженному","Честность в сделке","Не брать взятку","Вернуть чужое","Честное свидетельство","Не обманывать","Платить вовремя","Соблюдать договор","Не нарушать обещание","Уважать старших","Заботиться о младших","Не обижать слабого","Защитить соседа","Не воровать","Не убивать","Не лжесвидетельствовать","Соблюдать закон","Платить закят","Помочь должнику","Освободить раба (вирт.)","Посадить дерево","Убрать мусор","Накормить животное","Вылечить больного","Научить детей","Построить колодец","Помочь беженцам","Защитить природу","Очистить 33 греха"] }
+    sabu: { ru: ["Сказать Бисмиллях","Совершить вуду","Прочитать 1 ракаат сунны","Пожелать добра мусульманину","Удержать гнев","Помочь бедному","Накормить голодного","Посетить больного","Убрать препятствие","Подарить одежду","Улыбнуться брату","Помочь путнику","Вернуть долг","Напомнить о намазе","Страница Корана","Дуа за умму","Проснуться на тахаджуд","Пост 1 день","Садака тайно","Научить полезному","Примирить ссорящихся","Защитить слабого","Быть справедливым","Не подслушивать","Хранить тайну","Выполнить обещание","Пожелать мира","Сказать правду","Избегать сплетен","Помочь сироте","Посетить мечеть","Хадж (вирт.)","Очистить 33 греха"], en: ["Say Bismillah","Perform Wudu","Pray 1 Rakat Sunnah","Wish good to a Muslim","Control anger","Help the poor","Feed the hungry","Visit the sick","Remove obstacle","Give clothes","Smile at brother","Help a traveler","Repay debt","Remind of prayer","Read Quran page","Dua for Ummah","Wake for Tahajjud","Fast 1 day","Secret sadaqah","Teach something","Reconcile people","Protect the weak","Be just","Don't eavesdrop","Keep a secret","Keep promise","Wish peace","Speak truth","Avoid gossip","Help an orphan","Visit mosque","Hajj virtual","Cleanse 33 sins"] },
+    muji: { ru: ["Дуа за Ахль аль-Бейт","Оплакать Кербелу","Прочитать зияр Ашура","Посетить Кербелу (вирт.)","Почитать имама Али","Почитать Фатиму","Почитать Хусейна","Почитать имама Махди","Сказать 'Яа Али'","Сказать 'Яа Хусейн'","Сказать 'Яа Захра'","Дуа о справедливости","Поминовение Ашуры","1 салават","100 салаватов","Помочь бедному шииту","Защитить общину","Посетить мечеть","Правда о Кербеле","Научить о Кербеле","Поминовение Хусейна","Дуа за скорбящих","Пожертвовать на мавзолей","Пост Ашура","Пост Арбаин","Зияр Кербелы","Такбир","Тасбих","Дуа о единстве","Уважать имамов","История имамов","Плакать по Хусейну","Очистить 33 греха"], en: ["Dua for Ahl al-Bayt","Mourn Karbala","Read Ziyarat Ashura","Visit Karbala (virtual)","Honor Imam Ali","Honor Fatima","Honor Hussein","Honor Imam Mahdi","Say 'Ya Ali'","Say 'Ya Hussain'","Say 'Ya Zahra'","Pray for justice","Commemorate Ashura","1 Salawat","100 Salawat","Help poor Shia","Protect community","Visit mosque","Truth about Karbala","Teach about Karbala","Commemorate Hussein","Pray for mourners","Donate to shrine","Ashura fast","Arba'een fast","Karbala Ziyarat","Takbir","Tasbih","Pray for unity","Respect Imams","Imams history","Cry for Hussein","Cleanse 33 sins"] },
+    adl: { ru: ["Простить обидчика","Примирить врагов","Сказать правду","Пожертвовать на мечеть","Помочь обиженному","Честность в сделке","Не брать взятку","Вернуть чужое","Честное свидетельство","Не обманывать","Платить вовремя","Соблюдать договор","Не нарушать обещание","Уважать старших","Заботиться о младших","Не обижать слабого","Защитить соседа","Не воровать","Не убивать","Не лжесвидетельствовать","Соблюдать закон","Платить закят","Помочь должнику","Освободить раба (вирт.)","Посадить дерево","Убрать мусор","Накормить животное","Вылечить больного","Научить детей","Построить колодец","Помочь беженцам","Защитить природу","Очистить 33 греха"], en: ["Forgive offender","Reconcile enemies","Speak truth","Donate to mosque","Help the wronged","Be honest in trade","Don't take bribe","Return lost item","Testify honestly","Don't cheat","Pay on time","Keep contract","Keep promise","Respect elders","Care for younger","Don't harm weak","Protect neighbor","Don't steal","Don't kill","No false testimony","Obey law","Pay Zakat","Help debtor","Free slave (virtual)","Plant tree","Pick up trash","Feed animal","Heal sick","Teach children","Build well","Help refugees","Protect nature","Cleanse 33 sins"] }
 };
-
-// Для простоты пока используем только русские названия, так как остальные языки требуют полного перевода 99 дел
-// При переключении языка названия берутся из deedsData[currentLang] или fallback на русский
-// Добавим заглушки для других языков (пока копируем русские, потом заменим)
-for (let lang of ['en','ar','ur','fa','tr','fr','de']) {
-    if (!deedsData.sabu[lang]) deedsData.sabu[lang] = deedsData.sabu.ru;
-    if (!deedsData.muji[lang]) deedsData.muji[lang] = deedsData.muji.ru;
-    if (!deedsData.adl[lang]) deedsData.adl[lang] = deedsData.adl.ru;
-}
 
 const amounts = {
     sabu: [0.1,0.5,1,0.5,2,5,5,3,1,10,0.2,2,5,0.5,2,1,3,10,5,2,10,15,5,1,2,3,0.5,1,2,20,1,100,33],
@@ -151,6 +135,7 @@ const amounts = {
 
 // ==================== СОСТОЯНИЕ ====================
 let wallet = null;
+let walletType = null; // 'solana' or 'evm'
 let currentFilter = 'all';
 let currentLang = 'ru';
 
@@ -169,7 +154,6 @@ function updateProgress() {
     document.getElementById('badge-display').innerHTML = `${emoji} ${badge}`;
 }
 
-// ==================== АНИМАЦИЯ ====================
 function sparkle(x, y) {
     for (let i = 0; i < 12; i++) {
         let d = document.createElement('div');
@@ -187,10 +171,18 @@ function playSound() {
     audio.play().catch(e => console.log);
 }
 
-// ==================== СЖИГАНИЕ ====================
+// ==================== СЖИГАНИЕ (только для Solana-кошельков) ====================
 async function burnDeed(symbol, amount, deedId, deedName, btnElement) {
-    if (!wallet) { openWalletModal(); return; }
-    if (!confirm(`📿 НИЯТ: совершить дело "${deedName}"\nСжечь ${amount} ${symbol}\nРади довольства Аллаха.`)) return;
+    // Проверка: только Solana-кошелёк
+    if (!wallet || walletType !== 'solana') {
+        alert(uiText[currentLang]?.msg_no_solana_wallet || "A Solana wallet is required to burn tokens.");
+        openWalletModal();
+        return;
+    }
+    
+    let confirmMsg = uiText[currentLang]?.msg_burn_confirm || "Continue?"
+        .replace("{name}", deedName).replace("{amount}", amount).replace("{symbol}", symbol);
+    if (!confirm(confirmMsg)) return;
     
     let btn = btnElement;
     if (btn) { btn.classList.add('burn-animation'); setTimeout(() => btn.classList.remove('burn-animation'), 500); }
@@ -200,8 +192,12 @@ async function burnDeed(symbol, amount, deedId, deedName, btnElement) {
         let fromMint = new solanaWeb3.PublicKey(TOKENS[symbol]);
         let toSym = symbol === 'ADL' ? 'SABU' : 'ADL';
         let toAddr = new solanaWeb3.PublicKey(TOKENS[toSym]);
+        
         let accounts = await conn.getTokenAccountsByOwner(wallet.publicKey, { mint: fromMint });
-        if (accounts.value.length === 0) { alert(`Нет ${symbol} токенов`); return; }
+        if (accounts.value.length === 0) {
+            alert(uiText[currentLang]?.msg_no_tokens || "No tokens.");
+            return;
+        }
         
         let tx = new solanaWeb3.Transaction().add(
             solanaWeb3.Token.createTransferInstruction(
@@ -224,117 +220,121 @@ async function burnDeed(symbol, amount, deedId, deedName, btnElement) {
         sparkle(rect.left + rect.width/2, rect.top + rect.height/2);
         playSound();
         
-        alert(`✅ ДЕЛО ИСПОЛНЕНО!\n${deedName}\nСожжено ${amount} ${symbol}\nПрогресс: ${completed.length}/99\nTXID: ${sig.slice(0,16)}...`);
+        let successMsg = uiText[currentLang]?.msg_burn_success || "Deed completed!"
+            .replace("{name}", deedName).replace("{amount}", amount).replace("{symbol}", symbol)
+            .replace("{progress}", completed.length).replace("{txid}", sig.slice(0,16));
+        alert(successMsg);
         renderActions();
-    } catch(e) { alert(`Ошибка: ${e.message}`); }
+    } catch(e) {
+        let errorMsg = uiText[currentLang]?.msg_burn_error || "Error: {error}";
+        alert(errorMsg.replace("{error}", e.message));
+    }
 }
 
-// ==================== ОТРИСОВКА ====================
 function renderActions() {
     let container = document.getElementById('actions-grid');
     let items = [];
     let completed = JSON.parse(localStorage.getItem('completed_deeds') || '[]');
     
+    let deedNames = {
+        sabu: deedsData.sabu[currentLang] || deedsData.sabu.ru,
+        muji: deedsData.muji[currentLang] || deedsData.muji.ru,
+        adl: deedsData.adl[currentLang] || deedsData.adl.ru
+    };
+    
     if (currentFilter === 'all' || currentFilter === 'sabu') {
-        for (let i = 0; i < deedsData.sabu.ru.length; i++) {
-            let name = deedsData.sabu[currentLang]?.[i] || deedsData.sabu.ru[i];
-            items.push({ name: name, type: 'sabu', id: `sabu_${i}`, amount: amounts.sabu[i] });
+        for (let i = 0; i < deedNames.sabu.length; i++) {
+            items.push({ name: deedNames.sabu[i], type: 'sabu', id: `sabu_${i}`, amount: amounts.sabu[i] });
         }
     }
     if (currentFilter === 'all' || currentFilter === 'muji') {
-        for (let i = 0; i < deedsData.muji.ru.length; i++) {
-            let name = deedsData.muji[currentLang]?.[i] || deedsData.muji.ru[i];
-            items.push({ name: name, type: 'muji', id: `muji_${i}`, amount: amounts.muji[i] });
+        for (let i = 0; i < deedNames.muji.length; i++) {
+            items.push({ name: deedNames.muji[i], type: 'muji', id: `muji_${i}`, amount: amounts.muji[i] });
         }
     }
     if (currentFilter === 'all' || currentFilter === 'adl') {
-        for (let i = 0; i < deedsData.adl.ru.length; i++) {
-            let name = deedsData.adl[currentLang]?.[i] || deedsData.adl.ru[i];
-            items.push({ name: name, type: 'adl', id: `adl_${i}`, amount: amounts.adl[i] });
+        for (let i = 0; i < deedNames.adl.length; i++) {
+            items.push({ name: deedNames.adl[i], type: 'adl', id: `adl_${i}`, amount: amounts.adl[i] });
         }
     }
+    
+    const canBurn = (walletType === 'solana');
     
     container.innerHTML = items.map(a => `
         <div class="bg-white rounded-xl shadow-md p-4 border-l-4 ${completed.includes(a.id) ? 'border-yellow-500 bg-yellow-50' : 'border-gray-200'}">
             <div class="flex justify-between items-start">
-                <h3 class="font-bold text-sm">${a.name}</h3>
+                <h3 class="font-bold text-sm">${escapeHtml(a.name)}</h3>
                 <span class="text-xs px-2 py-1 rounded-full text-white ${a.type === 'sabu' ? 'bg-green-600' : a.type === 'muji' ? 'bg-blue-600' : 'bg-gray-800'}">${a.type.toUpperCase()}</span>
             </div>
             <div class="flex justify-between items-center mt-3">
                 <span class="text-sm text-gray-500">${a.amount} ${a.type.toUpperCase()}</span>
                 ${completed.includes(a.id) ? 
                     `<span class="text-green-600 text-sm"><i class="fas fa-check-circle"></i> ${uiText[currentLang]?.completed || 'Выполнено'}</span>` : 
-                    `<button onclick="burnDeed('${a.type.toUpperCase()}', ${a.amount}, '${a.id}', '${a.name}', this)" class="bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600">${uiText[currentLang]?.burn || 'Сжечь'}</button>`
+                    (canBurn ? 
+                        `<button onclick="burnDeed('${a.type.toUpperCase()}', ${a.amount}, '${a.id}', '${escapeHtml(a.name)}', this)" class="bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600">${uiText[currentLang]?.burn || 'Сжечь'}</button>` :
+                        `<button disabled class="btn-burn-disabled text-white px-3 py-1 rounded-lg text-sm">${uiText[currentLang]?.burn || 'Сжечь'}</button>`
+                    )
                 }
             </div>
         </div>
     `).join('');
 }
 
+function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
 function filterActions(type) { currentFilter = type; renderActions(); }
 
-// ==================== 10 КОШЕЛЬКОВ ====================
+// ==================== КОШЕЛЬКИ (различаем Solana и EVM) ====================
 async function connectWallet(type) {
     try {
-        if (type === 'phantom' && window.solana?.isPhantom) {
-            await window.solana.connect();
-            wallet = window.solana;
-        } else if (type === 'solflare' && window.solflare) {
-            await window.solflare.connect();
-            wallet = window.solflare;
-        } else if (type === 'backpack' && window.backpack) {
-            await window.backpack.connect();
-            wallet = window.backpack;
-        } else if (type === 'metamask' && window.ethereum) {
-            await window.ethereum.request({ method: 'eth_requestAccounts' });
-            wallet = { publicKey: { toString: () => window.ethereum.selectedAddress } };
-            alert("MetaMask подключён. Для Solana используйте Phantom/Solflare.");
-        } else if (type === 'trust' && window.trustwallet) {
-            await window.trustwallet.request({ method: 'eth_requestAccounts' });
-            wallet = { publicKey: { toString: () => 'Trust Wallet' } };
-            alert("Trust Wallet подключён. Для Solana используйте Phantom.");
-        } else if (type === 'okx' && window.okxwallet) {
-            await window.okxwallet.request({ method: 'eth_requestAccounts' });
-            wallet = { publicKey: { toString: () => 'OKX Wallet' } };
-            alert("OKX Wallet подключён. Для Solana используйте Phantom.");
-        } else if (type === 'coinbase' && window.coinbaseWalletExtension) {
-            await window.coinbaseWalletExtension.request({ method: 'eth_requestAccounts' });
-            wallet = { publicKey: { toString: () => 'Coinbase Wallet' } };
-            alert("Coinbase Wallet подключён. Для Solana используйте Phantom.");
-        } else if (type === 'ledger') {
-            window.open('https://www.ledger.com/solana-wallet', '_blank');
-            alert("Подключите Ledger через Phantom или Solflare.");
-            return;
-        } else if (type === 'trezor') {
-            window.open('https://trezor.io/learn/connect-to-solana', '_blank');
-            alert("Подключите Trezor через Phantom или Solflare.");
+        let provider = null;
+        let isSolana = false;
+        
+        if (type === 'phantom') {
+            if (window.solana?.isPhantom) { provider = window.solana; isSolana = true; }
+            else if (window.phantom?.solana) { provider = window.phantom.solana; isSolana = true; }
+        } else if (type === 'solflare') {
+            if (window.solflare) { provider = window.solflare; isSolana = true; }
+        } else if (type === 'backpack') {
+            if (window.backpack) { provider = window.backpack; isSolana = true; }
+        } else if (type === 'metamask' && window.ethereum?.isMetaMask) { provider = window.ethereum; }
+        else if (type === 'trust' && window.trustwallet) { provider = window.trustwallet; }
+        else if (type === 'okx' && window.okxwallet) { provider = window.okxwallet; }
+        else if (type === 'coinbase' && window.coinbaseWalletExtension) { provider = window.coinbaseWalletExtension; }
+        else if (type === 'ledger' || type === 'trezor') {
+            window.open('https://phantom.app/', '_blank');
+            alert("Для аппаратных кошельков используйте Phantom или Solflare.");
             return;
         } else if (type === 'exodus') {
-            if (window.exodus) {
-                await window.exodus.connect();
-                wallet = window.exodus;
-            } else {
-                window.open('https://www.exodus.com/download', '_blank');
-                alert("Установите Exodus wallet.");
-                return;
-            }
-        } else {
-            alert("Кошелёк не найден. Установите Phantom для Solana.");
-            return;
+            if (window.exodus) { provider = window.exodus; isSolana = true; }
+            else { window.open('https://www.exodus.com/download', '_blank'); return; }
         }
         
-        let address = wallet.publicKey?.toString() || wallet.selectedAddress || 'Подключён';
-        document.getElementById('wallet-address').innerText = address.slice(0,4) + '...' + address.slice(-4);
+        if (!provider) { alert(uiText[currentLang]?.msg_no_solana_wallet); return; }
+        
+        if (isSolana) {
+            await provider.connect();
+            wallet = provider;
+            walletType = 'solana';
+            let address = wallet.publicKey.toString();
+            document.getElementById('wallet-address').innerText = address.slice(0,4) + '...' + address.slice(-4);
+        } else {
+            await provider.request({ method: 'eth_requestAccounts' });
+            wallet = { publicKey: null, type: 'evm' };
+            walletType = 'evm';
+            document.getElementById('wallet-address').innerText = provider.selectedAddress?.slice(0,6) + '...' || 'EVM';
+            alert(uiText[currentLang]?.msg_no_solana_wallet);
+        }
         closeWalletModal();
+        renderActions();
     } catch(e) {
-        alert("Ошибка подключения: " + e.message);
+        alert("Error: " + e.message);
     }
 }
 
 function openWalletModal() { document.getElementById('wallet-modal').classList.add('active'); }
 function closeWalletModal() { document.getElementById('wallet-modal').classList.remove('active'); }
 
-// ==================== ПРИМЕНЕНИЕ ЯЗЫКА ====================
 function applyLanguage() {
     document.querySelectorAll('[data-key]').forEach(el => {
         const key = el.getAttribute('data-key');
@@ -346,7 +346,6 @@ function applyLanguage() {
     renderActions();
 }
 
-// ==================== ЗАПУСК ====================
 document.getElementById('wallet-btn').onclick = openWalletModal;
 document.getElementById('lang-select').onchange = (e) => {
     currentLang = e.target.value;
