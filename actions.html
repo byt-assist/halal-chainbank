@@ -33,17 +33,8 @@
             <button onclick="connectWallet('phantom')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><img src="https://phantom.app/img/logo.png" class="w-6 h-6"><span>Phantom</span></button>
             <button onclick="connectWallet('solflare')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-globe text-2xl text-orange-500"></i><span>Solflare</span></button>
             <button onclick="connectWallet('backpack')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-backpack text-2xl text-purple-600"></i><span>Backpack</span></button>
-            <div class="text-xs text-gray-400 uppercase mt-2 mb-1">EVM / Multi‑chain</div>
-            <button onclick="connectWallet('metamask')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" class="w-6 h-6"><span>MetaMask</span></button>
-            <button onclick="connectWallet('trust')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-check-circle text-2xl text-blue-500"></i><span>Trust Wallet</span></button>
-            <button onclick="connectWallet('okx')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-chart-line text-2xl text-blue-600"></i><span>OKX Wallet</span></button>
-            <button onclick="connectWallet('coinbase')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fab fa-bitcoin text-2xl text-blue-600"></i><span>Coinbase Wallet</span></button>
-            <div class="text-xs text-gray-400 uppercase mt-2 mb-1">Hardware / Desktop</div>
-            <button onclick="connectWallet('ledger')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-usb text-2xl text-gray-600"></i><span>Ledger</span></button>
-            <button onclick="connectWallet('trezor')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-shield-alt text-2xl text-gray-600"></i><span>Trezor</span></button>
-            <button onclick="connectWallet('exodus')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-diamond text-2xl text-purple-500"></i><span>Exodus</span></button>
         </div>
-        <p class="text-xs text-gray-400 text-center mt-3">All wallets connect via WalletConnect. Make sure your wallet supports Solana.</p>
+        <p class="text-xs text-gray-400 text-center mt-3">Only Phantom, Solflare and Backpack support token burning on Solana.</p>
     </div>
 </div>
 
@@ -113,10 +104,36 @@ const TOKENS = {
     ADL: "8NEsFQ9PpGmZVaz5nHV1zTBWDxgrwxwvY5cJ9ejQvpdN"
 };
 
+// ==================== RPC СПИСОК С FALLBACK ====================
+const RPC_ENDPOINTS = [
+    "https://solana-api.projectserum.com",
+    "https://rpc.ankr.com/solana",
+    "https://solana.rpc.nodeshub.online",
+    "https://api.mainnet-beta.solana.com"
+];
+
+let currentRpcIndex = 0;
+
+async function getWorkingConnection() {
+    for (let i = 0; i < RPC_ENDPOINTS.length; i++) {
+        const endpoint = RPC_ENDPOINTS[i];
+        try {
+            const connection = new solanaWeb3.Connection(endpoint, 'confirmed');
+            // Проверяем работоспособность
+            await connection.getSlot();
+            currentRpcIndex = i;
+            return connection;
+        } catch (e) {
+            console.warn(`RPC ${endpoint} failed:`, e);
+        }
+    }
+    throw new Error("No working RPC endpoint found");
+}
+
 // ==================== ПЕРЕВОДЫ ====================
 const uiText = {
-    ru: { nav_home:"Главная", nav_actions:"99 Добрых дел", nav_confession:"Тауба", nav_whitepaper:"Whitepaper", title:"99 добрых дел", subtitle:"Сжигайте токены с намерением (ният). Каждое дело записывается в вашу книгу.", completed_label:"Выполнено:", badge_start:"В начале пути", filter_all:"Все (99)", footer:"Халяльный блокчейн-банк", burn:"Сжечь", completed:"Выполнено", connect_wallet:"Подключить кошелёк", msg_no_tokens:"У вас нет токенов. Сначала купите.", msg_burn_confirm:"📿 НИЯТ: совершить дело \"{name}\"\nСжечь {amount} {symbol}\nРади довольства Аллаха. Продолжить?", msg_burn_success:"✅ ДЕЛО ИСПОЛНЕНО!\n{name}\nСожжено {amount} {symbol}\nПрогресс: {progress}/99\nTXID: {txid}", msg_burn_error:"Ошибка: {error}. Убедитесь, что у вас достаточно SOL для комиссии.", msg_wc_redirect:"Открывается WalletConnect... Подтвердите в приложении кошелька." },
-    en: { nav_home:"Home", nav_actions:"99 Good Deeds", nav_confession:"Tawbah", nav_whitepaper:"Whitepaper", title:"99 Good Deeds", subtitle:"Burn tokens with intention (niyyah). Each deed is recorded in your book.", completed_label:"Completed:", badge_start:"Beginning of the path", filter_all:"All (99)", footer:"Halal blockchain bank", burn:"Burn", completed:"Completed", connect_wallet:"Connect Wallet", msg_no_tokens:"You don't have enough tokens.", msg_burn_confirm:"📿 INTENTION (Niyyah): perform the deed \"{name}\"\nBurn {amount} {symbol}\nFor the sake of Allah. Continue?", msg_burn_success:"✅ DEED COMPLETED!\n{name}\nBurned {amount} {symbol}\nProgress: {progress}/99\nTXID: {txid}", msg_burn_error:"Error: {error}. Please make sure you have enough SOL for fees.", msg_wc_redirect:"Opening WalletConnect... Confirm in your wallet app." }
+    ru: { nav_home:"Главная", nav_actions:"99 Добрых дел", nav_confession:"Тауба", nav_whitepaper:"Whitepaper", title:"99 добрых дел", subtitle:"Сжигайте токены с намерением (ният). Каждое дело записывается в вашу книгу.", completed_label:"Выполнено:", badge_start:"В начале пути", filter_all:"Все (99)", footer:"Халяльный блокчейн-банк", burn:"Сжечь", completed:"Выполнено", connect_wallet:"Подключить кошелёк", msg_no_tokens:"У вас нет токенов. Сначала купите.", msg_burn_confirm:"📿 НИЯТ: совершить дело \"{name}\"\nСжечь {amount} {symbol}\nРади довольства Аллаха. Продолжить?", msg_burn_success:"✅ ДЕЛО ИСПОЛНЕНО!\n{name}\nСожжено {amount} {symbol}\nПрогресс: {progress}/99\nTXID: {txid}", msg_burn_error:"Ошибка: {error}. Убедитесь, что у вас достаточно SOL для комиссии." },
+    en: { nav_home:"Home", nav_actions:"99 Good Deeds", nav_confession:"Tawbah", nav_whitepaper:"Whitepaper", title:"99 Good Deeds", subtitle:"Burn tokens with intention (niyyah). Each deed is recorded in your book.", completed_label:"Completed:", badge_start:"Beginning of the path", filter_all:"All (99)", footer:"Halal blockchain bank", burn:"Burn", completed:"Completed", connect_wallet:"Connect Wallet", msg_no_tokens:"You don't have enough tokens.", msg_burn_confirm:"📿 INTENTION (Niyyah): perform the deed \"{name}\"\nBurn {amount} {symbol}\nFor the sake of Allah. Continue?", msg_burn_success:"✅ DEED COMPLETED!\n{name}\nBurned {amount} {symbol}\nProgress: {progress}/99\nTXID: {txid}", msg_burn_error:"Error: {error}. Please make sure you have enough SOL for fees." }
 };
 
 // Названия дел (русские)
@@ -131,10 +148,6 @@ const amounts = {
     muji: [0.5,1,2,50,1,1,2,3,0.2,0.2,0.2,1,5,0.1,5,5,20,1,2,5,3,2,10,10,10,3,0.1,0.1,1,2,5,5,33],
     adl: [1,10,0.5,5,10,2,5,2,3,2,1,2,2,1,1,3,2,10,50,10,1,20,5,30,2,0.5,1,10,3,30,20,5,33]
 };
-
-// ==================== RPC (рабочий) ====================
-// Используем публичный RPC от Triton (без ограничений)
-const SOLANA_RPC = "https://api.mainnet-beta.solana.com";
 
 // ==================== СОСТОЯНИЕ ====================
 let wallet = null;
@@ -174,14 +187,14 @@ function playSound() {
     audio.play().catch(e => console.log);
 }
 
-// ==================== СЖИГАНИЕ (реальное) ====================
+// ==================== СЖИГАНИЕ (реальное, с fallback RPC) ====================
 async function burnDeed(symbol, amount, deedId, deedName, btnElement) {
     if (!wallet || walletType !== 'solana') {
         openWalletModal();
         return;
     }
     
-    let confirmMsg = uiText[currentLang]?.msg_burn_confirm || "Continue?"
+    let confirmMsg = (uiText[currentLang]?.msg_burn_confirm || "Continue?")
         .replace("{name}", deedName).replace("{amount}", amount).replace("{symbol}", symbol);
     if (!confirm(confirmMsg)) return;
     
@@ -189,8 +202,8 @@ async function burnDeed(symbol, amount, deedId, deedName, btnElement) {
     if (btn) { btn.classList.add('burn-animation'); setTimeout(() => btn.classList.remove('burn-animation'), 500); }
     
     try {
-        // Используем рабочий RPC
-        const connection = new solanaWeb3.Connection(SOLANA_RPC, 'confirmed');
+        // Получаем рабочий RPC с fallback
+        const connection = await getWorkingConnection();
         
         const fromMint = new solanaWeb3.PublicKey(TOKENS[symbol]);
         const toSym = symbol === 'ADL' ? 'SABU' : 'ADL';
@@ -205,7 +218,7 @@ async function burnDeed(symbol, amount, deedId, deedName, btnElement) {
         
         const fromATA = accounts.value[0].pubkey;
         
-        // Создаём транзакцию перевода на адрес сжигателя
+        // Создаём транзакцию
         const tx = new solanaWeb3.Transaction().add(
             solanaWeb3.Token.createTransferInstruction(
                 solanaWeb3.TOKEN_PROGRAM_ID,
@@ -217,6 +230,11 @@ async function burnDeed(symbol, amount, deedId, deedName, btnElement) {
             )
         );
         
+        // Получаем последний блокхеш
+        const { blockhash } = await connection.getLatestBlockhash();
+        tx.recentBlockhash = blockhash;
+        tx.feePayer = wallet.publicKey;
+        
         // Отправляем транзакцию
         const signature = await solanaWeb3.sendAndConfirmTransaction(connection, tx, [wallet]);
         
@@ -226,19 +244,18 @@ async function burnDeed(symbol, amount, deedId, deedName, btnElement) {
         localStorage.setItem('completed_deeds', JSON.stringify(completed));
         updateProgress();
         
-        // Анимация и звук
         const rect = btn.getBoundingClientRect();
         sparkle(rect.left + rect.width/2, rect.top + rect.height/2);
         playSound();
         
-        const successMsg = uiText[currentLang]?.msg_burn_success || "Deed completed!"
+        const successMsg = (uiText[currentLang]?.msg_burn_success || "Deed completed!")
             .replace("{name}", deedName).replace("{amount}", amount).replace("{symbol}", symbol)
             .replace("{progress}", completed.length).replace("{txid}", signature.slice(0,16));
         alert(successMsg);
         renderActions();
         
     } catch(e) {
-        let errorMsg = uiText[currentLang]?.msg_burn_error || "Error: {error}";
+        let errorMsg = (uiText[currentLang]?.msg_burn_error || "Error: {error}");
         alert(errorMsg.replace("{error}", e.message));
     }
 }
@@ -290,7 +307,7 @@ function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){if(m==='&') 
 
 function filterActions(type) { currentFilter = type; renderActions(); }
 
-// ==================== ПОДКЛЮЧЕНИЕ КОШЕЛЬКОВ (реальное) ====================
+// ==================== ПОДКЛЮЧЕНИЕ КОШЕЛЬКОВ ====================
 async function connectWallet(type) {
     try {
         let provider = null;
@@ -306,12 +323,9 @@ async function connectWallet(type) {
             if (window.backpack) provider = window.backpack;
             else { alert("Установите Backpack: https://backpack.app/"); return; }
         } else {
-            // Для EVM кошельков используем WalletConnect
-            alert(`${type} будет доступен через WalletConnect в ближайшее время. Рекомендуем Phantom для Solana.`);
+            alert("Для сжигания токенов используйте Phantom, Solflare или Backpack");
             return;
         }
-        
-        if (!provider) { alert("Кошелёк не найден"); return; }
         
         await provider.connect();
         wallet = provider;
