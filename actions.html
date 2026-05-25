@@ -244,6 +244,23 @@ let recordedChunks = [];
 let recordingType = null;
 let currentDeed = null;
 
+function getWalletAddress() {
+    if (!wallet) return null;
+    if (wallet.publicKey) return wallet.publicKey.toString();
+    if (wallet.selectedAddress) return wallet.selectedAddress;
+    return null;
+}
+
+function updateWalletUI() {
+    const t = translations[currentLang];
+    const addr = getWalletAddress();
+    if (addr) {
+        document.getElementById('wallet-address').innerText = addr.slice(0,4) + '...' + addr.slice(-4);
+    } else {
+        document.getElementById('wallet-address').innerText = t.connect_wallet;
+    }
+}
+
 function applyLanguage() {
     const t = translations[currentLang];
     if (!t) return;
@@ -263,12 +280,7 @@ function applyLanguage() {
     document.getElementById('cancel-btn').innerText = t.cancel_btn;
     document.getElementById('confirm-btn-text').innerText = t.confirm_btn;
     document.getElementById('recording-status').innerHTML = t.recording_status;
-    if (wallet && wallet.publicKey) {
-        const addr = wallet.publicKey.toString();
-        document.getElementById('wallet-address').innerText = addr.slice(0,4) + '...' + addr.slice(-4);
-    } else {
-        document.getElementById('wallet-address').innerText = t.connect_wallet;
-    }
+    updateWalletUI();
 }
 
 function updateProgress() {
@@ -285,7 +297,7 @@ function renderActions() {
     let items = deedsList.filter(d => currentFilter === 'all' || d.type === currentFilter);
     let completed = JSON.parse(localStorage.getItem('completed_deeds') || '[]');
     const t = translations[currentLang];
-    const canBurn = (wallet !== null && walletType === 'solana' && wallet.publicKey);
+    const canBurn = (wallet !== null && walletType === 'solana' && getWalletAddress() !== null);
     container.innerHTML = items.map(d => `
         <div class="bg-white rounded-xl shadow-md p-4 border-l-4 ${completed.includes(d.name) ? 'border-yellow-500 bg-yellow-50' : 'border-gray-200'}">
             <div class="flex justify-between items-start">
@@ -374,8 +386,11 @@ function stopRecording() {
 
 async function executeBurn() {
     closeDeedModal();
-    if (!wallet || walletType !== 'solana') { openWalletModal(); return; }
-    if (!wallet.publicKey) { alert("Wallet not properly connected. Please reconnect."); openWalletModal(); return; }
+    const addr = getWalletAddress();
+    if (!wallet || walletType !== 'solana' || !addr) { 
+        openWalletModal(); 
+        return; 
+    }
     const t = translations[currentLang];
     if (!confirm(`📿 INTENTION: ${currentDeed.name}\nBurn ${currentDeed.amount} ${currentDeed.type.toUpperCase()}\nFor the sake of Allah. Continue?`)) return;
     try {
@@ -383,7 +398,8 @@ async function executeBurn() {
         const fromMint = new solanaWeb3.PublicKey(TOKENS[currentDeed.type.toUpperCase()]);
         const toSym = currentDeed.type.toUpperCase() === 'ADL' ? 'SABU' : 'ADL';
         const toAddr = new solanaWeb3.PublicKey(TOKENS[toSym]);
-        const accounts = await connection.getTokenAccountsByOwner(wallet.publicKey, { mint: fromMint });
+        const publicKey = new solanaWeb3.PublicKey(addr);
+        const accounts = await connection.getTokenAccountsByOwner(publicKey, { mint: fromMint });
         if (accounts.value.length === 0) { alert(t.msg_no_tokens); return; }
         const fromATA = accounts.value[0].pubkey;
         
@@ -398,14 +414,14 @@ async function executeBurn() {
             keys: [
                 { pubkey: fromATA, isSigner: false, isWritable: true },
                 { pubkey: toAddr, isSigner: false, isWritable: true },
-                { pubkey: wallet.publicKey, isSigner: true, isWritable: false }
+                { pubkey: publicKey, isSigner: true, isWritable: false }
             ],
             programId: TOKEN_PROGRAM_ID,
             data: dataLayout
         }));
         const { blockhash } = await connection.getLatestBlockhash();
         tx.recentBlockhash = blockhash;
-        tx.feePayer = wallet.publicKey;
+        tx.feePayer = publicKey;
         const signature = await solanaWeb3.sendAndConfirmTransaction(connection, tx, [wallet]);
         let completed = JSON.parse(localStorage.getItem('completed_deeds') || '[]');
         if (!completed.includes(currentDeed.name)) completed.push(currentDeed.name);
@@ -419,20 +435,22 @@ async function executeBurn() {
 async function connectWallet(type) {
     try {
         let provider = null;
-        if (type === 'phantom' && window.solana?.isPhantom) provider = window.solana;
-        else if (type === 'solflare' && window.solflare) provider = window.solflare;
-        else if (type === 'backpack' && window.backpack) provider = window.backpack;
-        else { alert("Install Phantom, Solflare or Backpack"); return; }
+        if (type === 'phantom') {
+            if (window.solana && window.solana.isPhantom) provider = window.solana;
+            else if (window.phantom && window.phantom.solana) provider = window.phantom.solana;
+            else { alert("Install Phantom: https://phantom.app/"); return; }
+        } else if (type === 'solflare') {
+            if (window.solflare) provider = window.solflare;
+            else { alert("Install Solflare: https://solflare.com/"); return; }
+        } else if (type === 'backpack') {
+            if (window.backpack) provider = window.backpack;
+            else { alert("Install Backpack: https://backpack.app/"); return; }
+        }
         await provider.connect();
         wallet = provider;
         walletType = 'solana';
         const t = translations[currentLang];
-        if (wallet.publicKey) {
-            const addr = wallet.publicKey.toString();
-            document.getElementById('wallet-address').innerText = addr.slice(0,4) + '...' + addr.slice(-4);
-        } else {
-            document.getElementById('wallet-address').innerText = t.connect_wallet;
-        }
+        updateWalletUI();
         closeWalletModal();
         renderActions();
     } catch(e) { alert("Error: " + e.message); }
