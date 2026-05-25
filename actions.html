@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>99 добрых дел — Halal Chain Bank</title>
+    <title>99 Good Deeds — Halal Chain Bank</title>
     <link rel="icon" href="favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -25,7 +25,7 @@
 <div id="wallet-modal" class="wallet-modal">
     <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl max-h-[90vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-bold" data-key="connect_wallet">Подключить кошелёк</h3>
+            <h3 class="text-xl font-bold" data-key="connect_wallet">Connect Wallet</h3>
             <button onclick="closeWalletModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
         </div>
         <div class="space-y-2">
@@ -34,7 +34,7 @@
             <button onclick="connectWallet('solflare')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-globe text-2xl text-orange-500"></i><span>Solflare</span></button>
             <button onclick="connectWallet('backpack')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-backpack text-2xl text-purple-600"></i><span>Backpack</span></button>
         </div>
-        <p class="text-xs text-gray-400 text-center mt-3">Поддерживаются только Solana-кошельки (Phantom, Solflare, Backpack)</p>
+        <p class="text-xs text-gray-400 text-center mt-3">Only Phantom, Solflare and Backpack support token burning on Solana.</p>
     </div>
 </div>
 
@@ -47,8 +47,8 @@
         </div>
         <div class="flex items-center gap-3">
             <select id="lang-select" class="bg-gray-100 border rounded-lg px-3 py-1.5 text-sm">
-                <option value="ru">Русский</option>
                 <option value="en">English</option>
+                <option value="ru">Русский</option>
                 <option value="ar">العربية</option>
                 <option value="ur">اردو</option>
                 <option value="fa">فارسی</option>
@@ -56,14 +56,14 @@
                 <option value="fr">Français</option>
                 <option value="de">Deutsch</option>
             </select>
-            <button id="wallet-btn" class="bg-gray-900 text-white px-4 py-2 rounded-lg"><i class="fas fa-wallet"></i><span id="wallet-address">Подключить</span></button>
+            <button id="wallet-btn" class="bg-gray-900 text-white px-4 py-2 rounded-lg"><i class="fas fa-wallet"></i><span id="wallet-address" data-key="connect_wallet">Connect Wallet</span></button>
         </div>
     </div>
     <div class="border-t">
         <div class="container mx-auto px-4 flex gap-4">
-            <a href="index.html" class="text-gray-600 py-3 px-1" data-key="nav_home">Главная</a>
-            <a href="actions.html" class="border-b-2 border-yellow-500 font-semibold py-3 px-1" data-key="nav_actions">99 Добрых дел</a>
-            <a href="confession.html" class="text-gray-600 py-3 px-1" data-key="nav_confession">Тауба</a>
+            <a href="index.html" class="text-gray-600 py-3 px-1" data-key="nav_home">Home</a>
+            <a href="actions.html" class="border-b-2 border-yellow-500 font-semibold py-3 px-1" data-key="nav_actions">99 Good Deeds</a>
+            <a href="confession.html" class="text-gray-600 py-3 px-1" data-key="nav_confession">Tawbah</a>
             <a href="whitepaper.html" class="text-gray-600 py-3 px-1" data-key="nav_whitepaper">Whitepaper</a>
         </div>
     </div>
@@ -72,18 +72,18 @@
 <main class="container mx-auto px-4 py-8 max-w-6xl">
     <div class="text-center mb-8">
         <i class="fas fa-praying-hands text-5xl text-yellow-600"></i>
-        <h1 class="text-3xl font-bold mt-2" data-key="title">99 добрых дел</h1>
-        <p class="text-gray-600" data-key="subtitle">Сжигайте токены с намерением (ният). Каждое дело записывается в вашу книгу.</p>
+        <h1 class="text-3xl font-bold mt-2" data-key="title">99 Good Deeds</h1>
+        <p class="text-gray-600" data-key="subtitle">Burn tokens with intention (niyyah). Each deed is recorded in your book.</p>
     </div>
 
     <div class="bg-white rounded-xl shadow-sm p-4 mb-6 flex flex-wrap justify-between items-center">
-        <div><i class="fas fa-chart-simple text-yellow-600"></i> <span class="font-semibold" data-key="completed_label">Выполнено:</span> <span id="progress-count">0</span>/99</div>
-        <div id="badge-display" class="bg-gray-100 px-3 py-1 rounded-full text-sm">🕊️ <span data-key="badge_start">В начале пути</span></div>
+        <div><i class="fas fa-chart-simple text-yellow-600"></i> <span class="font-semibold" data-key="completed_label">Completed:</span> <span id="progress-count">0</span>/99</div>
+        <div id="badge-display" class="bg-gray-100 px-3 py-1 rounded-full text-sm">🕊️ <span data-key="badge_start">Beginning of the path</span></div>
     </div>
     <div class="w-full bg-gray-200 rounded-full h-2 mb-6"><div id="progress-bar" class="bg-green-600 h-2 rounded-full" style="width:0%"></div></div>
 
     <div class="flex justify-center gap-3 flex-wrap mb-8">
-        <button onclick="filterActions('all')" class="filter-btn px-4 py-2 rounded-full bg-gray-200" data-key="filter_all">Все (99)</button>
+        <button onclick="filterActions('all')" class="filter-btn px-4 py-2 rounded-full bg-gray-200" data-key="filter_all">All (99)</button>
         <button onclick="filterActions('sabu')" class="filter-btn px-4 py-2 rounded-full bg-green-100 text-green-700">SABU (33)</button>
         <button onclick="filterActions('muji')" class="filter-btn px-4 py-2 rounded-full bg-blue-100 text-blue-700">MUJI (33)</button>
         <button onclick="filterActions('adl')" class="filter-btn px-4 py-2 rounded-full bg-gray-100 text-gray-700">ADL (33)</button>
@@ -93,12 +93,13 @@
 </main>
 
 <footer class="bg-gray-900 text-white mt-12 py-6 text-center text-sm">
-    <p>© 2025 Halal Chain Bank — <span data-key="footer">Халяльный блокчейн-банк</span></p>
+    <p>© 2025 Halal Chain Bank — <span data-key="footer">Halal blockchain bank</span></p>
 </footer>
 
 <script>
-// ==================== RPC (Alchemy demo, бесплатно, без ключа) ====================
-const SOLANA_RPC = "https://solana-mainnet.g.alchemy.com/v2/demo";
+// ==================== HELIUS RPC (ваш API-ключ) ====================
+const HELIUS_API_KEY = "84a2087d-4e6d-47d7-abd3-622b6eb11273";
+const SOLANA_RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 
 async function getConnection() {
     return new solanaWeb3.Connection(SOLANA_RPC, 'confirmed');
@@ -113,15 +114,15 @@ const TOKENS = {
 
 // ==================== ПЕРЕВОДЫ ====================
 const uiText = {
-    ru: { nav_home:"Главная", nav_actions:"99 Добрых дел", nav_confession:"Тауба", nav_whitepaper:"Whitepaper", title:"99 добрых дел", subtitle:"Сжигайте токены с намерением (ният). Каждое дело записывается в вашу книгу.", completed_label:"Выполнено:", badge_start:"В начале пути", filter_all:"Все (99)", footer:"Халяльный блокчейн-банк", burn:"Сжечь", completed:"Выполнено", connect_wallet:"Подключить кошелёк", msg_no_tokens:"У вас нет токенов. Сначала купите.", msg_burn_confirm:"📿 НИЯТ: совершить дело \"{name}\"\nСжечь {amount} {symbol}\nРади довольства Аллаха. Продолжить?", msg_burn_success:"✅ ДЕЛО ИСПОЛНЕНО!\n{name}\nСожжено {amount} {symbol}\nПрогресс: {progress}/99\nTXID: {txid}", msg_burn_error:"Ошибка: {error}. Убедитесь, что у вас достаточно SOL для комиссии." },
-    en: { nav_home:"Home", nav_actions:"99 Good Deeds", nav_confession:"Tawbah", nav_whitepaper:"Whitepaper", title:"99 Good Deeds", subtitle:"Burn tokens with intention (niyyah). Each deed is recorded in your book.", completed_label:"Completed:", badge_start:"Beginning of the path", filter_all:"All (99)", footer:"Halal blockchain bank", burn:"Burn", completed:"Completed", connect_wallet:"Connect Wallet", msg_no_tokens:"You don't have enough tokens.", msg_burn_confirm:"📿 INTENTION (Niyyah): perform the deed \"{name}\"\nBurn {amount} {symbol}\nFor the sake of Allah. Continue?", msg_burn_success:"✅ DEED COMPLETED!\n{name}\nBurned {amount} {symbol}\nProgress: {progress}/99\nTXID: {txid}", msg_burn_error:"Error: {error}. Please make sure you have enough SOL for fees." }
+    en: { nav_home:"Home", nav_actions:"99 Good Deeds", nav_confession:"Tawbah", nav_whitepaper:"Whitepaper", title:"99 Good Deeds", subtitle:"Burn tokens with intention (niyyah). Each deed is recorded in your book.", completed_label:"Completed:", badge_start:"Beginning of the path", filter_all:"All (99)", footer:"Halal blockchain bank", burn:"Burn", completed:"Completed", connect_wallet:"Connect Wallet", msg_no_tokens:"You don't have enough tokens. Please buy first.", msg_burn_confirm:"📿 INTENTION (Niyyah): perform the deed \"{name}\"\nBurn {amount} {symbol}\nFor the sake of Allah. Continue?", msg_burn_success:"✅ DEED COMPLETED!\n{name}\nBurned {amount} {symbol}\nProgress: {progress}/99\nTXID: {txid}", msg_burn_error:"Error: {error}. Please make sure you have enough SOL for fees." },
+    ru: { nav_home:"Главная", nav_actions:"99 Добрых дел", nav_confession:"Тауба", nav_whitepaper:"Whitepaper", title:"99 добрых дел", subtitle:"Сжигайте токены с намерением (ният). Каждое дело записывается в вашу книгу.", completed_label:"Выполнено:", badge_start:"В начале пути", filter_all:"Все (99)", footer:"Халяльный блокчейн-банк", burn:"Сжечь", completed:"Выполнено", connect_wallet:"Подключить кошелёк", msg_no_tokens:"У вас нет токенов. Сначала купите.", msg_burn_confirm:"📿 НИЯТ: совершить дело \"{name}\"\nСжечь {amount} {symbol}\nРади довольства Аллаха. Продолжить?", msg_burn_success:"✅ ДЕЛО ИСПОЛНЕНО!\n{name}\nСожжено {amount} {symbol}\nПрогресс: {progress}/99\nTXID: {txid}", msg_burn_error:"Ошибка: {error}. Убедитесь, что у вас достаточно SOL для комиссии." }
 };
 
-// Названия дел (русские, для английского пока тоже русские)
+// Названия дел (английские)
 const deedsData = {
-    sabu: ["Сказать Бисмиллях","Совершить вуду","Прочитать 1 ракаат сунны","Пожелать добра мусульманину","Удержать гнев","Помочь бедному","Накормить голодного","Посетить больного","Убрать препятствие","Подарить одежду","Улыбнуться брату","Помочь путнику","Вернуть долг","Напомнить о намазе","Страница Корана","Дуа за умму","Проснуться на тахаджуд","Пост 1 день","Садака тайно","Научить полезному","Примирить ссорящихся","Защитить слабого","Быть справедливым","Не подслушивать","Хранить тайну","Выполнить обещание","Пожелать мира","Сказать правду","Избегать сплетен","Помочь сироте","Посетить мечеть","Хадж (вирт.)","Очистить 33 греха"],
-    muji: ["Дуа за Ахль аль-Бейт","Оплакать Кербелу","Прочитать зияр Ашура","Посетить Кербелу (вирт.)","Почитать имама Али","Почитать Фатиму","Почитать Хусейна","Почитать имама Махди","Сказать 'Яа Али'","Сказать 'Яа Хусейн'","Сказать 'Яа Захра'","Дуа о справедливости","Поминовение Ашуры","1 салават","100 салаватов","Помочь бедному шииту","Защитить общину","Посетить мечеть","Правда о Кербеле","Научить о Кербеле","Поминовение Хусейна","Дуа за скорбящих","Пожертвовать на мавзолей","Пост Ашура","Пост Арбаин","Зияр Кербелы","Такбир","Тасбих","Дуа о единстве","Уважать имамов","История имамов","Плакать по Хусейну","Очистить 33 греха"],
-    adl: ["Простить обидчика","Примирить врагов","Сказать правду","Пожертвовать на мечеть","Помочь обиженному","Честность в сделке","Не брать взятку","Вернуть чужое","Честное свидетельство","Не обманывать","Платить вовремя","Соблюдать договор","Не нарушать обещание","Уважать старших","Заботиться о младших","Не обижать слабого","Защитить соседа","Не воровать","Не убивать","Не лжесвидетельствовать","Соблюдать закон","Платить закят","Помочь должнику","Освободить раба (вирт.)","Посадить дерево","Убрать мусор","Накормить животное","Вылечить больного","Научить детей","Построить колодец","Помочь беженцам","Защитить природу","Очистить 33 греха"]
+    sabu: ["Say Bismillah","Perform Wudu","Pray 1 Rakat Sunnah","Wish good to a Muslim","Control anger","Help the poor","Feed the hungry","Visit the sick","Remove obstacle","Give clothes","Smile at brother","Help a traveler","Repay debt","Remind of prayer","Read Quran page","Dua for Ummah","Wake for Tahajjud","Fast 1 day","Secret sadaqah","Teach something","Reconcile people","Protect the weak","Be just","Don't eavesdrop","Keep a secret","Keep promise","Wish peace","Speak truth","Avoid gossip","Help an orphan","Visit mosque","Hajj virtual","Cleanse 33 sins"],
+    muji: ["Dua for Ahl al-Bayt","Mourn Karbala","Read Ziyarat Ashura","Visit Karbala (virtual)","Honor Imam Ali","Honor Fatima","Honor Hussein","Honor Imam Mahdi","Say 'Ya Ali'","Say 'Ya Hussain'","Say 'Ya Zahra'","Pray for justice","Commemorate Ashura","1 Salawat","100 Salawat","Help poor Shia","Protect community","Visit mosque","Truth about Karbala","Teach about Karbala","Commemorate Hussein","Pray for mourners","Donate to shrine","Ashura fast","Arba'een fast","Karbala Ziyarat","Takbir","Tasbih","Pray for unity","Respect Imams","Imams history","Cry for Hussein","Cleanse 33 sins"],
+    adl: ["Forgive offender","Reconcile enemies","Speak truth","Donate to mosque","Help the wronged","Be honest in trade","Don't take bribe","Return lost item","Testify honestly","Don't cheat","Pay on time","Keep contract","Keep promise","Respect elders","Care for younger","Don't harm weak","Protect neighbor","Don't steal","Don't kill","No false testimony","Obey law","Pay Zakat","Help debtor","Free slave (virtual)","Plant tree","Pick up trash","Feed animal","Heal sick","Teach children","Build well","Help refugees","Protect nature","Cleanse 33 sins"]
 };
 
 const amounts = {
@@ -134,7 +135,7 @@ const amounts = {
 let wallet = null;
 let walletType = null;
 let currentFilter = 'all';
-let currentLang = 'ru';
+let currentLang = 'en';
 
 // ==================== ПРОГРЕСС ====================
 function updateProgress() {
@@ -143,11 +144,11 @@ function updateProgress() {
     document.getElementById('progress-count').innerText = count;
     document.getElementById('progress-bar').style.width = (count/99)*100 + '%';
     let badge = '', emoji = '';
-    if (count >= 99) { badge = 'Сиддик'; emoji = '🏆'; }
-    else if (count >= 66) { badge = 'Абид'; emoji = '📿'; }
-    else if (count >= 33) { badge = 'Праведник'; emoji = '🌟'; }
-    else if (count >= 10) { badge = 'Начинающий'; emoji = '🌱'; }
-    else { badge = uiText[currentLang]?.badge_start || 'В начале пути'; emoji = '🕊️'; }
+    if (count >= 99) { badge = 'Siddiq'; emoji = '🏆'; }
+    else if (count >= 66) { badge = 'Abid'; emoji = '📿'; }
+    else if (count >= 33) { badge = 'Righteous'; emoji = '🌟'; }
+    else if (count >= 10) { badge = 'Beginner'; emoji = '🌱'; }
+    else { badge = uiText[currentLang]?.badge_start || 'Beginning of the path'; emoji = '🕊️'; }
     document.getElementById('badge-display').innerHTML = `${emoji} ${badge}`;
 }
 
@@ -267,10 +268,10 @@ function renderActions() {
             <div class="flex justify-between items-center mt-3">
                 <span class="text-sm text-gray-500">${a.amount} ${a.type.toUpperCase()}</span>
                 ${completed.includes(a.id) ? 
-                    `<span class="text-green-600 text-sm"><i class="fas fa-check-circle"></i> ${uiText[currentLang]?.completed || 'Выполнено'}</span>` : 
+                    `<span class="text-green-600 text-sm"><i class="fas fa-check-circle"></i> ${uiText[currentLang]?.completed || 'Completed'}</span>` : 
                     (canBurn ? 
-                        `<button onclick="burnDeed('${a.type.toUpperCase()}', ${a.amount}, '${a.id}', '${escapeHtml(a.name)}', this)" class="bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600">${uiText[currentLang]?.burn || 'Сжечь'}</button>` :
-                        `<button onclick="openWalletModal()" class="bg-gray-400 text-white px-3 py-1 rounded-lg text-sm cursor-pointer">${uiText[currentLang]?.connect_wallet || 'Подключить'}</button>`
+                        `<button onclick="burnDeed('${a.type.toUpperCase()}', ${a.amount}, '${a.id}', '${escapeHtml(a.name)}', this)" class="bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600">${uiText[currentLang]?.burn || 'Burn'}</button>` :
+                        `<button onclick="openWalletModal()" class="bg-gray-400 text-white px-3 py-1 rounded-lg text-sm cursor-pointer">${uiText[currentLang]?.connect_wallet || 'Connect Wallet'}</button>`
                     )
                 }
             </div>
@@ -290,15 +291,15 @@ async function connectWallet(type) {
         if (type === 'phantom') {
             if (window.solana?.isPhantom) provider = window.solana;
             else if (window.phantom?.solana) provider = window.phantom.solana;
-            else { alert("Установите Phantom: https://phantom.app/"); return; }
+            else { alert("Install Phantom: https://phantom.app/"); return; }
         } else if (type === 'solflare') {
             if (window.solflare) provider = window.solflare;
-            else { alert("Установите Solflare: https://solflare.com/"); return; }
+            else { alert("Install Solflare: https://solflare.com/"); return; }
         } else if (type === 'backpack') {
             if (window.backpack) provider = window.backpack;
-            else { alert("Установите Backpack: https://backpack.app/"); return; }
+            else { alert("Install Backpack: https://backpack.app/"); return; }
         } else {
-            alert("Для сжигания токенов используйте Phantom, Solflare или Backpack");
+            alert("Use Phantom, Solflare or Backpack for burning");
             return;
         }
         
@@ -312,7 +313,7 @@ async function connectWallet(type) {
         renderActions();
         
     } catch(e) {
-        alert("Ошибка подключения: " + e.message);
+        alert("Connection error: " + e.message);
     }
 }
 
