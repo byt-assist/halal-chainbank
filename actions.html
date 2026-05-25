@@ -18,8 +18,6 @@
         @keyframes flame { 0% { text-shadow: 0 0 2px #ff6600; } 50% { text-shadow: 0 0 15px #ff3300; } 100% { text-shadow: 0 0 2px #ff6600; } }
         .burn-animation { animation: flame 0.3s ease-in-out; }
         .sparkle { position: fixed; pointer-events: none; z-index: 1000; width: 20px; height: 20px; background: radial-gradient(circle, gold, orange); border-radius: 50%; animation: sparkle 0.6s ease-out forwards; }
-        .recording-active { animation: pulse 1s infinite; background-color: #ff4444 !important; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -28,8 +26,8 @@
 <div id="wallet-modal" class="wallet-modal">
     <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
         <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-bold" id="wallet-modal-title">Connect Wallet</h3>
-            <button onclick="closeWalletModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
+            <h3 id="wallet-modal-title">Connect Wallet</h3>
+            <button onclick="closeWalletModal()" class="text-gray-400"><i class="fas fa-times text-xl"></i></button>
         </div>
         <div class="space-y-2">
             <button onclick="connectWallet('phantom')" class="w-full flex items-center gap-3 p-3 border rounded-xl"><img src="https://phantom.app/img/logo.png" class="w-6 h-6"><span>Phantom</span></button>
@@ -44,28 +42,26 @@
     <div class="deed-modal-content bg-white rounded-2xl p-6 max-w-2xl w-full mx-4 shadow-2xl">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-bold" id="deed-modal-title">...</h3>
-            <button onclick="closeDeedModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
+            <button onclick="closeDeedModal()" class="text-gray-400"><i class="fas fa-times text-xl"></i></button>
         </div>
-        
-        <div id="deed-text" class="bg-gray-50 p-4 rounded-lg mb-4 text-right arabic-font text-lg leading-loose max-h-60 overflow-y-auto"></div>
+        <div id="deed-arabic" class="bg-gray-50 p-4 rounded-lg mb-4 text-right arabic-font text-lg leading-loose max-h-60 overflow-y-auto"></div>
         <div id="deed-translation" class="bg-gray-50 p-4 rounded-lg mb-4 text-gray-700 text-sm max-h-40 overflow-y-auto"></div>
-        
+        <div id="deed-description" class="bg-gray-100 p-4 rounded-lg mb-4 text-gray-600 text-sm"></div>
         <div class="mb-4">
             <div class="flex gap-3 mb-3">
-                <button id="start-video-btn" class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"><i class="fas fa-video mr-2"></i><span id="video-btn-text">Record video</span></button>
-                <button id="start-audio-btn" class="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700"><i class="fas fa-microphone mr-2"></i><span id="audio-btn-text">Record audio</span></button>
+                <button id="start-video-btn" class="flex-1 bg-blue-600 text-white py-2 rounded-lg"><i class="fas fa-video mr-2"></i><span id="video-btn-text">Record video</span></button>
+                <button id="start-audio-btn" class="flex-1 bg-green-600 text-white py-2 rounded-lg"><i class="fas fa-microphone mr-2"></i><span id="audio-btn-text">Record audio</span></button>
             </div>
-            <div id="recording-status" class="text-sm text-gray-500 text-center hidden">⏺ Recording... Click "Stop" when finished</div>
+            <div id="recording-status" class="text-sm text-gray-500 text-center hidden">⏺ Recording... Click Stop when finished</div>
             <div id="recording-preview" class="mt-3 hidden">
                 <video id="video-preview" class="w-full rounded-lg" controls playsinline></video>
                 <audio id="audio-preview" class="w-full mt-2" controls></audio>
                 <button id="stop-recording-btn" class="mt-2 w-full bg-red-600 text-white py-2 rounded-lg">⏹️ <span id="stop-btn-text">Stop recording</span></button>
             </div>
         </div>
-        
         <div class="flex gap-3">
             <button onclick="closeDeedModal()" id="cancel-btn" class="flex-1 bg-gray-300 py-2 rounded-lg">Cancel</button>
-            <button id="confirm-deed-btn" class="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700" disabled>📿 <span id="confirm-btn-text">Confirm and burn</span></button>
+            <button id="confirm-deed-btn" class="flex-1 bg-red-600 text-white py-2 rounded-lg" disabled>📿 <span id="confirm-btn-text">Confirm and burn</span></button>
         </div>
     </div>
 </div>
@@ -82,16 +78,19 @@
                 <option value="en">English</option>
                 <option value="ru">Русский</option>
                 <option value="ar">العربية</option>
+                <option value="ur">اردو</option>
+                <option value="fa">فارسی</option>
+                <option value="tr">Türkçe</option>
             </select>
             <button id="wallet-btn" class="bg-gray-900 text-white px-4 py-2 rounded-lg"><i class="fas fa-wallet"></i><span id="wallet-address">Connect</span></button>
         </div>
     </div>
     <div class="border-t">
         <div class="container mx-auto px-4 flex gap-4">
-            <a href="index.html" class="text-gray-600 py-3 px-1" id="nav-home">Home</a>
-            <a href="actions.html" class="border-b-2 border-yellow-500 font-semibold py-3 px-1" id="nav-actions">99 Good Deeds</a>
-            <a href="confession.html" class="text-gray-600 py-3 px-1" id="nav-confession">Tawbah</a>
-            <a href="whitepaper.html" class="text-gray-600 py-3 px-1" id="nav-whitepaper">Whitepaper</a>
+            <a href="index.html" id="nav-home">Home</a>
+            <a href="actions.html" class="border-b-2 border-yellow-500 font-semibold" id="nav-actions">99 Good Deeds</a>
+            <a href="confession.html" id="nav-confession">Tawbah</a>
+            <a href="whitepaper.html" id="nav-whitepaper">Whitepaper</a>
         </div>
     </div>
 </header>
@@ -100,12 +99,12 @@
     <div class="text-center mb-8">
         <i class="fas fa-praying-hands text-5xl text-yellow-600"></i>
         <h1 class="text-3xl font-bold mt-2" id="main-title">99 Good Deeds</h1>
-        <p class="text-gray-600" id="main-subtitle">Burn tokens with intention (niyyah). Record video/audio of your recitation. Each deed is recorded forever.</p>
+        <p class="text-gray-600" id="main-subtitle">Burn tokens with intention. Record your recitation. Each deed is recorded forever.</p>
     </div>
 
     <div class="bg-white rounded-xl shadow-sm p-4 mb-6 flex flex-wrap justify-between items-center">
-        <div><i class="fas fa-chart-simple text-yellow-600"></i> <span class="font-semibold" id="completed-label">Completed:</span> <span id="progress-count">0</span>/99</div>
-        <div id="badge-display" class="bg-gray-100 px-3 py-1 rounded-full text-sm">🕊️ Beginning of the path</div>
+        <div><i class="fas fa-chart-simple text-yellow-600"></i> <span id="completed-label">Completed:</span> <span id="progress-count">0</span>/99</div>
+        <div id="badge-display" class="bg-gray-100 px-3 py-1 rounded-full text-sm">🕊️ Beginning</div>
     </div>
     <div class="w-full bg-gray-200 rounded-full h-2 mb-6"><div id="progress-bar" class="bg-green-600 h-2 rounded-full" style="width:0%"></div></div>
 
@@ -124,84 +123,141 @@
 </footer>
 
 <script>
-// ==================== ПЕРЕВОДЫ ====================
-const translations = {
-    en: {
-        wallet_title: "Connect Wallet", nav_home: "Home", nav_actions: "99 Good Deeds", nav_confession: "Tawbah", nav_whitepaper: "Whitepaper",
-        main_title: "99 Good Deeds", main_subtitle: "Burn tokens with intention (niyyah). Record video/audio of your recitation. Each deed is recorded forever.",
-        completed_label: "Completed:", filter_all: "All (99)", footer_text: "Halal blockchain bank", connect_wallet: "Connect",
-        video_btn: "Record video", audio_btn: "Record audio", stop_btn: "Stop recording", cancel_btn: "Cancel", confirm_btn: "Confirm and burn",
-        recording_status: "⏺ Recording... Click 'Stop' when finished", msg_no_tokens: "You don't have enough tokens", 
-        msg_confirm: "📿 INTENTION: {name}\nBurn {amount} {symbol}\nFor the sake of Allah. Continue?",
-        msg_success: "✅ DEED COMPLETED!\n{name}\nBurned {amount} {symbol}\nProgress: {progress}/99\nTXID: {txid}",
-        msg_error: "Error: {error}"
-    },
-    ru: {
-        wallet_title: "Подключить кошелёк", nav_home: "Главная", nav_actions: "99 Добрых дел", nav_confession: "Тауба", nav_whitepaper: "Whitepaper",
-        main_title: "99 добрых дел", main_subtitle: "Сжигайте токены с намерением (ният). Запишите видео/аудио вашего чтения. Каждое дело навсегда сохраняется.",
-        completed_label: "Выполнено:", filter_all: "Все (99)", footer_text: "Халяльный блокчейн-банк", connect_wallet: "Подключить",
-        video_btn: "Записать видео", audio_btn: "Записать аудио", stop_btn: "Остановить запись", cancel_btn: "Отмена", confirm_btn: "Подтвердить и сжечь",
-        recording_status: "⏺ Идёт запись... Нажмите 'Остановить' когда закончите", msg_no_tokens: "У вас нет токенов",
-        msg_confirm: "📿 НИЯТ: совершить дело \"{name}\"\nСжечь {amount} {symbol}\nРади довольства Аллаха. Продолжить?",
-        msg_success: "✅ ДЕЛО ИСПОЛНЕНО!\n{name}\nСожжено {amount} {symbol}\nПрогресс: {progress}/99\nTXID: {txid}",
-        msg_error: "Ошибка: {error}"
-    },
-    ar: {
-        wallet_title: "ربط المحفظة", nav_home: "الرئيسية", nav_actions: "99 عملاً صالحاً", nav_confession: "توبة", nav_whitepaper: "الورقة البيضاء",
-        main_title: "٩٩ عملاً صالحاً", main_subtitle: "أحرق التوكنات بنية. سجل فيديو/صوت لتلاوتك. كل عمل يسجل للأبد.",
-        completed_label: "مكتمل:", filter_all: "الكل (٩٩)", footer_text: "بنك حلال", connect_wallet: "ربط",
-        video_btn: "تسجيل فيديو", audio_btn: "تسجيل صوت", stop_btn: "إيقاف التسجيل", cancel_btn: "إلغاء", confirm_btn: "تأكيد وحرق",
-        recording_status: "⏺ جارٍ التسجيل... اضغط 'إيقاف' عند الانتهاء", msg_no_tokens: "ليس لديك توكنات",
-        msg_confirm: "نية: أداء العمل \"{name}\"\nحرق {amount} {symbol}\nلوجه الله. استمرار؟",
-        msg_success: "✅ تم العمل!\n{name}\nتم حرق {amount} {symbol}\nالتقدم: {progress}/99\nTXID: {txid}",
-        msg_error: "خطأ: {error}"
-    }
-};
-
 // ==================== HELIUS RPC ====================
 const HELIUS_API_KEY = "84a2087d-4e6d-47d7-abd3-622b6eb11273";
 const SOLANA_RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
+const TOKEN_PROGRAM_ID = new solanaWeb3.PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DC");
+
 async function getConnection() { return new solanaWeb3.Connection(SOLANA_RPC, 'confirmed'); }
 
-// ==================== АДРЕСА ТОКЕНОВ ====================
-const TOKENS = { SABU: "25gGFdNrudjBqhMbLpAmvH4Y8ceuVbwBk1Kh2Kp38xaM", MUJI: "3umgiW7VXyKtUGwd9HpczBADxGPaxXSjUBuaBzPZ251Y", ADL: "8NEsFQ9PpGmZVaz5nHV1zTBWDxgrwxwvY5cJ9ejQvpdN" };
-const TOKEN_PROGRAM_ID = new solanaWeb3.PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
-
-// ==================== ТЕКСТЫ ДЕЛ ====================
-const deedTexts = {
-    "Say Bismillah": { ar: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ", ru: "С именем Аллаха, Милостивого, Милосердного!", en: "In the name of Allah, the Most Gracious, the Most Merciful." },
-    "Perform Wudu": { ar: "نَوَيْتُ الْوُضُوءَ لِرَفْعِ الْحَدَثِ", ru: "Я намерился совершить омовение для очищения", en: "I intend to perform ablution for purification." },
-    "Pray 1 Rakat Sunnah": { ar: "صَلَاةُ السُّنَّةِ رَكْعَتَانِ", ru: "Молитва-сунна — два ракаата", en: "Sunnah prayer - two rakats." }
+const TOKENS = {
+    SABU: "25gGFdNrudjBqhMbLpAmvH4Y8ceuVbwBk1Kh2Kp38xaM",
+    MUJI: "3umgiW7VXyKtUGwd9HpczBADxGPaxXSjUBuaBzPZ251Y",
+    ADL: "8NEsFQ9PpGmZVaz5nHV1zTBWDxgrwxwvY5cJ9ejQvpdN"
 };
 
-function getDeedText(name, lang) {
-    if (deedTexts[name] && deedTexts[name][lang]) return deedTexts[name][lang];
-    return lang === 'ru' ? "Прочитайте это дело с намерением. Да примет Аллах." : "Read this deed with intention. May Allah accept it.";
-}
+// ==================== 99 DEEDS DATA ====================
+const deedsList = [
+    // SABU (Sunni) - 33 deeds
+    { name: "Say Bismillah", type: "sabu", amount: 0.1, arabic: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ", translation: "In the name of Allah, the Most Gracious, the Most Merciful", description: "Say Bismillah before any action, meal, or beginning of work." },
+    { name: "Say Alhamdulillah", type: "sabu", amount: 0.1, arabic: "الْحَمْدُ لِلَّهِ", translation: "All praise is due to Allah", description: "Say Alhamdulillah after finishing something or when grateful." },
+    { name: "Say SubhanAllah", type: "sabu", amount: 0.1, arabic: "سُبْحَانَ اللَّهِ", translation: "Glory be to Allah", description: "Say SubhanAllah when witnessing something amazing or glorifying Allah." },
+    { name: "Say Allahu Akbar", type: "sabu", amount: 0.1, arabic: "اللَّهُ أَكْبَرُ", translation: "Allah is the Greatest", description: "Say Allahu Akbar at any time to remember Allah's greatness." },
+    { name: "Say La ilaha illallah", type: "sabu", amount: 0.2, arabic: "لَا إِلَٰهَ إِلَّا اللَّهُ", translation: "There is no god but Allah", description: "Say the testimony of faith." },
+    { name: "Say Astaghfirullah", type: "sabu", amount: 0.2, arabic: "أَسْتَغْفِرُ اللَّهَ", translation: "I seek forgiveness from Allah", description: "Seek forgiveness from Allah for any sins." },
+    { name: "Say Hasbunallah", type: "sabu", amount: 0.3, arabic: "حَسْبُنَا اللَّهُ", translation: "Sufficient for us is Allah", description: "Say Hasbunallah when facing difficulties." },
+    { name: "Say Tawakkaltu alallah", type: "sabu", amount: 0.3, arabic: "تَوَكَّلْتُ عَلَى اللَّهِ", translation: "I put my trust in Allah", description: "Declare your trust in Allah before starting something." },
+    { name: "Say Ma sha Allah", type: "sabu", amount: 0.2, arabic: "مَا شَاءَ اللَّهُ", translation: "What Allah wills", description: "Say Ma sha Allah when seeing something beautiful." },
+    { name: "Say In sha Allah", type: "sabu", amount: 0.2, arabic: "إِنْ شَاءَ اللَّهُ", translation: "If Allah wills", description: "Say In sha Allah when planning future actions." },
+    { name: "Say JazakAllahu khayran", type: "sabu", amount: 0.3, arabic: "جَزَاكَ اللَّهُ خَيْرًا", translation: "May Allah reward you with good", description: "Thank someone with this beautiful supplication." },
+    { name: "Surah Al-Fatiha", type: "sabu", amount: 1, arabic: "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ...", translation: "Praise be to Allah, Lord of the worlds...", description: "Recite the opening chapter of the Quran." },
+    { name: "Surah Al-Ikhlas", type: "sabu", amount: 1, arabic: "قُلْ هُوَ اللَّهُ أَحَدٌ...", translation: "Say: He is Allah, the One...", description: "Recite Surah Al-Ikhlas (Chapter 112)." },
+    { name: "Surah Al-Falaq", type: "sabu", amount: 1, arabic: "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ...", translation: "Say: I seek refuge with the Lord of daybreak...", description: "Recite Surah Al-Falaq for protection." },
+    { name: "Surah An-Nas", type: "sabu", amount: 1, arabic: "قُلْ أَعُوذُ بِرَبِّ النَّاسِ...", translation: "Say: I seek refuge with the Lord of mankind...", description: "Recite Surah An-Nas for protection from evil whispers." },
+    { name: "Surah Al-Asr", type: "sabu", amount: 1, arabic: "وَالْعَصْرِ إِنَّ الْإِنْسَانَ لَفِي خُسْرٍ...", translation: "By time, indeed mankind is in loss...", description: "Recite Surah Al-Asr (Chapter 103)." },
+    { name: "Surah Al-Kawthar", type: "sabu", amount: 1, arabic: "إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ...", translation: "Indeed, We have granted you Al-Kawthar...", description: "Recite Surah Al-Kawthar (Chapter 108)." },
+    { name: "Surah Al-Ma'un", type: "sabu", amount: 1, arabic: "أَرَأَيْتَ الَّذِي يُكَذِّبُ بِالدِّينِ...", translation: "Have you seen the one who denies the recompense?", description: "Recite Surah Al-Ma'un (Chapter 107)." },
+    { name: "Ayat al-Kursi", type: "sabu", amount: 3, arabic: "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ...", translation: "Allah! There is no deity except Him, the Ever-Living...", description: "Recite Ayat al-Kursi (Quran 2:255) for protection." },
+    { name: "Perform Wudu", type: "sabu", amount: 0.5, arabic: "", translation: "", description: "Perform ritual ablution before prayer." },
+    { name: "Pray 2 Rakat Sunnah", type: "sabu", amount: 1, arabic: "", translation: "", description: "Pray 2 rakats of Sunnah prayer." },
+    { name: "Help the poor", type: "sabu", amount: 5, arabic: "", translation: "", description: "Help a poor person financially or with food." },
+    { name: "Feed the hungry", type: "sabu", amount: 5, arabic: "", translation: "", description: "Feed a hungry person." },
+    { name: "Visit the sick", type: "sabu", amount: 3, arabic: "", translation: "", description: "Visit someone who is sick." },
+    { name: "Remove obstacle", type: "sabu", amount: 1, arabic: "", translation: "", description: "Remove an obstacle from the road." },
+    { name: "Give clothes", type: "sabu", amount: 10, arabic: "", translation: "", description: "Give clothes to someone in need." },
+    { name: "Smile at brother", type: "sabu", amount: 0.2, arabic: "", translation: "", description: "Smile at your Muslim brother/sister." },
+    { name: "Help a traveler", type: "sabu", amount: 2, arabic: "", translation: "", description: "Help a traveler in need." },
+    { name: "Repay debt", type: "sabu", amount: 5, arabic: "", translation: "", description: "Repay a debt you owe." },
+    { name: "Remind of prayer", type: "sabu", amount: 0.5, arabic: "", translation: "", description: "Remind someone about prayer." },
+    { name: "Read Quran page", type: "sabu", amount: 2, arabic: "", translation: "", description: "Read one page of the Quran." },
+    { name: "Dua for Ummah", type: "sabu", amount: 1, arabic: "", translation: "", description: "Make dua for the entire Muslim Ummah." },
+    { name: "Cleanse 33 sins", type: "sabu", amount: 33, arabic: "", translation: "", description: "Seek forgiveness for 33 sins." },
+    
+    // MUJI (Shia) - 33 deeds (simplified for length)
+    { name: "Dua for Ahl al-Bayt", type: "muji", amount: 0.5, arabic: "اللهم صل على محمد وآل محمد", translation: "O Allah, bless Muhammad and the family of Muhammad", description: "Send blessings upon the Prophet and his family." },
+    { name: "Say Ya Ali", type: "muji", amount: 0.2, arabic: "يَا عَلِيُّ", translation: "O Ali", description: "Call upon Imam Ali." },
+    { name: "Say Ya Hussain", type: "muji", amount: 0.2, arabic: "يَا حُسَيْنُ", translation: "O Hussain", description: "Call upon Imam Hussain." },
+    { name: "Say Ya Zahra", type: "muji", amount: 0.2, arabic: "يَا زَهْرَاءُ", translation: "O Zahra", description: "Call upon Fatima Zahra." },
+    { name: "Mourn Karbala", type: "muji", amount: 1, arabic: "", translation: "", description: "Mourn the martyrs of Karbala." },
+    { name: "Read Ziyarat Ashura", type: "muji", amount: 2, arabic: "السَّلَامُ عَلَيْكَ يَا أَبَا عَبْدِ اللَّهِ", translation: "Peace be upon you, O Abu Abdullah", description: "Recite Ziyarat Ashura." },
+    { name: "Commemorate Ashura", type: "muji", amount: 5, arabic: "", translation: "", description: "Participate in Ashura commemoration." },
+    { name: "Honor Imam Ali", type: "muji", amount: 1, arabic: "", translation: "", description: "Read about or honor Imam Ali." },
+    { name: "Honor Fatima", type: "muji", amount: 1, arabic: "", translation: "", description: "Read about or honor Fatima Zahra." },
+    { name: "Honor Hussein", type: "muji", amount: 2, arabic: "", translation: "", description: "Read about or honor Imam Hussain." },
+    { name: "Honor Imam Mahdi", type: "muji", amount: 3, arabic: "", translation: "", description: "Read about or honor Imam Mahdi." },
+    { name: "Pray for justice", type: "muji", amount: 1, arabic: "اللهم أظهر العدل", translation: "O Allah, manifest justice", description: "Pray for justice to prevail." },
+    { name: "1 Salawat", type: "muji", amount: 0.1, arabic: "اللهم صل على محمد", translation: "O Allah bless Muhammad", description: "Send one salawat upon the Prophet." },
+    { name: "100 Salawat", type: "muji", amount: 5, arabic: "", translation: "", description: "Send 100 salawat upon the Prophet." },
+    { name: "Help poor Shia", type: "muji", amount: 5, arabic: "", translation: "", description: "Help a poor Shia brother/sister." },
+    { name: "Protect community", type: "muji", amount: 20, arabic: "", translation: "", description: "Protect the Shia community." },
+    { name: "Truth about Karbala", type: "muji", amount: 2, arabic: "", translation: "", description: "Share the truth about Karbala." },
+    { name: "Teach about Karbala", type: "muji", amount: 5, arabic: "", translation: "", description: "Teach someone about Karbala." },
+    { name: "Pray for mourners", type: "muji", amount: 2, arabic: "", translation: "", description: "Pray for those who mourn Ahl al-Bayt." },
+    { name: "Donate to shrine", type: "muji", amount: 10, arabic: "", translation: "", description: "Donate to a shrine of Ahl al-Bayt." },
+    { name: "Ashura fast", type: "muji", amount: 10, arabic: "", translation: "", description: "Fast on the day of Ashura." },
+    { name: "Arba'een fast", type: "muji", amount: 10, arabic: "", translation: "", description: "Fast on Arba'een." },
+    { name: "Karbala Ziyarat", type: "muji", amount: 3, arabic: "السَّلَامُ عَلَيْكَ يَا حُسَيْنُ", translation: "Peace be upon you, O Hussain", description: "Recite Karbala Ziyarat." },
+    { name: "Say Takbir", type: "muji", amount: 0.1, arabic: "اللَّهُ أَكْبَرُ", translation: "Allah is the Greatest", description: "Say Allahu Akbar." },
+    { name: "Say Tasbih", type: "muji", amount: 0.1, arabic: "سُبْحَانَ اللَّهِ", translation: "Glory be to Allah", description: "Say SubhanAllah." },
+    { name: "Dua for unity", type: "muji", amount: 1, arabic: "اللهم ألف بين قلوبنا", translation: "O Allah, unite our hearts", description: "Pray for Muslim unity." },
+    { name: "Respect Imams", type: "muji", amount: 2, arabic: "", translation: "", description: "Show respect to all 12 Imams." },
+    { name: "Study Imams history", type: "muji", amount: 5, arabic: "", translation: "", description: "Study the history of the Imams." },
+    { name: "Cry for Hussein", type: "muji", amount: 5, arabic: "", translation: "", description: "Weep for Imam Hussain." },
+    { name: "Visit Karbala (virtual)", type: "muji", amount: 50, arabic: "", translation: "", description: "Virtual visit to Karbala." },
+    { name: "Say Ya Mahdi", type: "muji", amount: 0.5, arabic: "يَا مَهْدِيُّ", translation: "O Mahdi", description: "Call upon Imam Mahdi." },
+    { name: "Cleanse 33 sins", type: "muji", amount: 33, arabic: "", translation: "", description: "Seek forgiveness for 33 sins." },
+    
+    // ADL (Justice) - 33 deeds
+    { name: "Forgive offender", type: "adl", amount: 1, arabic: "", translation: "", description: "Forgive someone who wronged you." },
+    { name: "Reconcile enemies", type: "adl", amount: 10, arabic: "", translation: "", description: "Reconcile two people who are enemies." },
+    { name: "Speak truth", type: "adl", amount: 0.5, arabic: "", translation: "", description: "Speak the truth even if it's difficult." },
+    { name: "Donate to mosque", type: "adl", amount: 5, arabic: "", translation: "", description: "Donate to a mosque." },
+    { name: "Help the wronged", type: "adl", amount: 10, arabic: "", translation: "", description: "Help someone who has been wronged." },
+    { name: "Be honest in trade", type: "adl", amount: 2, arabic: "", translation: "", description: "Be honest in business/trade." },
+    { name: "Don't take bribe", type: "adl", amount: 5, arabic: "", translation: "", description: "Refuse a bribe." },
+    { name: "Return lost item", type: "adl", amount: 2, arabic: "", translation: "", description: "Return a lost item to its owner." },
+    { name: "Testify honestly", type: "adl", amount: 3, arabic: "", translation: "", description: "Give honest testimony." },
+    { name: "Don't cheat", type: "adl", amount: 2, arabic: "", translation: "", description: "Do not cheat in exams or business." },
+    { name: "Pay on time", type: "adl", amount: 1, arabic: "", translation: "", description: "Pay your bills and debts on time." },
+    { name: "Keep contract", type: "adl", amount: 2, arabic: "", translation: "", description: "Honor your contracts." },
+    { name: "Keep promise", type: "adl", amount: 2, arabic: "", translation: "", description: "Keep your promises." },
+    { name: "Respect elders", type: "adl", amount: 1, arabic: "", translation: "", description: "Respect older people." },
+    { name: "Care for younger", type: "adl", amount: 1, arabic: "", translation: "", description: "Care for younger people." },
+    { name: "Don't harm weak", type: "adl", amount: 3, arabic: "", translation: "", description: "Do not harm the weak." },
+    { name: "Protect neighbor", type: "adl", amount: 2, arabic: "", translation: "", description: "Protect your neighbor." },
+    { name: "Don't steal", type: "adl", amount: 10, arabic: "", translation: "", description: "Do not steal." },
+    { name: "Don't kill", type: "adl", amount: 50, arabic: "", translation: "", description: "Do not kill." },
+    { name: "No false testimony", type: "adl", amount: 10, arabic: "", translation: "", description: "Do not give false testimony." },
+    { name: "Obey law", type: "adl", amount: 1, arabic: "", translation: "", description: "Obey the law of the land." },
+    { name: "Pay Zakat", type: "adl", amount: 20, arabic: "", translation: "", description: "Pay Zakat (obligatory charity)." },
+    { name: "Help debtor", type: "adl", amount: 5, arabic: "", translation: "", description: "Help someone in debt." },
+    { name: "Free slave (virtual)", type: "adl", amount: 30, arabic: "", translation: "", description: "Virtual slave liberation." },
+    { name: "Plant tree", type: "adl", amount: 2, arabic: "", translation: "", description: "Plant a tree." },
+    { name: "Pick up trash", type: "adl", amount: 0.5, arabic: "", translation: "", description: "Pick up trash from the street." },
+    { name: "Feed animal", type: "adl", amount: 1, arabic: "", translation: "", description: "Feed a hungry animal." },
+    { name: "Heal sick", type: "adl", amount: 10, arabic: "", translation: "", description: "Help heal a sick person." },
+    { name: "Teach children", type: "adl", amount: 3, arabic: "", translation: "", description: "Teach children something useful." },
+    { name: "Build well", type: "adl", amount: 30, arabic: "", translation: "", description: "Build a well for clean water." },
+    { name: "Help refugees", type: "adl", amount: 20, arabic: "", translation: "", description: "Help refugees." },
+    { name: "Protect nature", type: "adl", amount: 5, arabic: "", translation: "", description: "Protect the environment." },
+    { name: "Cleanse 33 sins", type: "adl", amount: 33, arabic: "", translation: "", description: "Seek forgiveness for 33 sins." }
+];
 
-// ==================== ДАННЫЕ ДЕЛ ====================
-const deedsData = {
-    sabu: ["Say Bismillah","Perform Wudu","Pray 1 Rakat Sunnah","Wish good to a Muslim","Control anger","Help the poor","Feed the hungry","Visit the sick","Remove obstacle","Give clothes","Smile at brother","Help a traveler","Repay debt","Remind of prayer","Read Quran page","Dua for Ummah","Wake for Tahajjud","Fast 1 day","Secret sadaqah","Teach something","Reconcile people","Protect the weak","Be just","Don't eavesdrop","Keep a secret","Keep promise","Wish peace","Speak truth","Avoid gossip","Help an orphan","Visit mosque","Hajj virtual","Cleanse 33 sins"],
-    muji: ["Dua for Ahl al-Bayt","Mourn Karbala","Read Ziyarat Ashura","Visit Karbala (virtual)","Honor Imam Ali","Honor Fatima","Honor Hussein","Honor Imam Mahdi","Say 'Ya Ali'","Say 'Ya Hussain'","Say 'Ya Zahra'","Pray for justice","Commemorate Ashura","1 Salawat","100 Salawat","Help poor Shia","Protect community","Visit mosque","Truth about Karbala","Teach about Karbala","Commemorate Hussein","Pray for mourners","Donate to shrine","Ashura fast","Arba'een fast","Karbala Ziyarat","Takbir","Tasbih","Pray for unity","Respect Imams","Imams history","Cry for Hussein","Cleanse 33 sins"],
-    adl: ["Forgive offender","Reconcile enemies","Speak truth","Donate to mosque","Help the wronged","Be honest in trade","Don't take bribe","Return lost item","Testify honestly","Don't cheat","Pay on time","Keep contract","Keep promise","Respect elders","Care for younger","Don't harm weak","Protect neighbor","Don't steal","Don't kill","No false testimony","Obey law","Pay Zakat","Help debtor","Free slave (virtual)","Plant tree","Pick up trash","Feed animal","Heal sick","Teach children","Build well","Help refugees","Protect nature","Cleanse 33 sins"]
+// ==================== TRANSLATIONS ====================
+const translations = {
+    en: { nav_home:"Home", nav_actions:"99 Good Deeds", nav_confession:"Tawbah", nav_whitepaper:"Whitepaper", main_title:"99 Good Deeds", main_subtitle:"Burn tokens with intention. Record your recitation. Each deed is recorded forever.", completed_label:"Completed:", filter_all:"All (99)", footer:"Halal blockchain bank", connect_wallet:"Connect", video_btn:"Record video", audio_btn:"Record audio", stop_btn:"Stop recording", cancel_btn:"Cancel", confirm_btn:"Confirm and burn", recording_status:"⏺ Recording... Click Stop when finished", msg_no_tokens:"You don't have enough tokens", msg_error:"Error: {error}" },
+    ru: { nav_home:"Главная", nav_actions:"99 Добрых дел", nav_confession:"Тауба", nav_whitepaper:"Whitepaper", main_title:"99 добрых дел", main_subtitle:"Сжигайте токены с намерением. Запишите ваше чтение. Каждое дело навсегда сохраняется.", completed_label:"Выполнено:", filter_all:"Все (99)", footer:"Халяльный блокчейн-банк", connect_wallet:"Подключить", video_btn:"Записать видео", audio_btn:"Записать аудио", stop_btn:"Остановить", cancel_btn:"Отмена", confirm_btn:"Подтвердить и сжечь", recording_status:"⏺ Идёт запись... Нажмите Остановить", msg_no_tokens:"Нет токенов", msg_error:"Ошибка: {error}" },
+    ar: { nav_home:"الرئيسية", nav_actions:"99 عملاً صالحاً", nav_confession:"توبة", nav_whitepaper:"الورقة البيضاء", main_title:"٩٩ عملاً صالحاً", main_subtitle:"أحرق التوكنات بنية. سجل تلاوتك. كل عمل يسجل للأبد.", completed_label:"مكتمل:", filter_all:"الكل (٩٩)", footer:"بنك حلال", connect_wallet:"ربط", video_btn:"تسجيل فيديو", audio_btn:"تسجيل صوت", stop_btn:"إيقاف", cancel_btn:"إلغاء", confirm_btn:"تأكيد وحرق", recording_status:"⏺ جارٍ التسجيل... اضغط إيقاف", msg_no_tokens:"ليس لديك توكنات", msg_error:"خطأ: {error}" }
 };
 
-const amounts = {
-    sabu: [0.1,0.5,1,0.5,2,5,5,3,1,10,0.2,2,5,0.5,2,1,3,10,5,2,10,15,5,1,2,3,0.5,1,2,20,1,100,33],
-    muji: [0.5,1,2,50,1,1,2,3,0.2,0.2,0.2,1,5,0.1,5,5,20,1,2,5,3,2,10,10,10,3,0.1,0.1,1,2,5,5,33],
-    adl: [1,10,0.5,5,10,2,5,2,3,2,1,2,2,1,1,3,2,10,50,10,1,20,5,30,2,0.5,1,10,3,30,20,5,33]
-};
-
-// ==================== ПЕРЕМЕННЫЕ ====================
 let wallet = null, walletType = null, currentFilter = 'all', currentLang = 'en';
 let mediaRecorder = null, recordedChunks = [], recordingType = null;
-let currentDeed = null, currentAmount = null, currentSymbol = null, currentDeedId = null;
+let currentDeed = null;
 
-// ==================== ПРИМЕНЕНИЕ ЯЗЫКА ====================
 function applyLanguage() {
     const t = translations[currentLang];
     if (!t) return;
-    document.getElementById('wallet-modal-title').innerText = t.wallet_title;
+    document.getElementById('wallet-modal-title').innerHTML = t.connect_wallet;
     document.getElementById('nav-home').innerText = t.nav_home;
     document.getElementById('nav-actions').innerText = t.nav_actions;
     document.getElementById('nav-confession').innerText = t.nav_confession;
@@ -210,7 +266,7 @@ function applyLanguage() {
     document.getElementById('main-subtitle').innerText = t.main_subtitle;
     document.getElementById('completed-label').innerHTML = t.completed_label;
     document.getElementById('filter-all').innerText = t.filter_all;
-    document.getElementById('footer-text').innerText = t.footer_text;
+    document.getElementById('footer-text').innerText = t.footer;
     document.getElementById('video-btn-text').innerText = t.video_btn;
     document.getElementById('audio-btn-text').innerText = t.audio_btn;
     document.getElementById('stop-btn-text').innerText = t.stop_btn;
@@ -221,7 +277,55 @@ function applyLanguage() {
     else document.getElementById('wallet-address').innerText = t.connect_wallet;
 }
 
-// ==================== ФУНКЦИИ ЗАПИСИ ====================
+function updateProgress() {
+    let completed = JSON.parse(localStorage.getItem('completed_deeds') || '[]');
+    let count = completed.length;
+    document.getElementById('progress-count').innerText = count;
+    document.getElementById('progress-bar').style.width = (count/99)*100 + '%';
+    let badge = count >= 99 ? '🏆 Siddiq' : count >= 66 ? '📿 Abid' : count >= 33 ? '🌟 Righteous' : count >= 10 ? '🌱 Beginner' : '🕊️ Beginning';
+    document.getElementById('badge-display').innerHTML = badge;
+}
+
+function renderActions() {
+    let container = document.getElementById('actions-grid');
+    let items = deedsList.filter(d => currentFilter === 'all' || d.type === currentFilter);
+    let completed = JSON.parse(localStorage.getItem('completed_deeds') || '[]');
+    const t = translations[currentLang];
+    const canBurn = (wallet !== null && walletType === 'solana');
+    container.innerHTML = items.map((d, idx) => `
+        <div class="bg-white rounded-xl shadow-md p-4 border-l-4 ${completed.includes(d.name) ? 'border-yellow-500 bg-yellow-50' : 'border-gray-200'}">
+            <div class="flex justify-between items-start">
+                <h3 class="font-bold text-sm">${d.name}</h3>
+                <span class="text-xs px-2 py-1 rounded-full text-white ${d.type === 'sabu' ? 'bg-green-600' : d.type === 'muji' ? 'bg-blue-600' : 'bg-gray-800'}">${d.type.toUpperCase()}</span>
+            </div>
+            <div class="flex justify-between items-center mt-3">
+                <span class="text-sm text-gray-500">${d.amount} ${d.type.toUpperCase()}</span>
+                ${completed.includes(d.name) ? 
+                    `<span class="text-green-600 text-sm"><i class="fas fa-check-circle"></i> ${t.completed_label}</span>` : 
+                    (canBurn ? 
+                        `<button onclick="openDeedModal('${d.name}', '${d.type}', ${d.amount}, '${d.arabic}', '${d.translation}', '${d.description}')" class="bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600">${t.completed_label === 'Выполнено:' ? 'Сжечь' : 'Burn'}</button>` :
+                        `<button onclick="openWalletModal()" class="bg-gray-400 text-white px-3 py-1 rounded-lg text-sm">${t.connect_wallet}</button>`
+                    )
+                }
+            </div>
+        </div>
+    `).join('');
+}
+
+function filterActions(type) { currentFilter = type; renderActions(); }
+
+function openDeedModal(name, type, amount, arabic, translation, description) {
+    currentDeed = { name, type, amount, arabic, translation, description };
+    document.getElementById('deed-modal-title').innerText = name;
+    document.getElementById('deed-arabic').innerHTML = arabic || '<span class="text-gray-400">(No Arabic text required)</span>';
+    document.getElementById('deed-translation').innerHTML = translation || '<span class="text-gray-400">No translation needed</span>';
+    document.getElementById('deed-description').innerHTML = description || 'Perform this deed with intention.';
+    document.getElementById('deed-modal').classList.add('active');
+    document.getElementById('confirm-deed-btn').disabled = true;
+}
+
+function closeDeedModal() { document.getElementById('deed-modal').classList.remove('active'); }
+
 async function startVideoRecording() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -230,7 +334,7 @@ async function startVideoRecording() {
         document.getElementById('recording-preview').classList.remove('hidden');
         document.getElementById('video-preview').classList.remove('hidden');
         document.getElementById('audio-preview').classList.add('hidden');
-    } catch(e) { alert("Camera/Microphone access denied"); }
+    } catch(e) { alert("Camera access denied"); }
 }
 
 async function startAudioRecording() {
@@ -252,21 +356,13 @@ function setupRecording(stream, type) {
     mediaRecorder.onstop = () => {
         const blob = new Blob(recordedChunks, { type: type === 'video' ? 'video/webm' : 'audio/webm' });
         const url = URL.createObjectURL(blob);
-        if (type === 'video') {
-            document.getElementById('video-preview').srcObject = null;
-            document.getElementById('video-preview').src = url;
-        } else {
-            document.getElementById('audio-preview').srcObject = null;
-            document.getElementById('audio-preview').src = url;
-        }
+        if (type === 'video') { document.getElementById('video-preview').srcObject = null; document.getElementById('video-preview').src = url; }
+        else { document.getElementById('audio-preview').srcObject = null; document.getElementById('audio-preview').src = url; }
         document.getElementById('stop-recording-btn').style.display = 'none';
         document.getElementById('confirm-deed-btn').disabled = false;
         document.getElementById('recording-status').classList.add('hidden');
         const reader = new FileReader();
-        reader.onloadend = () => {
-            localStorage.setItem(`recording_${currentDeedId}_${Date.now()}`, reader.result);
-            currentDeed.recordingData = reader.result;
-        };
+        reader.onloadend = () => localStorage.setItem(`recording_${currentDeed.name}_${Date.now()}`, reader.result);
         reader.readAsDataURL(blob);
     };
     mediaRecorder.start(1000);
@@ -282,45 +378,22 @@ function stopRecording() {
     }
 }
 
-// ==================== МОДАЛЬНОЕ ОКНО ====================
-function openDeedModal(symbol, amount, deedId, deedName) {
-    currentSymbol = symbol;
-    currentAmount = amount;
-    currentDeedId = deedId;
-    currentDeed = { name: deedName, symbol, amount };
-    document.getElementById('deed-modal-title').innerText = deedName;
-    const text = getDeedText(deedName, currentLang);
-    document.getElementById('deed-text').innerHTML = `<div class="arabic-font text-xl">${text}</div>`;
-    document.getElementById('deed-modal').classList.add('active');
-    document.getElementById('confirm-deed-btn').disabled = true;
-    document.getElementById('recording-preview').classList.add('hidden');
-    document.getElementById('recording-status').classList.add('hidden');
-}
-
-function closeDeedModal() {
-    if (mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
-    document.getElementById('deed-modal').classList.remove('active');
-}
-
-// ==================== СЖИГАНИЕ ====================
 async function executeBurn() {
     closeDeedModal();
     if (!wallet || walletType !== 'solana') { openWalletModal(); return; }
     const t = translations[currentLang];
-    const confirmMsg = t.msg_confirm.replace("{name}", currentDeed.name).replace("{amount}", currentAmount).replace("{symbol}", currentSymbol);
-    if (!confirm(confirmMsg)) return;
+    if (!confirm(`📿 INTENTION: ${currentDeed.name}\nBurn ${currentDeed.amount} ${currentDeed.type.toUpperCase()}\nFor the sake of Allah. Continue?`)) return;
     try {
         const connection = await getConnection();
-        const fromMint = new solanaWeb3.PublicKey(TOKENS[currentSymbol]);
-        const toSym = currentSymbol === 'ADL' ? 'SABU' : 'ADL';
+        const fromMint = new solanaWeb3.PublicKey(TOKENS[currentDeed.type.toUpperCase()]);
+        const toSym = currentDeed.type.toUpperCase() === 'ADL' ? 'SABU' : 'ADL';
         const toAddr = new solanaWeb3.PublicKey(TOKENS[toSym]);
         const accounts = await connection.getTokenAccountsByOwner(wallet.publicKey, { mint: fromMint });
         if (accounts.value.length === 0) { alert(t.msg_no_tokens); return; }
         const fromATA = accounts.value[0].pubkey;
-        
         const dataLayout = Buffer.alloc(9);
         dataLayout.writeUInt8(3, 0);
-        dataLayout.writeBigUInt64LE(BigInt(currentAmount * Math.pow(10, 9)), 1);
+        dataLayout.writeBigUInt64LE(BigInt(currentDeed.amount * Math.pow(10, 9)), 1);
         const tx = new solanaWeb3.Transaction().add(new solanaWeb3.TransactionInstruction({
             keys: [
                 { pubkey: fromATA, isSigner: false, isWritable: true },
@@ -334,77 +407,22 @@ async function executeBurn() {
         tx.recentBlockhash = blockhash;
         tx.feePayer = wallet.publicKey;
         const signature = await solanaWeb3.sendAndConfirmTransaction(connection, tx, [wallet]);
-        
         let completed = JSON.parse(localStorage.getItem('completed_deeds') || '[]');
-        if (!completed.includes(currentDeedId)) completed.push(currentDeedId);
+        if (!completed.includes(currentDeed.name)) completed.push(currentDeed.name);
         localStorage.setItem('completed_deeds', JSON.stringify(completed));
         updateProgress();
-        
-        const successMsg = t.msg_success.replace("{name}", currentDeed.name).replace("{amount}", currentAmount).replace("{symbol}", currentSymbol).replace("{progress}", completed.length).replace("{txid}", signature.slice(0,16));
-        alert(successMsg);
+        alert(`✅ DEED COMPLETED!\n${currentDeed.name}\nBurned ${currentDeed.amount} ${currentDeed.type.toUpperCase()}\nProgress: ${completed.length}/99\nTXID: ${signature.slice(0,16)}...`);
         renderActions();
     } catch(e) { alert(t.msg_error.replace("{error}", e.message)); }
 }
 
-// ==================== ОТРИСОВКА ====================
-function updateProgress() {
-    let completed = JSON.parse(localStorage.getItem('completed_deeds') || '[]');
-    let count = completed.length;
-    document.getElementById('progress-count').innerText = count;
-    document.getElementById('progress-bar').style.width = (count/99)*100 + '%';
-    let badge = '';
-    if (count >= 99) badge = '🏆 Siddiq';
-    else if (count >= 66) badge = '📿 Abid';
-    else if (count >= 33) badge = '🌟 Righteous';
-    else if (count >= 10) badge = '🌱 Beginner';
-    else badge = '🕊️ Beginning of the path';
-    document.getElementById('badge-display').innerHTML = badge;
-}
-
-function renderActions() {
-    let container = document.getElementById('actions-grid');
-    let items = [];
-    let completed = JSON.parse(localStorage.getItem('completed_deeds') || '[]');
-    if (currentFilter === 'all' || currentFilter === 'sabu') {
-        for (let i = 0; i < deedsData.sabu.length; i++) items.push({ name: deedsData.sabu[i], type: 'sabu', id: `sabu_${i}`, amount: amounts.sabu[i] });
-    }
-    if (currentFilter === 'all' || currentFilter === 'muji') {
-        for (let i = 0; i < deedsData.muji.length; i++) items.push({ name: deedsData.muji[i], type: 'muji', id: `muji_${i}`, amount: amounts.muji[i] });
-    }
-    if (currentFilter === 'all' || currentFilter === 'adl') {
-        for (let i = 0; i < deedsData.adl.length; i++) items.push({ name: deedsData.adl[i], type: 'adl', id: `adl_${i}`, amount: amounts.adl[i] });
-    }
-    const canBurn = (wallet !== null && walletType === 'solana');
-    const t = translations[currentLang];
-    container.innerHTML = items.map(a => `
-        <div class="bg-white rounded-xl shadow-md p-4 border-l-4 ${completed.includes(a.id) ? 'border-yellow-500 bg-yellow-50' : 'border-gray-200'}">
-            <div class="flex justify-between items-start">
-                <h3 class="font-bold text-sm">${a.name}</h3>
-                <span class="text-xs px-2 py-1 rounded-full text-white ${a.type === 'sabu' ? 'bg-green-600' : a.type === 'muji' ? 'bg-blue-600' : 'bg-gray-800'}">${a.type.toUpperCase()}</span>
-            </div>
-            <div class="flex justify-between items-center mt-3">
-                <span class="text-sm text-gray-500">${a.amount} ${a.type.toUpperCase()}</span>
-                ${completed.includes(a.id) ? 
-                    `<span class="text-green-600 text-sm"><i class="fas fa-check-circle"></i> ${t.completed_label || 'Completed'}</span>` : 
-                    (canBurn ? 
-                        `<button onclick="openDeedModal('${a.type.toUpperCase()}', ${a.amount}, '${a.id}', '${a.name}')" class="bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600">${t.completed_label ? 'Burn' : 'Сжечь'}</button>` :
-                        `<button onclick="openWalletModal()" class="bg-gray-400 text-white px-3 py-1 rounded-lg text-sm">${t.connect_wallet}</button>`
-                    )
-                }
-            </div>
-        </div>
-    `).join('');
-}
-
-function filterActions(type) { currentFilter = type; renderActions(); }
-
-// ==================== КОШЕЛЬКИ ====================
 async function connectWallet(type) {
     try {
         let provider = null;
-        if (type === 'phantom') { if (window.solana?.isPhantom) provider = window.solana; else { alert("Install Phantom"); return; } }
-        else if (type === 'solflare') { if (window.solflare) provider = window.solflare; else { alert("Install Solflare"); return; } }
-        else if (type === 'backpack') { if (window.backpack) provider = window.backpack; else { alert("Install Backpack"); return; } }
+        if (type === 'phantom' && window.solana?.isPhantom) provider = window.solana;
+        else if (type === 'solflare' && window.solflare) provider = window.solflare;
+        else if (type === 'backpack' && window.backpack) provider = window.backpack;
+        else { alert("Install Phantom, Solflare or Backpack"); return; }
         await provider.connect();
         wallet = provider;
         walletType = 'solana';
@@ -417,7 +435,6 @@ async function connectWallet(type) {
 function openWalletModal() { document.getElementById('wallet-modal').classList.add('active'); }
 function closeWalletModal() { document.getElementById('wallet-modal').classList.remove('active'); }
 
-// ==================== ЗАПУСК ====================
 document.getElementById('wallet-btn').onclick = openWalletModal;
 document.getElementById('lang-select').onchange = (e) => { currentLang = e.target.value; localStorage.setItem('lang', currentLang); applyLanguage(); renderActions(); };
 document.getElementById('start-video-btn').onclick = startVideoRecording;
