@@ -11,30 +11,68 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #FDF5E6 0%, #F0E6D2 100%); }
-        .wallet-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
-        .wallet-modal.active { display: flex; }
+        .wallet-modal, .deed-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; }
+        .wallet-modal.active, .deed-modal.active { display: flex; }
+        .deed-modal-content { max-height: 85vh; overflow-y: auto; }
         @keyframes sparkle { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
         @keyframes flame { 0% { text-shadow: 0 0 2px #ff6600; } 50% { text-shadow: 0 0 15px #ff3300; } 100% { text-shadow: 0 0 2px #ff6600; } }
         .burn-animation { animation: flame 0.3s ease-in-out; }
         .sparkle { position: fixed; pointer-events: none; z-index: 1000; width: 20px; height: 20px; background: radial-gradient(circle, gold, orange); border-radius: 50%; animation: sparkle 0.6s ease-out forwards; }
+        .recording-active { animation: pulse 1s infinite; background-color: #ff4444 !important; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
 
 <!-- Wallet Modal -->
 <div id="wallet-modal" class="wallet-modal">
-    <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-bold" data-key="connect_wallet">Connect Wallet</h3>
             <button onclick="closeWalletModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
         </div>
         <div class="space-y-2">
-            <div class="text-xs text-gray-400 uppercase mt-2 mb-1">Solana</div>
-            <button onclick="connectWallet('phantom')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><img src="https://phantom.app/img/logo.png" class="w-6 h-6"><span>Phantom</span></button>
-            <button onclick="connectWallet('solflare')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-globe text-2xl text-orange-500"></i><span>Solflare</span></button>
-            <button onclick="connectWallet('backpack')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-backpack text-2xl text-purple-600"></i><span>Backpack</span></button>
+            <button onclick="connectWallet('phantom')" class="w-full flex items-center gap-3 p-3 border rounded-xl"><img src="https://phantom.app/img/logo.png" class="w-6 h-6"><span>Phantom</span></button>
+            <button onclick="connectWallet('solflare')" class="w-full flex items-center gap-3 p-3 border rounded-xl"><i class="fas fa-globe text-orange-500"></i><span>Solflare</span></button>
+            <button onclick="connectWallet('backpack')" class="w-full flex items-center gap-3 p-3 border rounded-xl"><i class="fas fa-backpack text-purple-600"></i><span>Backpack</span></button>
         </div>
-        <p class="text-xs text-gray-400 text-center mt-3">Only Phantom, Solflare and Backpack support token burning on Solana.</p>
+    </div>
+</div>
+
+<!-- Deed Modal (для чтения и записи) -->
+<div id="deed-modal" class="deed-modal">
+    <div class="deed-modal-content bg-white rounded-2xl p-6 max-w-2xl w-full mx-4 shadow-2xl">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold" id="deed-modal-title">...</h3>
+            <button onclick="closeDeedModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
+        </div>
+        
+        <div id="deed-text" class="bg-gray-50 p-4 rounded-lg mb-4 text-right arabic-font text-lg leading-loose max-h-60 overflow-y-auto">
+            <!-- Текст суры/зикра будет здесь -->
+        </div>
+        
+        <div id="deed-translation" class="bg-gray-50 p-4 rounded-lg mb-4 text-gray-700 text-sm max-h-40 overflow-y-auto">
+            <!-- Перевод будет здесь -->
+        </div>
+        
+        <!-- Запись видео/аудио -->
+        <div class="mb-4">
+            <div class="flex gap-3 mb-3">
+                <button id="start-video-btn" class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"><i class="fas fa-video mr-2"></i>📷 Записать видео</button>
+                <button id="start-audio-btn" class="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700"><i class="fas fa-microphone mr-2"></i>🎙️ Записать аудио</button>
+            </div>
+            <div id="recording-status" class="text-sm text-gray-500 text-center hidden">⏺ Идёт запись... Нажмите "Остановить" когда закончите</div>
+            <div id="recording-preview" class="mt-3 hidden">
+                <video id="video-preview" class="w-full rounded-lg" controls playsinline></video>
+                <audio id="audio-preview" class="w-full mt-2" controls></audio>
+                <button id="stop-recording-btn" class="mt-2 w-full bg-red-600 text-white py-2 rounded-lg">⏹️ Остановить запись</button>
+            </div>
+        </div>
+        
+        <div class="flex gap-3">
+            <button onclick="closeDeedModal()" class="flex-1 bg-gray-300 py-2 rounded-lg">Отмена</button>
+            <button id="confirm-deed-btn" class="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700" disabled>📿 Подтвердить и сжечь токен</button>
+        </div>
     </div>
 </div>
 
@@ -50,21 +88,16 @@
                 <option value="en">English</option>
                 <option value="ru">Русский</option>
                 <option value="ar">العربية</option>
-                <option value="ur">اردو</option>
-                <option value="fa">فارسی</option>
-                <option value="tr">Türkçe</option>
-                <option value="fr">Français</option>
-                <option value="de">Deutsch</option>
             </select>
-            <button id="wallet-btn" class="bg-gray-900 text-white px-4 py-2 rounded-lg"><i class="fas fa-wallet"></i><span id="wallet-address" data-key="connect_wallet">Connect Wallet</span></button>
+            <button id="wallet-btn" class="bg-gray-900 text-white px-4 py-2 rounded-lg"><i class="fas fa-wallet"></i><span id="wallet-address">Connect</span></button>
         </div>
     </div>
     <div class="border-t">
         <div class="container mx-auto px-4 flex gap-4">
-            <a href="index.html" class="text-gray-600 py-3 px-1" data-key="nav_home">Home</a>
-            <a href="actions.html" class="border-b-2 border-yellow-500 font-semibold py-3 px-1" data-key="nav_actions">99 Good Deeds</a>
-            <a href="confession.html" class="text-gray-600 py-3 px-1" data-key="nav_confession">Tawbah</a>
-            <a href="whitepaper.html" class="text-gray-600 py-3 px-1" data-key="nav_whitepaper">Whitepaper</a>
+            <a href="index.html" class="text-gray-600 py-3 px-1">Home</a>
+            <a href="actions.html" class="border-b-2 border-yellow-500 font-semibold py-3 px-1">99 Good Deeds</a>
+            <a href="confession.html" class="text-gray-600 py-3 px-1">Tawbah</a>
+            <a href="whitepaper.html" class="text-gray-600 py-3 px-1">Whitepaper</a>
         </div>
     </div>
 </header>
@@ -72,18 +105,18 @@
 <main class="container mx-auto px-4 py-8 max-w-6xl">
     <div class="text-center mb-8">
         <i class="fas fa-praying-hands text-5xl text-yellow-600"></i>
-        <h1 class="text-3xl font-bold mt-2" data-key="title">99 Good Deeds</h1>
-        <p class="text-gray-600" data-key="subtitle">Burn tokens with intention (niyyah). Each deed is recorded in your book.</p>
+        <h1 class="text-3xl font-bold mt-2">99 Good Deeds</h1>
+        <p class="text-gray-600">Burn tokens with intention (niyyah). Record video/audio of your recitation. Each deed is recorded forever.</p>
     </div>
 
     <div class="bg-white rounded-xl shadow-sm p-4 mb-6 flex flex-wrap justify-between items-center">
-        <div><i class="fas fa-chart-simple text-yellow-600"></i> <span class="font-semibold" data-key="completed_label">Completed:</span> <span id="progress-count">0</span>/99</div>
-        <div id="badge-display" class="bg-gray-100 px-3 py-1 rounded-full text-sm">🕊️ <span data-key="badge_start">Beginning of the path</span></div>
+        <div><i class="fas fa-chart-simple text-yellow-600"></i> <span class="font-semibold">Completed:</span> <span id="progress-count">0</span>/99</div>
+        <div id="badge-display" class="bg-gray-100 px-3 py-1 rounded-full text-sm">🕊️ Beginning of the path</div>
     </div>
     <div class="w-full bg-gray-200 rounded-full h-2 mb-6"><div id="progress-bar" class="bg-green-600 h-2 rounded-full" style="width:0%"></div></div>
 
     <div class="flex justify-center gap-3 flex-wrap mb-8">
-        <button onclick="filterActions('all')" class="filter-btn px-4 py-2 rounded-full bg-gray-200" data-key="filter_all">All (99)</button>
+        <button onclick="filterActions('all')" class="filter-btn px-4 py-2 rounded-full bg-gray-200">All (99)</button>
         <button onclick="filterActions('sabu')" class="filter-btn px-4 py-2 rounded-full bg-green-100 text-green-700">SABU (33)</button>
         <button onclick="filterActions('muji')" class="filter-btn px-4 py-2 rounded-full bg-blue-100 text-blue-700">MUJI (33)</button>
         <button onclick="filterActions('adl')" class="filter-btn px-4 py-2 rounded-full bg-gray-100 text-gray-700">ADL (33)</button>
@@ -92,18 +125,14 @@
     <div id="actions-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
 </main>
 
-<footer class="bg-gray-900 text-white mt-12 py-6 text-center text-sm">
-    <p>© 2025 Halal Chain Bank — <span data-key="footer">Halal blockchain bank</span></p>
-</footer>
+<footer class="bg-gray-900 text-white mt-12 py-6 text-center text-sm">© 2025 Halal Chain Bank — Halal blockchain bank</footer>
 
 <script>
 // ==================== HELIUS RPC ====================
 const HELIUS_API_KEY = "84a2087d-4e6d-47d7-abd3-622b6eb11273";
 const SOLANA_RPC = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 
-async function getConnection() {
-    return new solanaWeb3.Connection(SOLANA_RPC, 'confirmed');
-}
+async function getConnection() { return new solanaWeb3.Connection(SOLANA_RPC, 'confirmed'); }
 
 // ==================== АДРЕСА ТОКЕНОВ ====================
 const TOKENS = {
@@ -112,16 +141,22 @@ const TOKENS = {
     ADL: "8NEsFQ9PpGmZVaz5nHV1zTBWDxgrwxwvY5cJ9ejQvpdN"
 };
 
-// Константа TOKEN_PROGRAM_ID
 const TOKEN_PROGRAM_ID = new solanaWeb3.PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 
-// ==================== ПЕРЕВОДЫ ====================
-const uiText = {
-    en: { nav_home:"Home", nav_actions:"99 Good Deeds", nav_confession:"Tawbah", nav_whitepaper:"Whitepaper", title:"99 Good Deeds", subtitle:"Burn tokens with intention (niyyah). Each deed is recorded in your book.", completed_label:"Completed:", badge_start:"Beginning of the path", filter_all:"All (99)", footer:"Halal blockchain bank", burn:"Burn", completed:"Completed", connect_wallet:"Connect Wallet", msg_no_tokens:"You don't have enough tokens. Please buy first.", msg_burn_confirm:"📿 INTENTION (Niyyah): perform the deed \"{name}\"\nBurn {amount} {symbol}\nFor the sake of Allah. Continue?", msg_burn_success:"✅ DEED COMPLETED!\n{name}\nBurned {amount} {symbol}\nProgress: {progress}/99\nTXID: {txid}", msg_burn_error:"Error: {error}. Please make sure you have enough SOL for fees." },
-    ru: { nav_home:"Главная", nav_actions:"99 Добрых дел", nav_confession:"Тауба", nav_whitepaper:"Whitepaper", title:"99 добрых дел", subtitle:"Сжигайте токены с намерением (ният). Каждое дело записывается в вашу книгу.", completed_label:"Выполнено:", badge_start:"В начале пути", filter_all:"Все (99)", footer:"Халяльный блокчейн-банк", burn:"Сжечь", completed:"Выполнено", connect_wallet:"Подключить кошелёк", msg_no_tokens:"У вас нет токенов. Сначала купите.", msg_burn_confirm:"📿 НИЯТ: совершить дело \"{name}\"\nСжечь {amount} {symbol}\nРади довольства Аллаха. Продолжить?", msg_burn_success:"✅ ДЕЛО ИСПОЛНЕНО!\n{name}\nСожжено {amount} {symbol}\nПрогресс: {progress}/99\nTXID: {txid}", msg_burn_error:"Ошибка: {error}. Убедитесь, что у вас достаточно SOL для комиссии." }
+// ==================== ТЕКСТЫ ДЕЛ (суры, зикры, переводы) ====================
+const deedTexts = {
+    "Say Bismillah": { ar: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ", ru: "С именем Аллаха, Милостивого, Милосердного!", en: "In the name of Allah, the Most Gracious, the Most Merciful." },
+    "Perform Wudu": { ar: "نَوَيْتُ الْوُضُوءَ لِرَفْعِ الْحَدَثِ", ru: "Я намерился совершить омовение для очищения", en: "I intend to perform ablution for purification." },
+    "Pray 1 Rakat Sunnah": { ar: "صَلَاةُ السُّنَّةِ رَكْعَتَانِ", ru: "Молитва-сунна — два ракаата", en: "Sunnah prayer - two rakats." },
+    // Добавь тексты для всех 99 дел...
 };
 
-// Названия дел (английские)
+function getDeedText(name, lang) {
+    if (deedTexts[name] && deedTexts[name][lang]) return deedTexts[name][lang];
+    return "Read this deed with intention. May Allah accept it.";
+}
+
+// ==================== ДАННЫЕ ДЕЛ ====================
 const deedsData = {
     sabu: ["Say Bismillah","Perform Wudu","Pray 1 Rakat Sunnah","Wish good to a Muslim","Control anger","Help the poor","Feed the hungry","Visit the sick","Remove obstacle","Give clothes","Smile at brother","Help a traveler","Repay debt","Remind of prayer","Read Quran page","Dua for Ummah","Wake for Tahajjud","Fast 1 day","Secret sadaqah","Teach something","Reconcile people","Protect the weak","Be just","Don't eavesdrop","Keep a secret","Keep promise","Wish peace","Speak truth","Avoid gossip","Help an orphan","Visit mosque","Hajj virtual","Cleanse 33 sins"],
     muji: ["Dua for Ahl al-Bayt","Mourn Karbala","Read Ziyarat Ashura","Visit Karbala (virtual)","Honor Imam Ali","Honor Fatima","Honor Hussein","Honor Imam Mahdi","Say 'Ya Ali'","Say 'Ya Hussain'","Say 'Ya Zahra'","Pray for justice","Commemorate Ashura","1 Salawat","100 Salawat","Help poor Shia","Protect community","Visit mosque","Truth about Karbala","Teach about Karbala","Commemorate Hussein","Pray for mourners","Donate to shrine","Ashura fast","Arba'een fast","Karbala Ziyarat","Takbir","Tasbih","Pray for unity","Respect Imams","Imams history","Cry for Hussein","Cleanse 33 sins"],
@@ -134,98 +169,144 @@ const amounts = {
     adl: [1,10,0.5,5,10,2,5,2,3,2,1,2,2,1,1,3,2,10,50,10,1,20,5,30,2,0.5,1,10,3,30,20,5,33]
 };
 
-// ==================== СОСТОЯНИЕ ====================
-let wallet = null;
-let walletType = null;
-let currentFilter = 'all';
-let currentLang = 'en';
+// ==================== ПЕРЕМЕННЫЕ ЗАПИСИ ====================
+let mediaRecorder = null;
+let recordedChunks = [];
+let recordingType = null; // 'video' or 'audio'
+let currentDeed = null;
+let currentAmount = null;
+let currentSymbol = null;
+let currentDeedId = null;
 
-// ==================== ПРОГРЕСС ====================
-function updateProgress() {
-    let completed = JSON.parse(localStorage.getItem('completed_deeds') || '[]');
-    let count = completed.length;
-    document.getElementById('progress-count').innerText = count;
-    document.getElementById('progress-bar').style.width = (count/99)*100 + '%';
-    let badge = '', emoji = '';
-    if (count >= 99) { badge = 'Siddiq'; emoji = '🏆'; }
-    else if (count >= 66) { badge = 'Abid'; emoji = '📿'; }
-    else if (count >= 33) { badge = 'Righteous'; emoji = '🌟'; }
-    else if (count >= 10) { badge = 'Beginner'; emoji = '🌱'; }
-    else { badge = uiText[currentLang]?.badge_start || 'Beginning of the path'; emoji = '🕊️'; }
-    document.getElementById('badge-display').innerHTML = `${emoji} ${badge}`;
+// ==================== ФУНКЦИИ ЗАПИСИ ====================
+async function startVideoRecording() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        setupRecording(stream, 'video');
+        document.getElementById('video-preview').srcObject = stream;
+        document.getElementById('recording-preview').classList.remove('hidden');
+        document.getElementById('video-preview').classList.remove('hidden');
+        document.getElementById('audio-preview').classList.add('hidden');
+    } catch(e) { alert("Camera/Microphone access denied: " + e.message); }
 }
 
-function sparkle(x, y) {
-    for (let i = 0; i < 12; i++) {
-        let d = document.createElement('div');
-        d.className = 'sparkle';
-        d.style.left = (x + Math.random() * 40 - 20) + 'px';
-        d.style.top = (y + Math.random() * 40 - 20) + 'px';
-        document.body.appendChild(d);
-        setTimeout(() => d.remove(), 600);
+async function startAudioRecording() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        setupRecording(stream, 'audio');
+        document.getElementById('audio-preview').srcObject = stream;
+        document.getElementById('recording-preview').classList.remove('hidden');
+        document.getElementById('audio-preview').classList.remove('hidden');
+        document.getElementById('video-preview').classList.add('hidden');
+    } catch(e) { alert("Microphone access denied: " + e.message); }
+}
+
+function setupRecording(stream, type) {
+    recordingType = type;
+    recordedChunks = [];
+    mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
+    mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunks, { type: type === 'video' ? 'video/webm' : 'audio/webm' });
+        const url = URL.createObjectURL(blob);
+        if (type === 'video') {
+            document.getElementById('video-preview').srcObject = null;
+            document.getElementById('video-preview').src = url;
+            document.getElementById('video-preview').controls = true;
+        } else {
+            document.getElementById('audio-preview').srcObject = null;
+            document.getElementById('audio-preview').src = url;
+            document.getElementById('audio-preview').controls = true;
+        }
+        document.getElementById('stop-recording-btn').style.display = 'none';
+        document.getElementById('confirm-deed-btn').disabled = false;
+        document.getElementById('recording-status').classList.add('hidden');
+        
+        // Сохраняем запись в localStorage (в реальном проекте — загрузка на IPFS)
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const recordKey = `recording_${currentDeedId}_${Date.now()}`;
+            localStorage.setItem(recordKey, reader.result);
+            currentDeed.recordingData = reader.result;
+            currentDeed.recordingType = type;
+        };
+        reader.readAsDataURL(blob);
+    };
+    mediaRecorder.start(1000);
+    document.getElementById('recording-status').classList.remove('hidden');
+    document.getElementById('stop-recording-btn').style.display = 'block';
+    document.getElementById('confirm-deed-btn').disabled = true;
+}
+
+function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+        mediaRecorder.stream.getTracks().forEach(track => track.stop());
     }
 }
 
-function playSound() {
-    let audio = new Audio("https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3");
-    audio.volume = 0.3;
-    audio.play().catch(e => console.log);
+// ==================== ОТКРЫТИЕ МОДАЛКИ С ДЕЛОМ ====================
+function openDeedModal(symbol, amount, deedId, deedName) {
+    currentSymbol = symbol;
+    currentAmount = amount;
+    currentDeedId = deedId;
+    currentDeed = { name: deedName, symbol, amount };
+    
+    document.getElementById('deed-modal-title').innerText = deedName;
+    const lang = document.getElementById('lang-select').value;
+    const text = getDeedText(deedName, lang);
+    document.getElementById('deed-text').innerHTML = `<div class="arabic-font">${text}</div>`;
+    
+    document.getElementById('deed-modal').classList.add('active');
+    document.getElementById('confirm-deed-btn').disabled = true;
+    document.getElementById('recording-preview').classList.add('hidden');
+    document.getElementById('recording-status').classList.add('hidden');
 }
 
-// ==================== СОЗДАНИЕ ИНСТРУКЦИИ ПЕРЕВОДА (руками) ====================
-function createTransferInstruction(source, destination, owner, amount) {
-    const dataLayout = Buffer.alloc(9);
-    dataLayout.writeUInt8(3, 0); // Инструкция 3 = Transfer
-    dataLayout.writeBigUInt64LE(BigInt(amount), 1);
-    
-    const keys = [
-        { pubkey: source, isSigner: false, isWritable: true },
-        { pubkey: destination, isSigner: false, isWritable: true },
-        { pubkey: owner, isSigner: true, isWritable: false }
-    ];
-    
-    return new solanaWeb3.TransactionInstruction({
-        keys: keys,
-        programId: TOKEN_PROGRAM_ID,
-        data: dataLayout
-    });
+function closeDeedModal() {
+    if (mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
+    document.getElementById('deed-modal').classList.remove('active');
 }
 
 // ==================== СЖИГАНИЕ ====================
-async function burnDeed(symbol, amount, deedId, deedName, btnElement) {
-    if (!wallet || walletType !== 'solana') {
-        openWalletModal();
-        return;
-    }
+async function executeBurn() {
+    closeDeedModal();
     
-    let confirmMsg = (uiText[currentLang]?.msg_burn_confirm || "Continue?")
-        .replace("{name}", deedName).replace("{amount}", amount).replace("{symbol}", symbol);
+    if (!wallet || walletType !== 'solana') { openWalletModal(); return; }
+    
+    let confirmMsg = `📿 INTENTION: ${currentDeed.name}\nBurn ${currentAmount} ${currentSymbol}\nFor the sake of Allah. Continue?`;
     if (!confirm(confirmMsg)) return;
     
-    let btn = btnElement;
-    if (btn) { btn.classList.add('burn-animation'); setTimeout(() => btn.classList.remove('burn-animation'), 500); }
+    let btn = document.querySelector(`button[onclick*="${currentDeedId}"]`);
+    if (btn) btn.classList.add('burn-animation');
     
     try {
         const connection = await getConnection();
-        
-        const fromMint = new solanaWeb3.PublicKey(TOKENS[symbol]);
-        const toSym = symbol === 'ADL' ? 'SABU' : 'ADL';
+        const fromMint = new solanaWeb3.PublicKey(TOKENS[currentSymbol]);
+        const toSym = currentSymbol === 'ADL' ? 'SABU' : 'ADL';
         const toAddr = new solanaWeb3.PublicKey(TOKENS[toSym]);
         
-        // Получаем ATA отправителя
         const accounts = await connection.getTokenAccountsByOwner(wallet.publicKey, { mint: fromMint });
-        if (accounts.value.length === 0) {
-            alert(uiText[currentLang]?.msg_no_tokens || "No tokens.");
-            return;
-        }
+        if (accounts.value.length === 0) { alert("No tokens."); return; }
         
         const fromATA = accounts.value[0].pubkey;
         
-        // Создаём инструкцию перевода
-        const transferIx = createTransferInstruction(fromATA, toAddr, wallet.publicKey, amount * Math.pow(10, 9));
+        function createTransferInstruction(source, destination, owner, amount) {
+            const dataLayout = Buffer.alloc(9);
+            dataLayout.writeUInt8(3, 0);
+            dataLayout.writeBigUInt64LE(BigInt(amount), 1);
+            return new solanaWeb3.TransactionInstruction({
+                keys: [
+                    { pubkey: source, isSigner: false, isWritable: true },
+                    { pubkey: destination, isSigner: false, isWritable: true },
+                    { pubkey: owner, isSigner: true, isWritable: false }
+                ],
+                programId: TOKEN_PROGRAM_ID,
+                data: dataLayout
+            });
+        }
         
-        const tx = new solanaWeb3.Transaction().add(transferIx);
-        
+        const tx = new solanaWeb3.Transaction().add(createTransferInstruction(fromATA, toAddr, wallet.publicKey, currentAmount * Math.pow(10, 9)));
         const { blockhash } = await connection.getLatestBlockhash();
         tx.recentBlockhash = blockhash;
         tx.feePayer = wallet.publicKey;
@@ -233,24 +314,63 @@ async function burnDeed(symbol, amount, deedId, deedName, btnElement) {
         const signature = await solanaWeb3.sendAndConfirmTransaction(connection, tx, [wallet]);
         
         let completed = JSON.parse(localStorage.getItem('completed_deeds') || '[]');
-        if (!completed.includes(deedId)) completed.push(deedId);
+        if (!completed.includes(currentDeedId)) completed.push(currentDeedId);
         localStorage.setItem('completed_deeds', JSON.stringify(completed));
+        
+        // Сохраняем запись о деле с видео/аудио
+        let deedsHistory = JSON.parse(localStorage.getItem('deeds_history') || '[]');
+        deedsHistory.push({
+            id: currentDeedId,
+            name: currentDeed.name,
+            symbol: currentSymbol,
+            amount: currentAmount,
+            timestamp: Date.now(),
+            txid: signature,
+            recordingData: currentDeed.recordingData || null,
+            recordingType: currentDeed.recordingType || null
+        });
+        localStorage.setItem('deeds_history', JSON.stringify(deedsHistory));
+        
         updateProgress();
         
-        const rect = btn.getBoundingClientRect();
-        sparkle(rect.left + rect.width/2, rect.top + rect.height/2);
-        playSound();
+        if (btn) {
+            const rect = btn.getBoundingClientRect();
+            for (let i = 0; i < 12; i++) {
+                let d = document.createElement('div');
+                d.className = 'sparkle';
+                d.style.left = (rect.left + rect.width/2 + Math.random() * 40 - 20) + 'px';
+                d.style.top = (rect.top + rect.height/2 + Math.random() * 40 - 20) + 'px';
+                document.body.appendChild(d);
+                setTimeout(() => d.remove(), 600);
+            }
+            let audio = new Audio("https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3");
+            audio.volume = 0.3;
+            audio.play().catch(e => console.log);
+        }
         
-        const successMsg = (uiText[currentLang]?.msg_burn_success || "Deed completed!")
-            .replace("{name}", deedName).replace("{amount}", amount).replace("{symbol}", symbol)
-            .replace("{progress}", completed.length).replace("{txid}", signature.slice(0,16));
-        alert(successMsg);
+        alert(`✅ DEED COMPLETED!\n${currentDeed.name}\nBurned ${currentAmount} ${currentSymbol}\nProgress: ${completed.length}/99\nTXID: ${signature.slice(0,16)}...`);
         renderActions();
         
     } catch(e) {
-        let errorMsg = (uiText[currentLang]?.msg_burn_error || "Error: {error}");
-        alert(errorMsg.replace("{error}", e.message));
+        alert("Error: " + e.message);
     }
+}
+
+// ==================== ОТРИСОВКА ====================
+let wallet = null, walletType = null, currentFilter = 'all', currentLang = 'en';
+
+function updateProgress() {
+    let completed = JSON.parse(localStorage.getItem('completed_deeds') || '[]');
+    let count = completed.length;
+    document.getElementById('progress-count').innerText = count;
+    document.getElementById('progress-bar').style.width = (count/99)*100 + '%';
+    let badge = '';
+    if (count >= 99) badge = '🏆 Siddiq';
+    else if (count >= 66) badge = '📿 Abid';
+    else if (count >= 33) badge = '🌟 Righteous';
+    else if (count >= 10) badge = '🌱 Beginner';
+    else badge = '🕊️ Beginning of the path';
+    document.getElementById('badge-display').innerHTML = badge;
 }
 
 function renderActions() {
@@ -279,16 +399,16 @@ function renderActions() {
     container.innerHTML = items.map(a => `
         <div class="bg-white rounded-xl shadow-md p-4 border-l-4 ${completed.includes(a.id) ? 'border-yellow-500 bg-yellow-50' : 'border-gray-200'}">
             <div class="flex justify-between items-start">
-                <h3 class="font-bold text-sm">${escapeHtml(a.name)}</h3>
+                <h3 class="font-bold text-sm">${a.name}</h3>
                 <span class="text-xs px-2 py-1 rounded-full text-white ${a.type === 'sabu' ? 'bg-green-600' : a.type === 'muji' ? 'bg-blue-600' : 'bg-gray-800'}">${a.type.toUpperCase()}</span>
             </div>
             <div class="flex justify-between items-center mt-3">
                 <span class="text-sm text-gray-500">${a.amount} ${a.type.toUpperCase()}</span>
                 ${completed.includes(a.id) ? 
-                    `<span class="text-green-600 text-sm"><i class="fas fa-check-circle"></i> ${uiText[currentLang]?.completed || 'Completed'}</span>` : 
+                    `<span class="text-green-600 text-sm"><i class="fas fa-check-circle"></i> Completed</span>` : 
                     (canBurn ? 
-                        `<button onclick="burnDeed('${a.type.toUpperCase()}', ${a.amount}, '${a.id}', '${escapeHtml(a.name)}', this)" class="bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600">${uiText[currentLang]?.burn || 'Burn'}</button>` :
-                        `<button onclick="openWalletModal()" class="bg-gray-400 text-white px-3 py-1 rounded-lg text-sm cursor-pointer">${uiText[currentLang]?.connect_wallet || 'Connect Wallet'}</button>`
+                        `<button onclick="openDeedModal('${a.type.toUpperCase()}', ${a.amount}, '${a.id}', '${a.name}')" class="bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600">Burn</button>` :
+                        `<button onclick="openWalletModal()" class="bg-gray-400 text-white px-3 py-1 rounded-lg text-sm">Connect Wallet</button>`
                     )
                 }
             </div>
@@ -296,69 +416,41 @@ function renderActions() {
     `).join('');
 }
 
-function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
-
 function filterActions(type) { currentFilter = type; renderActions(); }
 
-// ==================== ПОДКЛЮЧЕНИЕ КОШЕЛЬКОВ ====================
+// ==================== КОШЕЛЬКИ ====================
 async function connectWallet(type) {
     try {
         let provider = null;
-        
         if (type === 'phantom') {
             if (window.solana?.isPhantom) provider = window.solana;
-            else if (window.phantom?.solana) provider = window.phantom.solana;
-            else { alert("Install Phantom: https://phantom.app/"); return; }
+            else { alert("Install Phantom"); return; }
         } else if (type === 'solflare') {
             if (window.solflare) provider = window.solflare;
-            else { alert("Install Solflare: https://solflare.com/"); return; }
+            else { alert("Install Solflare"); return; }
         } else if (type === 'backpack') {
             if (window.backpack) provider = window.backpack;
-            else { alert("Install Backpack: https://backpack.app/"); return; }
-        } else {
-            alert("Use Phantom, Solflare or Backpack for burning");
-            return;
+            else { alert("Install Backpack"); return; }
         }
-        
         await provider.connect();
         wallet = provider;
         walletType = 'solana';
-        
-        const address = wallet.publicKey.toString();
-        document.getElementById('wallet-address').innerText = address.slice(0,4) + '...' + address.slice(-4);
+        document.getElementById('wallet-address').innerText = wallet.publicKey.toString().slice(0,4)+'...'+wallet.publicKey.toString().slice(-4);
         closeWalletModal();
         renderActions();
-        
-    } catch(e) {
-        alert("Connection error: " + e.message);
-    }
+    } catch(e) { alert("Error: " + e.message); }
 }
 
 function openWalletModal() { document.getElementById('wallet-modal').classList.add('active'); }
 function closeWalletModal() { document.getElementById('wallet-modal').classList.remove('active'); }
 
-function applyLanguage() {
-    document.querySelectorAll('[data-key]').forEach(el => {
-        const key = el.getAttribute('data-key');
-        if (uiText[currentLang] && uiText[currentLang][key]) {
-            el.innerText = uiText[currentLang][key];
-        }
-    });
-    updateProgress();
-    renderActions();
-}
-
 document.getElementById('wallet-btn').onclick = openWalletModal;
-document.getElementById('lang-select').onchange = (e) => {
-    currentLang = e.target.value;
-    localStorage.setItem('lang', currentLang);
-    applyLanguage();
-};
+document.getElementById('lang-select').onchange = () => renderActions();
+document.getElementById('start-video-btn').onclick = startVideoRecording;
+document.getElementById('start-audio-btn').onclick = startAudioRecording;
+document.getElementById('stop-recording-btn').onclick = stopRecording;
+document.getElementById('confirm-deed-btn').onclick = executeBurn;
 
-let savedLang = localStorage.getItem('lang');
-if (savedLang && uiText[savedLang]) currentLang = savedLang;
-document.getElementById('lang-select').value = currentLang;
-applyLanguage();
 updateProgress();
 renderActions();
 </script>
