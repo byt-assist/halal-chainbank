@@ -78,9 +78,6 @@
                 <option value="en">English</option>
                 <option value="ru">Русский</option>
                 <option value="ar">العربية</option>
-                <option value="ur">اردو</option>
-                <option value="fa">فارسی</option>
-                <option value="tr">Türkçe</option>
             </select>
             <button id="wallet-btn" class="bg-gray-900 text-white px-4 py-2 rounded-lg"><i class="fas fa-wallet"></i><span id="wallet-address">Connect</span></button>
         </div>
@@ -138,7 +135,6 @@ const TOKENS = {
 
 // ==================== 99 DEEDS DATA ====================
 const deedsList = [
-    // SABU (Sunni) - 33 deeds
     { name: "Say Bismillah", type: "sabu", amount: 0.1, arabic: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ", translation: "In the name of Allah, the Most Gracious, the Most Merciful", description: "Say Bismillah before any action, meal, or beginning of work." },
     { name: "Say Alhamdulillah", type: "sabu", amount: 0.1, arabic: "الْحَمْدُ لِلَّهِ", translation: "All praise is due to Allah", description: "Say Alhamdulillah after finishing something or when grateful." },
     { name: "Say SubhanAllah", type: "sabu", amount: 0.1, arabic: "سُبْحَانَ اللَّهِ", translation: "Glory be to Allah", description: "Say SubhanAllah when witnessing something amazing or glorifying Allah." },
@@ -154,9 +150,6 @@ const deedsList = [
     { name: "Surah Al-Ikhlas", type: "sabu", amount: 1, arabic: "قُلْ هُوَ اللَّهُ أَحَدٌ...", translation: "Say: He is Allah, the One...", description: "Recite Surah Al-Ikhlas (Chapter 112)." },
     { name: "Surah Al-Falaq", type: "sabu", amount: 1, arabic: "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ...", translation: "Say: I seek refuge with the Lord of daybreak...", description: "Recite Surah Al-Falaq for protection." },
     { name: "Surah An-Nas", type: "sabu", amount: 1, arabic: "قُلْ أَعُوذُ بِرَبِّ النَّاسِ...", translation: "Say: I seek refuge with the Lord of mankind...", description: "Recite Surah An-Nas for protection from evil whispers." },
-    { name: "Surah Al-Asr", type: "sabu", amount: 1, arabic: "وَالْعَصْرِ إِنَّ الْإِنْسَانَ لَفِي خُسْرٍ...", translation: "By time, indeed mankind is in loss...", description: "Recite Surah Al-Asr (Chapter 103)." },
-    { name: "Surah Al-Kawthar", type: "sabu", amount: 1, arabic: "إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ...", translation: "Indeed, We have granted you Al-Kawthar...", description: "Recite Surah Al-Kawthar (Chapter 108)." },
-    { name: "Surah Al-Ma'un", type: "sabu", amount: 1, arabic: "أَرَأَيْتَ الَّذِي يُكَذِّبُ بِالدِّينِ...", translation: "Have you seen the one who denies the recompense?", description: "Recite Surah Al-Ma'un (Chapter 107)." },
     { name: "Ayat al-Kursi", type: "sabu", amount: 3, arabic: "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ...", translation: "Allah! There is no deity except Him, the Ever-Living...", description: "Recite Ayat al-Kursi (Quran 2:255) for protection." },
     { name: "Perform Wudu", type: "sabu", amount: 0.5, arabic: "", translation: "", description: "Perform ritual ablution before prayer." },
     { name: "Pray 2 Rakat Sunnah", type: "sabu", amount: 1, arabic: "", translation: "", description: "Pray 2 rakats of Sunnah prayer." },
@@ -172,15 +165,11 @@ const deedsList = [
     { name: "Read Quran page", type: "sabu", amount: 2, arabic: "", translation: "", description: "Read one page of the Quran." },
     { name: "Dua for Ummah", type: "sabu", amount: 1, arabic: "", translation: "", description: "Make dua for the entire Muslim Ummah." },
     { name: "Cleanse 33 sins", type: "sabu", amount: 33, arabic: "", translation: "", description: "Seek forgiveness for 33 sins." },
-    
-    // MUJI (Shia) - 33 deeds (simplified for length)
     { name: "Dua for Ahl al-Bayt", type: "muji", amount: 0.5, arabic: "اللهم صل على محمد وآل محمد", translation: "O Allah, bless Muhammad and the family of Muhammad", description: "Send blessings upon the Prophet and his family." },
     { name: "Say Ya Ali", type: "muji", amount: 0.2, arabic: "يَا عَلِيُّ", translation: "O Ali", description: "Call upon Imam Ali." },
     { name: "Say Ya Hussain", type: "muji", amount: 0.2, arabic: "يَا حُسَيْنُ", translation: "O Hussain", description: "Call upon Imam Hussain." },
     { name: "Say Ya Zahra", type: "muji", amount: 0.2, arabic: "يَا زَهْرَاءُ", translation: "O Zahra", description: "Call upon Fatima Zahra." },
     { name: "Mourn Karbala", type: "muji", amount: 1, arabic: "", translation: "", description: "Mourn the martyrs of Karbala." },
-    { name: "Read Ziyarat Ashura", type: "muji", amount: 2, arabic: "السَّلَامُ عَلَيْكَ يَا أَبَا عَبْدِ اللَّهِ", translation: "Peace be upon you, O Abu Abdullah", description: "Recite Ziyarat Ashura." },
-    { name: "Commemorate Ashura", type: "muji", amount: 5, arabic: "", translation: "", description: "Participate in Ashura commemoration." },
     { name: "Honor Imam Ali", type: "muji", amount: 1, arabic: "", translation: "", description: "Read about or honor Imam Ali." },
     { name: "Honor Fatima", type: "muji", amount: 1, arabic: "", translation: "", description: "Read about or honor Fatima Zahra." },
     { name: "Honor Hussein", type: "muji", amount: 2, arabic: "", translation: "", description: "Read about or honor Imam Hussain." },
@@ -196,18 +185,14 @@ const deedsList = [
     { name: "Donate to shrine", type: "muji", amount: 10, arabic: "", translation: "", description: "Donate to a shrine of Ahl al-Bayt." },
     { name: "Ashura fast", type: "muji", amount: 10, arabic: "", translation: "", description: "Fast on the day of Ashura." },
     { name: "Arba'een fast", type: "muji", amount: 10, arabic: "", translation: "", description: "Fast on Arba'een." },
-    { name: "Karbala Ziyarat", type: "muji", amount: 3, arabic: "السَّلَامُ عَلَيْكَ يَا حُسَيْنُ", translation: "Peace be upon you, O Hussain", description: "Recite Karbala Ziyarat." },
     { name: "Say Takbir", type: "muji", amount: 0.1, arabic: "اللَّهُ أَكْبَرُ", translation: "Allah is the Greatest", description: "Say Allahu Akbar." },
     { name: "Say Tasbih", type: "muji", amount: 0.1, arabic: "سُبْحَانَ اللَّهِ", translation: "Glory be to Allah", description: "Say SubhanAllah." },
     { name: "Dua for unity", type: "muji", amount: 1, arabic: "اللهم ألف بين قلوبنا", translation: "O Allah, unite our hearts", description: "Pray for Muslim unity." },
     { name: "Respect Imams", type: "muji", amount: 2, arabic: "", translation: "", description: "Show respect to all 12 Imams." },
     { name: "Study Imams history", type: "muji", amount: 5, arabic: "", translation: "", description: "Study the history of the Imams." },
     { name: "Cry for Hussein", type: "muji", amount: 5, arabic: "", translation: "", description: "Weep for Imam Hussain." },
-    { name: "Visit Karbala (virtual)", type: "muji", amount: 50, arabic: "", translation: "", description: "Virtual visit to Karbala." },
     { name: "Say Ya Mahdi", type: "muji", amount: 0.5, arabic: "يَا مَهْدِيُّ", translation: "O Mahdi", description: "Call upon Imam Mahdi." },
     { name: "Cleanse 33 sins", type: "muji", amount: 33, arabic: "", translation: "", description: "Seek forgiveness for 33 sins." },
-    
-    // ADL (Justice) - 33 deeds
     { name: "Forgive offender", type: "adl", amount: 1, arabic: "", translation: "", description: "Forgive someone who wronged you." },
     { name: "Reconcile enemies", type: "adl", amount: 10, arabic: "", translation: "", description: "Reconcile two people who are enemies." },
     { name: "Speak truth", type: "adl", amount: 0.5, arabic: "", translation: "", description: "Speak the truth even if it's difficult." },
@@ -292,7 +277,7 @@ function renderActions() {
     let completed = JSON.parse(localStorage.getItem('completed_deeds') || '[]');
     const t = translations[currentLang];
     const canBurn = (wallet !== null && walletType === 'solana');
-    container.innerHTML = items.map((d, idx) => `
+    container.innerHTML = items.map(d => `
         <div class="bg-white rounded-xl shadow-md p-4 border-l-4 ${completed.includes(d.name) ? 'border-yellow-500 bg-yellow-50' : 'border-gray-200'}">
             <div class="flex justify-between items-start">
                 <h3 class="font-bold text-sm">${d.name}</h3>
@@ -391,9 +376,16 @@ async function executeBurn() {
         const accounts = await connection.getTokenAccountsByOwner(wallet.publicKey, { mint: fromMint });
         if (accounts.value.length === 0) { alert(t.msg_no_tokens); return; }
         const fromATA = accounts.value[0].pubkey;
-        const dataLayout = Buffer.alloc(9);
-        dataLayout.writeUInt8(3, 0);
-        dataLayout.writeBigUInt64LE(BigInt(currentDeed.amount * Math.pow(10, 9)), 1);
+        
+        // Исправлено: создаём Uint8Array без Buffer
+        const amountInSmallestUnit = BigInt(Math.floor(currentDeed.amount * Math.pow(10, 9)));
+        const dataLayout = new Uint8Array(9);
+        dataLayout[0] = 3; // Transfer instruction index
+        // Записываем 64-битное значение little-endian
+        for (let i = 0; i < 8; i++) {
+            dataLayout[1 + i] = Number((amountInSmallestUnit >> BigInt(i * 8)) & 0xFFn);
+        }
+        
         const tx = new solanaWeb3.Transaction().add(new solanaWeb3.TransactionInstruction({
             keys: [
                 { pubkey: fromATA, isSigner: false, isWritable: true },
