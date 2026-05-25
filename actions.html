@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://unpkg.com/@solana/web3.js@1.95.3/lib/index.iife.min.js"></script>
+    <script src="https://unpkg.com/@solana/spl-token@0.3.9/lib/index.iife.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #FDF5E6 0%, #F0E6D2 100%); }
@@ -169,7 +170,7 @@ function playSound() {
     audio.play().catch(e => console.log);
 }
 
-// ==================== СЖИГАНИЕ ====================
+// ==================== СЖИГАНИЕ (исправленное) ====================
 async function burnDeed(symbol, amount, deedId, deedName, btnElement) {
     if (!wallet || walletType !== 'solana') {
         openWalletModal();
@@ -190,6 +191,7 @@ async function burnDeed(symbol, amount, deedId, deedName, btnElement) {
         const toSym = symbol === 'ADL' ? 'SABU' : 'ADL';
         const toAddr = new solanaWeb3.PublicKey(TOKENS[toSym]);
         
+        // Получаем ATA пользователя
         const accounts = await connection.getTokenAccountsByOwner(wallet.publicKey, { mint: fromMint });
         if (accounts.value.length === 0) {
             alert(uiText[currentLang]?.msg_no_tokens || "No tokens.");
@@ -198,16 +200,15 @@ async function burnDeed(symbol, amount, deedId, deedName, btnElement) {
         
         const fromATA = accounts.value[0].pubkey;
         
-        const tx = new solanaWeb3.Transaction().add(
-            solanaWeb3.Token.createTransferInstruction(
-                solanaWeb3.TOKEN_PROGRAM_ID,
-                fromATA,
-                toAddr,
-                wallet.publicKey,
-                [],
-                amount * Math.pow(10, 9)
-            )
+        // Используем правильный метод из @solana/spl-token
+        const transferInstruction = splToken.createTransferInstruction(
+            fromATA,
+            toAddr,
+            wallet.publicKey,
+            amount * Math.pow(10, 9)
         );
+        
+        const tx = new solanaWeb3.Transaction().add(transferInstruction);
         
         const { blockhash } = await connection.getLatestBlockhash();
         tx.recentBlockhash = blockhash;
