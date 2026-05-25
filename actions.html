@@ -235,8 +235,13 @@ const translations = {
     ar: { nav_home:"الرئيسية", nav_actions:"99 عملاً صالحاً", nav_confession:"توبة", nav_whitepaper:"الورقة البيضاء", main_title:"٩٩ عملاً صالحاً", main_subtitle:"أحرق التوكنات بنية. سجل تلاوتك. كل عمل يسجل للأبد.", completed_label:"مكتمل:", filter_all:"الكل (٩٩)", footer:"بنك حلال", connect_wallet:"ربط", video_btn:"تسجيل فيديو", audio_btn:"تسجيل صوت", stop_btn:"إيقاف", cancel_btn:"إلغاء", confirm_btn:"تأكيد وحرق", recording_status:"⏺ جارٍ التسجيل... اضغط إيقاف", msg_no_tokens:"ليس لديك توكنات", msg_error:"خطأ: {error}" }
 };
 
-let wallet = null, walletType = null, currentFilter = 'all', currentLang = 'en';
-let mediaRecorder = null, recordedChunks = [], recordingType = null;
+let wallet = null;
+let walletType = null;
+let currentFilter = 'all';
+let currentLang = 'en';
+let mediaRecorder = null;
+let recordedChunks = [];
+let recordingType = null;
 let currentDeed = null;
 
 function applyLanguage() {
@@ -258,8 +263,12 @@ function applyLanguage() {
     document.getElementById('cancel-btn').innerText = t.cancel_btn;
     document.getElementById('confirm-btn-text').innerText = t.confirm_btn;
     document.getElementById('recording-status').innerHTML = t.recording_status;
-    if (wallet) document.getElementById('wallet-address').innerText = wallet.publicKey.toString().slice(0,4)+'...'+wallet.publicKey.toString().slice(-4);
-    else document.getElementById('wallet-address').innerText = t.connect_wallet;
+    if (wallet && wallet.publicKey) {
+        const addr = wallet.publicKey.toString();
+        document.getElementById('wallet-address').innerText = addr.slice(0,4) + '...' + addr.slice(-4);
+    } else {
+        document.getElementById('wallet-address').innerText = t.connect_wallet;
+    }
 }
 
 function updateProgress() {
@@ -276,7 +285,7 @@ function renderActions() {
     let items = deedsList.filter(d => currentFilter === 'all' || d.type === currentFilter);
     let completed = JSON.parse(localStorage.getItem('completed_deeds') || '[]');
     const t = translations[currentLang];
-    const canBurn = (wallet !== null && walletType === 'solana');
+    const canBurn = (wallet !== null && walletType === 'solana' && wallet.publicKey);
     container.innerHTML = items.map(d => `
         <div class="bg-white rounded-xl shadow-md p-4 border-l-4 ${completed.includes(d.name) ? 'border-yellow-500 bg-yellow-50' : 'border-gray-200'}">
             <div class="flex justify-between items-start">
@@ -366,6 +375,7 @@ function stopRecording() {
 async function executeBurn() {
     closeDeedModal();
     if (!wallet || walletType !== 'solana') { openWalletModal(); return; }
+    if (!wallet.publicKey) { alert("Wallet not properly connected. Please reconnect."); openWalletModal(); return; }
     const t = translations[currentLang];
     if (!confirm(`📿 INTENTION: ${currentDeed.name}\nBurn ${currentDeed.amount} ${currentDeed.type.toUpperCase()}\nFor the sake of Allah. Continue?`)) return;
     try {
@@ -377,11 +387,9 @@ async function executeBurn() {
         if (accounts.value.length === 0) { alert(t.msg_no_tokens); return; }
         const fromATA = accounts.value[0].pubkey;
         
-        // Исправлено: создаём Uint8Array без Buffer
         const amountInSmallestUnit = BigInt(Math.floor(currentDeed.amount * Math.pow(10, 9)));
         const dataLayout = new Uint8Array(9);
-        dataLayout[0] = 3; // Transfer instruction index
-        // Записываем 64-битное значение little-endian
+        dataLayout[0] = 3;
         for (let i = 0; i < 8; i++) {
             dataLayout[1 + i] = Number((amountInSmallestUnit >> BigInt(i * 8)) & 0xFFn);
         }
@@ -419,11 +427,17 @@ async function connectWallet(type) {
         wallet = provider;
         walletType = 'solana';
         const t = translations[currentLang];
-        document.getElementById('wallet-address').innerText = wallet.publicKey.toString().slice(0,4)+'...'+wallet.publicKey.toString().slice(-4);
+        if (wallet.publicKey) {
+            const addr = wallet.publicKey.toString();
+            document.getElementById('wallet-address').innerText = addr.slice(0,4) + '...' + addr.slice(-4);
+        } else {
+            document.getElementById('wallet-address').innerText = t.connect_wallet;
+        }
         closeWalletModal();
         renderActions();
     } catch(e) { alert("Error: " + e.message); }
 }
+
 function openWalletModal() { document.getElementById('wallet-modal').classList.add('active'); }
 function closeWalletModal() { document.getElementById('wallet-modal').classList.remove('active'); }
 
