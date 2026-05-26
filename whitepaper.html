@@ -3,364 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Whitepaper - Halal Chain Bank</title>
+    <title>Whitepaper — Halal Chain Bank</title>
     <link rel="icon" href="favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f8f4ea; }
+        body { background: #f8f4ea; font-family: 'Inter', sans-serif; }
         .arabic-font { font-family: 'Amiri', serif; }
-        .wallet-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
-        .wallet-modal.active { display: flex; }
     </style>
 </head>
 <body>
 
-<!-- Wallet Modal -->
-<div id="wallet-modal" class="wallet-modal">
-    <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-bold" data-key="connect_wallet">Connect Wallet</h3>
-            <button onclick="closeWalletModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
-        </div>
-        <div class="space-y-2">
-            <button onclick="connectWallet('phantom')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><img src="https://phantom.app/img/logo.png" class="w-8 h-8" onerror="this.src='https://placehold.co/32x32/5348C2/white?text=P'"><span>Phantom</span></button>
-            <button onclick="connectWallet('solflare')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-globe text-2xl text-orange-500"></i><span>Solflare</span></button>
-            <button onclick="connectWallet('backpack')" class="w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50"><i class="fas fa-backpack text-2xl text-purple-600"></i><span>Backpack</span></button>
-        </div>
-    </div>
-</div>
-
-<!-- Header -->
 <header class="bg-white shadow-md sticky top-0 z-50">
     <div class="container mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
         <div class="flex items-center space-x-3">
-            <img src="logo.png" alt="Halal Chain Bank" class="h-10" onerror="this.src='https://placehold.co/200x60/1a1a1a/FFD700?text=HCB'">
+            <img src="logo.png" class="h-10" onerror="this.src='https://placehold.co/200x60/1a1a1a/FFD700?text=HCB'">
             <span class="text-xl font-bold arabic-font">Halal Chain Bank</span>
         </div>
-        <div class="flex items-center space-x-3">
-            <select id="lang-select" class="bg-gray-100 border border-gray-300 rounded-lg px-3 py-1.5 text-sm">
+        <div class="flex items-center gap-3">
+            <select id="lang-select" class="bg-gray-100 border rounded-lg px-3 py-1.5 text-sm">
                 <option value="en">English</option>
                 <option value="ru">Русский</option>
                 <option value="ar">العربية</option>
-                <option value="ur">اردو</option>
-                <option value="fa">فارسی</option>
-                <option value="tr">Türkçe</option>
             </select>
-            <button id="wallet-btn" class="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg transition flex items-center gap-2">
-                <i class="fas fa-wallet"></i>
-                <span id="wallet-address" data-key="connect_wallet">Connect Wallet</span>
-            </button>
+            <button id="wallet-btn" class="bg-gray-900 text-white px-4 py-2 rounded-lg"><i class="fas fa-wallet"></i><span id="wallet-address">Connect</span></button>
         </div>
     </div>
-    <div class="border-t border-gray-200">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-wrap gap-4">
-                <a href="index.html" class="text-gray-600 hover:text-gray-900 py-3 px-1" data-key="nav_home">Главная</a>
-                <a href="actions.html" class="text-gray-600 hover:text-gray-900 py-3 px-1" data-key="nav_actions">99 Добрых дел</a>
-                <a href="confession.html" class="text-gray-600 hover:text-gray-900 py-3 px-1" data-key="nav_confession">Тауба</a>
-                <a href="whitepaper.html" class="border-b-3 border-yellow-500 font-semibold py-3 px-1" data-key="nav_whitepaper">Whitepaper</a>
-            </div>
+    <div class="border-t">
+        <div class="container mx-auto px-4 flex gap-4">
+            <a href="index.html" id="nav-home">Home</a>
+            <a href="actions.html" id="nav-actions">99 Good Deeds</a>
+            <a href="confession.html" id="nav-confession">Tawbah</a>
+            <a href="liquidity.html" id="nav-liquidity">Liquidity</a>
+            <a href="whitepaper.html" class="border-b-2 border-yellow-500 font-semibold" id="nav-whitepaper">Whitepaper</a>
         </div>
     </div>
 </header>
 
 <main class="container mx-auto px-4 py-12 max-w-4xl">
-    <h1 class="text-4xl font-bold text-center mb-2" data-key="wp_title">Whitepaper</h1>
-    <p class="text-center text-gray-500 mb-8" data-key="wp_subtitle">Halal Chain Bank — первый децентрализованный халяльный банк на Solana</p>
-    
+    <h1 class="text-4xl font-bold text-center mb-2" data-key="title">Whitepaper</h1>
+    <p class="text-center text-gray-500 mb-8" data-key="subtitle">Halal Chain Bank — First decentralized halal bank on Solana</p>
+
     <div class="bg-white rounded-xl shadow-lg p-6 md:p-8 space-y-6">
-        
-        <!-- Section 1 -->
-        <section>
-            <h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4" data-key="sec1_title">1. Введение</h2>
-            <p class="text-gray-700" data-key="sec1_text">Halal Chain Bank сочетает исламские финансы и блокчейн. Проект основан на принципах: отсутствие рибы (процентов), справедливость (адль), благотворительность (садака).</p>
-        </section>
-        
-        <!-- Section 2 - Tokens -->
-        <section>
-            <h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4" data-key="sec2_title">2. Токены</h2>
-            <div class="space-y-3">
-                <div><span class="font-bold text-green-700">SABU</span> — <span data-key="sabu_desc">суннитский токен добра. Сжигается за терпение и дела по сунне.</span></div>
-                <div><span class="font-bold text-blue-700">MUJI</span> — <span data-key="muji_desc">шиитский токен добра. Сжигается за молитвы и поминовение Кербелы.</span></div>
-                <div><span class="font-bold text-gray-900">ADL</span> — <span data-key="adl_desc">токен справедливости. Сжигается для таубы и очищения.</span></div>
+        <section><h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4" data-key="sec1_title">1. Introduction</h2><p class="text-gray-700" data-key="sec1_text">Halal Chain Bank combines Islamic finance and blockchain. Based on principles: no riba (interest), justice (adl), charity (sadaqah).</p></section>
+
+        <section><h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4" data-key="sec2_title">2. Tokens</h2><div class="space-y-2"><div><span class="font-bold text-green-700">SABU</span> — <span data-key="sabu_desc">Sunni good deed token. Burned for patience and deeds following the Sunnah.</span></div><div><span class="font-bold text-blue-700">MUJI</span> — <span data-key="muji_desc">Shia good deed token. Burned for prayers and commemoration of Karbala.</span></div><div><span class="font-bold text-gray-900">ADL</span> — <span data-key="adl_desc">Justice token. Burned for Tawbah (repentance) and purification.</span></div></div></section>
+
+        <!-- Physical Asset Backing Section -->
+        <section class="mt-8 bg-amber-50 border border-amber-200 rounded-xl p-6">
+            <h2 class="text-2xl font-bold border-b-2 border-amber-500 inline-block pb-1 mb-4" data-key="asset_title">4. Physical Asset Backing — 4N Copper</h2>
+            <p class="text-gray-700 mb-3" data-key="asset_text">Halal Chain Bank is backed by <strong class="text-amber-700">100,000 tonnes of 4N (99.99%) premium copper ingots</strong> stored in LME-approved warehouses.</p>
+            <div class="grid md:grid-cols-2 gap-4 mt-4">
+                <div><p class="font-semibold">📦 Lot Information</p><ul class="text-sm text-gray-600 space-y-1"><li>CEBIL DIAMONDS / UAE</li><li>Lot: CD-CU-12MAY26</li><li>Weight: 100,000 tonnes</li><li>Purity: 99.99% (4N)</li><li>Inspection: 12 May 2026</li></ul></div>
+                <div><p class="font-semibold">📜 Certifications</p><ul class="text-sm text-gray-600 space-y-1"><li>SGS Audit — MRTEC2301429302</li><li>Bureau Veritas Warehouse</li><li>LME Grade A registered</li><li>SKR Framework Certified</li></ul></div>
             </div>
+            <p class="text-sm text-gray-500 mt-4"><i class="fas fa-chart-line mr-1"></i> Total asset value: <strong>$3.5 billion</strong> | Live price tracking on <a href="liquidity.html" class="text-blue-600 hover:underline">Liquidity Page</a></p>
         </section>
-        
-        <!-- Section 3 - Economy -->
-        <section>
-            <h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4" data-key="sec3_title">3. Экономика</h2>
-            <ul class="list-disc list-inside text-gray-700 space-y-1">
-                <li data-key="eco1">Эмиссия каждого токена: 10 млрд (фикс, без доп. выпуска)</li>
-                <li data-key="eco2">Ликвидность заблокирована в пулах Meteora</li>
-                <li data-key="eco3">Комиссии направляются в фонд уммы (мечети, благотворительность)</li>
-                <li data-key="eco4">Сжигание токенов = совершение добрых дел</li>
-            </ul>
-        </section>
-        
-        <!-- Section 4 - Opponents -->
-        <section>
-            <h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4" data-key="sec4_title">4. Механика «противников»</h2>
-            <p class="text-gray-700" data-key="sec4_text">Спекулянты могут скупать токены, создавая дефицит для верующих. Это повышает цену и комиссии, часть которых идёт на благотворительность. Таким образом, даже противники участвуют в садаке.</p>
-        </section>
-        
-        <!-- Section 5 - Roadmap -->
-        <section>
-            <h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4" data-key="sec5_title">5. Дорожная карта</h2>
-            <ul class="list-disc list-inside text-gray-700 space-y-1">
-                <li data-key="road1">✅ Запуск токенов SABU, MUJI, ADL</li>
-                <li data-key="road2">✅ Создание пулов ликвидности (Meteora)</li>
-                <li data-key="road3">🔄 99 добрых дел (в разработке)</li>
-                <li data-key="road4">🔄 Тауба (покаяние) через сжигание ADL</li>
-                <li data-key="road5">⏳ DAO управление держателями ADL</li>
-                <li data-key="road6">⏳ Мобильное приложение с намазами и Кораном</li>
-            </ul>
-        </section>
+
+        <section><h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4" data-key="sec3_title">3. Economy</h2><ul class="list-disc list-inside text-gray-700 space-y-1"><li data-key="eco1">Each token supply: 10 billion (fixed, no minting)</li><li data-key="eco2">Liquidity locked in Meteora pools</li><li data-key="eco3">Fees go to the Ummah fund (mosques, charity)</li><li data-key="eco4">Burning tokens = performing good deeds</li></ul></section>
+
+        <section><h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4" data-key="sec4_title">4. 'Opponents' Mechanism</h2><p class="text-gray-700" data-key="sec4_text">Speculators can buy tokens, creating scarcity for believers. This increases price and fees, part of which goes to charity. Thus, even opponents participate in sadaqah.</p></section>
+
+        <section><h2 class="text-2xl font-bold border-b-2 border-yellow-500 inline-block pb-1 mb-4" data-key="sec5_title">5. Roadmap</h2><ul class="list-disc list-inside text-gray-700 space-y-1"><li data-key="road1">✅ Launch SABU, MUJI, ADL tokens</li><li data-key="road2">✅ Create liquidity pools (Meteora)</li><li data-key="road3">✅ 4N Copper asset backing (100k tonnes)</li><li data-key="road4">🔄 99 good deeds (in development)</li><li data-key="road5">🔄 Tawbah (repentance) through ADL burning</li><li data-key="road6">⏳ DAO governance by ADL holders</li></ul></section>
     </div>
 </main>
 
-<footer class="bg-gray-900 text-white mt-12 py-6 text-center text-sm">
-    <p>© 2025 Halal Chain Bank — <span data-key="footer_text">Халяльный блокчейн-банк</span></p>
-    <p class="text-gray-400 mt-1">وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا</p>
-</footer>
+<footer class="bg-gray-900 text-white mt-12 py-6 text-center text-sm"><p>© 2025 Halal Chain Bank — <span data-key="footer">Halal blockchain bank</span></p></footer>
 
 <script>
-// ==================== ПОЛНЫЕ ПЕРЕВОДЫ ДЛЯ WHITEPAPER ====================
 const translations = {
-    en: {
-        connect_wallet: "Connect Wallet",
-        nav_home: "Home",
-        nav_actions: "99 Good Deeds",
-        nav_confession: "Tawbah",
-        nav_whitepaper: "Whitepaper",
-        wp_title: "Whitepaper",
-        wp_subtitle: "Halal Chain Bank — First decentralized halal bank on Solana",
-        sec1_title: "1. Introduction",
-        sec1_text: "Halal Chain Bank combines Islamic finance and blockchain. Based on principles: no riba (interest), justice (adl), charity (sadaqah).",
-        sec2_title: "2. Tokens",
-        sabu_desc: "Sunni good deed token. Burned for patience and deeds following the Sunnah.",
-        muji_desc: "Shia good deed token. Burned for prayers and commemoration of Karbala.",
-        adl_desc: "Justice token. Burned for Tawbah (repentance) and purification.",
-        sec3_title: "3. Economy",
-        eco1: "Each token supply: 10 billion (fixed, no minting)",
-        eco2: "Liquidity locked in Meteora pools",
-        eco3: "Fees go to the Ummah fund (mosques, charity)",
-        eco4: "Burning tokens = performing good deeds",
-        sec4_title: "4. 'Opponents' Mechanism",
-        sec4_text: "Speculators can buy tokens, creating scarcity for believers. This increases price and fees, part of which goes to charity. Thus, even opponents participate in sadaqah.",
-        sec5_title: "5. Roadmap",
-        road1: "✅ Launch SABU, MUJI, ADL tokens",
-        road2: "✅ Create liquidity pools (Meteora)",
-        road3: "🔄 99 good deeds (in development)",
-        road4: "🔄 Tawbah (repentance) through ADL burning",
-        road5: "⏳ DAO governance by ADL holders",
-        road6: "⏳ Mobile app with prayers and Quran",
-        footer_text: "Halal blockchain bank"
-    },
-    ru: {
-        connect_wallet: "Подключить кошелёк",
-        nav_home: "Главная",
-        nav_actions: "99 Добрых дел",
-        nav_confession: "Тауба",
-        nav_whitepaper: "Whitepaper",
-        wp_title: "Whitepaper",
-        wp_subtitle: "Halal Chain Bank — первый децентрализованный халяльный банк на Solana",
-        sec1_title: "1. Введение",
-        sec1_text: "Halal Chain Bank сочетает исламские финансы и блокчейн. Проект основан на принципах: отсутствие рибы (процентов), справедливость (адль), благотворительность (садака).",
-        sec2_title: "2. Токены",
-        sabu_desc: "суннитский токен добра. Сжигается за терпение и дела по сунне.",
-        muji_desc: "шиитский токен добра. Сжигается за молитвы и поминовение Кербелы.",
-        adl_desc: "токен справедливости. Сжигается для таубы и очищения.",
-        sec3_title: "3. Экономика",
-        eco1: "Эмиссия каждого токена: 10 млрд (фикс, без доп. выпуска)",
-        eco2: "Ликвидность заблокирована в пулах Meteora",
-        eco3: "Комиссии направляются в фонд уммы (мечети, благотворительность)",
-        eco4: "Сжигание токенов = совершение добрых дел",
-        sec4_title: "4. Механика «противников»",
-        sec4_text: "Спекулянты могут скупать токены, создавая дефицит для верующих. Это повышает цену и комиссии, часть которых идёт на благотворительность. Таким образом, даже противники участвуют в садаке.",
-        sec5_title: "5. Дорожная карта",
-        road1: "✅ Запуск токенов SABU, MUJI, ADL",
-        road2: "✅ Создание пулов ликвидности (Meteora)",
-        road3: "🔄 99 добрых дел (в разработке)",
-        road4: "🔄 Тауба (покаяние) через сжигание ADL",
-        road5: "⏳ DAO управление держателями ADL",
-        road6: "⏳ Мобильное приложение с намазами и Кораном",
-        footer_text: "Халяльный блокчейн-банк"
-    },
-    ar: {
-        connect_wallet: "ربط المحفظة",
-        nav_home: "الرئيسية",
-        nav_actions: "99 عملاً صالحاً",
-        nav_confession: "توبة",
-        nav_whitepaper: "الورقة البيضاء",
-        wp_title: "الورقة البيضاء",
-        wp_subtitle: "بنك الحلال تشين — أول بنك لامركزي حلال على سولانا",
-        sec1_title: "١. مقدمة",
-        sec1_text: "يجمع بنك الحلال تشين بين التمويل الإسلامي والبلوكتشين. يقوم على مبادئ: لا ربا، العدل، الصدقة.",
-        sec2_title: "٢. التوكنات",
-        sabu_desc: "توكن الخير السني. يُحرق للصبر والأعمال باتباع السنة.",
-        muji_desc: "توكن الخير الشيعي. يُحرق للصلوات وإحياء ذكرى كربلاء.",
-        adl_desc: "توكن العدالة. يُحرق للتوبة والتطهير.",
-        sec3_title: "٣. الاقتصاد",
-        eco1: "إصدار كل توكن: ١٠ مليارات (ثابت، بدون سك جديد)",
-        eco2: "السيولة محتجزة في مجمعات ميتيورا",
-        eco3: "الرسوم تذهب إلى صندوق الأمة (المساجد، الصدقات)",
-        eco4: "حرق التوكنات = فعل الخيرات",
-        sec4_title: "٤. آلية 'الخصوم'",
-        sec4_text: "يمكن للمضاربين شراء التوكنات، مما يخلق ندرة للمؤمنين. هذا يرفع السعر والرسوم، وجزء منها يذهب للصدقة. وهكذا، حتى الخصوم يشاركون في الصدقة.",
-        sec5_title: "٥. خارطة الطريق",
-        road1: "✅ إطلاق توكنات SABU، MUJI، ADL",
-        road2: "✅ إنشاء مجمعات السيولة (ميتيورا)",
-        road3: "🔄 ٩٩ عملاً صالحاً (قيد التطوير)",
-        road4: "🔄 التوبة عبر حرق ADL",
-        road5: "⏳ حوكمة DAO من قبل حاملي ADL",
-        road6: "⏳ تطبيق جوال للصلوات والقرآن",
-        footer_text: "بنك حلال على البلوكتشين"
-    },
-    ur: {
-        connect_wallet: "والیٹ منسلک کریں",
-        nav_home: "مرکزی",
-        nav_actions: "۹۹ نیک اعمال",
-        nav_confession: "توبہ",
-        nav_whitepaper: "وائٹ پیپر",
-        wp_title: "وائٹ پیپر",
-        wp_subtitle: "حلال چین بینک — سولانا پر پہلا غیر مرکزی حلال بینک",
-        sec1_title: "۱. تعارف",
-        sec1_text: "حلال چین بینک اسلامی مالیات اور بلاک چین کو یکجا کرتا ہے۔ اصول: سود نہیں، عدل، صدقہ۔",
-        sec2_title: "۲. ٹوکنز",
-        sabu_desc: "سنی نیکی کا ٹوکن۔ صبر اور سنت کے اعمال کے لیے جلایا جاتا ہے۔",
-        muji_desc: "شیعہ نیکی کا ٹوکن۔ نمازوں اور کربلا کی یاد کے لیے جلایا جاتا ہے۔",
-        adl_desc: "انصاف کا ٹوکن۔ توبہ اور پاکیزگی کے لیے جلایا جاتا ہے۔",
-        sec3_title: "۳. معیشت",
-        eco1: "ہر ٹوکن کی سپلائی: ۱۰ ارب (مقررہ، اضافی جاری نہیں)",
-        eco2: "لیکویڈیٹی میٹیورا پولز میں بند ہے",
-        eco3: "فیس امت فنڈ میں جاتی ہے (مساجد، صدقہ)",
-        eco4: "ٹوکن جلانا = نیک اعمال کرنا",
-        sec4_title: "۴. 'مخالفین' کا طریقہ کار",
-        sec4_text: "سپیکولیٹر ٹوکن خرید سکتے ہیں، جس سے ایمان والوں کے لیے قلت پیدا ہوتی ہے۔ اس سے قیمت اور فیس بڑھتی ہے، جس کا کچھ حصہ صدقہ جات میں جاتا ہے۔ اس طرح مخالف بھی صدقہ میں حصہ لیتے ہیں۔",
-        sec5_title: "۵. روڈ میپ",
-        road1: "✅ SABU، MUJI، ADL ٹوکنز کا اجراء",
-        road2: "✅ لیکویڈیٹی پولز کی تخلیق (Meteora)",
-        road3: "🔄 ۹۹ نیک اعمال (زیرِ ترقی)",
-        road4: "🔄 ADL جلانے کے ذریعے توبہ",
-        road5: "⏳ ADL ہولڈرز کی طرف سے DAO گورننس",
-        road6: "⏳ نمازوں اور قرآن کے ساتھ موبائل ایپ",
-        footer_text: "حلال بلاک چین بینک"
-    },
-    fa: {
-        connect_wallet: "اتصال کیف پول",
-        nav_home: "خانه",
-        nav_actions: "۹۹ کار نیک",
-        nav_confession: "توبه",
-        nav_whitepaper: "وایت پیپر",
-        wp_title: "وایت پیپر",
-        wp_subtitle: "بانک زنجیره‌ای حلال — اولین بانک غیرمتمرکز حلال بر روی سولانا",
-        sec1_title: "۱. مقدمه",
-        sec1_text: "بانک زنجیره‌ای حلال مالی اسلامی و بلاکچین را ترکیب می‌کند. اصول: بدون ربا، عدل، صدقه.",
-        sec2_title: "۲. توکن‌ها",
-        sabu_desc: "توکن نیکی سنی. برای صبر و اعمال پیروی از سنت سوزانده می‌شود.",
-        muji_desc: "توکن نیکی شیعه. برای نمازها و بزرگداشت کربلا سوزانده می‌شود.",
-        adl_desc: "توکن عدالت. برای توبه و پاکسازی سوزانده می‌شود.",
-        sec3_title: "۳. اقتصاد",
-        eco1: "عرضه هر توکن: ۱۰ میلیارد (ثابت، بدون ضرب اضافی)",
-        eco2: "نقدینگی در استخرهای Meteora قفل شده است",
-        eco3: "کارمزدها به صندوق امت می‌رود (مساجد، صدقه)",
-        eco4: "سوزاندن توکن‌ها = انجام کارهای نیک",
-        sec4_title: "۴. مکانیسم 'مخالفان'",
-        sec4_text: "سفته‌بازان می‌توانند توکن بخرند و برای مؤمنان کمبود ایجاد کنند. این کار قیمت و کارمزدها را افزایش می‌دهد که بخشی از آن به صدقه می‌رود. بدین ترتیب، حتی مخالفان نیز در صدقه شرکت می‌کنند.",
-        sec5_title: "۵. نقشه راه",
-        road1: "✅ راه‌اندازی توکن‌های SABU، MUJI، ADL",
-        road2: "✅ ایجاد استخرهای نقدینگی (Meteora)",
-        road3: "🔄 ۹۹ کار نیک (در حال توسعه)",
-        road4: "🔄 توبه از طریق سوزاندن ADL",
-        road5: "⏳ حاکمیت DAO توسط دارندگان ADL",
-        road6: "⏳ اپلیکیشن موبایل با نمازها و قرآن",
-        footer_text: "بانک بلاکچینی حلال"
-    },
-    tr: {
-        connect_wallet: "Cüzdan Bağla",
-        nav_home: "Ana Sayfa",
-        nav_actions: "99 İyilik",
-        nav_confession: "Tövbe",
-        nav_whitepaper: "Beyaz Kağıt",
-        wp_title: "Beyaz Kağıt",
-        wp_subtitle: "Helal Zincir Bankası — Solana'daki ilk merkeziyetsiz helal banka",
-        sec1_title: "1. Giriş",
-        sec1_text: "Helal Zincir Bankası, İslami finans ve blockchain'i birleştirir. İlkeler: riba yok, adalet (adl), sadaka.",
-        sec2_title: "2. Tokenlar",
-        sabu_desc: "Sünni iyilik tokenı. Sabır ve sünnete uygun iyilikler için yakılır.",
-        muji_desc: "Şii iyilik tokenı. Dualar ve Kerbela anması için yakılır.",
-        adl_desc: "Adalet tokenı. Tövbe ve arınma için yakılır.",
-        sec3_title: "3. Ekonomi",
-        eco1: "Her token arzı: 10 milyar (sabit, ek basım yok)",
-        eco2: "Likidite Meteora havuzlarında kilitli",
-        eco3: "Komisyonlar Ümmet fonuna gider (camiler, sadaka)",
-        eco4: "Token yakmak = iyilik yapmak",
-        sec4_title: "4. 'Rakipler' Mekanizması",
-        sec4_text: "Spekülatörler token satın alarak inananlar için kıtlık yaratabilir. Bu, fiyatı ve komisyonları artırır, bunun bir kısmı sadakaya gider. Böylece rakipler bile sadakaya katılmış olur.",
-        sec5_title: "5. Yol Haritası",
-        road1: "✅ SABU, MUJI, ADL tokenlarının lansmanı",
-        road2: "✅ Likidite havuzlarının oluşturulması (Meteora)",
-        road3: "🔄 99 iyilik (geliştiriliyor)",
-        road4: "🔄 ADL yakarak tövbe",
-        road5: "⏳ ADL sahipleri tarafından DAO yönetişimi",
-        road6: "⏳ Namazlar ve Kur'an ile mobil uygulama",
-        footer_text: "Helal blockchain bankası"
-    }
+    en: { title:"Whitepaper", subtitle:"Halal Chain Bank — First decentralized halal bank on Solana", sec1_title:"1. Introduction", sec1_text:"Halal Chain Bank combines Islamic finance and blockchain. Based on principles: no riba, justice, charity.", sec2_title:"2. Tokens", sabu_desc:"Sunni good deed token. Burned for patience and deeds following the Sunnah.", muji_desc:"Shia good deed token. Burned for prayers and commemoration of Karbala.", adl_desc:"Justice token. Burned for Tawbah (repentance) and purification.", asset_title:"3. Physical Asset Backing — 4N Copper", asset_text:"Halal Chain Bank is backed by 100,000 tonnes of 4N (99.99%) premium copper ingots stored in LME-approved warehouses.", sec3_title:"4. Economy", eco1:"Each token supply: 10 billion (fixed, no minting)", eco2:"Liquidity locked in Meteora pools", eco3:"Fees go to the Ummah fund", eco4:"Burning tokens = performing good deeds", sec4_title:"5. 'Opponents' Mechanism", sec4_text:"Speculators create scarcity, raising the price. Part of fees goes to charity.", sec5_title:"6. Roadmap", road1:"✅ Launch tokens", road2:"✅ Create liquidity pools", road3:"✅ 4N Copper asset (100k tonnes)", road4:"🔄 99 good deeds", road5:"🔄 Tawbah via ADL", road6:"⏳ DAO governance", footer:"Halal blockchain bank" },
+    ru: { title:"Whitepaper", subtitle:"Halal Chain Bank — первый децентрализованный халяльный банк на Solana", sec1_title:"1. Введение", sec1_text:"Halal Chain Bank сочетает исламские финансы и блокчейн. Основан на принципах: отсутствие рибы, справедливость, благотворительность.", sec2_title:"2. Токены", sabu_desc:"суннитский токен добра. Сжигается за терпение и дела по сунне.", muji_desc:"шиитский токен добра. Сжигается за молитвы и поминовение Кербелы.", adl_desc:"токен справедливости. Сжигается для таубы и очищения.", asset_title:"3. Обеспечение реальным активом — 4N медь", asset_text:"Halal Chain Bank обеспечен 100 000 тонн премиальной меди 4N (99.99%) в слитках, хранящихся на сертифицированных складах LME.", sec3_title:"4. Экономика", eco1:"Эмиссия каждого токена: 10 млрд (фикс)", eco2:"Ликвидность в пулах Meteora", eco3:"Комиссии в фонд уммы", eco4:"Сжигание токенов = добрые дела", sec4_title:"5. Механика «противников»", sec4_text:"Спекулянты создают дефицит, повышая цену. Часть комиссий идёт на благотворительность.", sec5_title:"6. Дорожная карта", road1:"✅ Запуск токенов", road2:"✅ Создание пулов", road3:"✅ Актив 4N медь (100k тонн)", road4:"🔄 99 добрых дел", road5:"🔄 Тауба через ADL", road6:"⏳ DAO управление", footer:"Халяльный блокчейн-банк" },
+    ar: { title:"الورقة البيضاء", subtitle:"بنك الحلال تشين — أول بنك لامركزي حلال على سولانا", sec1_title:"١. مقدمة", sec1_text:"يجمع بنك الحلال تشين بين التمويل الإسلامي والبلوكتشين. يقوم على مبادئ: لا ربا، العدل، الصدقة.", sec2_title:"٢. التوكنات", sabu_desc:"توكن الخير السني. يُحرق للصبر والأعمال باتباع السنة.", muji_desc:"توكن الخير الشيعي. يُحرق للصلوات وإحياء ذكرى كربلاء.", adl_desc:"توكن العدالة. يُحرق للتوبة والتطهير.", asset_title:"٣. الأصول المادية — نحاس 4N", asset_text:"بنك الحلال تشين مدعوم بـ 100,000 طن من سبائك النحاس النقي 4N (99.99٪) المخزنة في مستودعات LME المعتمدة.", sec3_title:"٤. الاقتصاد", eco1:"إصدار كل توكن: ١٠ مليارات", eco2:"السيولة في مجمعات ميتيورا", eco3:"الرسوم تذهب إلى صندوق الأمة", eco4:"حرق التوكنات = فعل الخيرات", sec4_title:"٥. آلية 'الخصوم'", sec4_text:"يخلق المضاربون ندرة، مما يرفع السعر. جزء من الرسوم يذهب للصدقة.", sec5_title:"٦. خارطة الطريق", road1:"✅ إطلاق التوكنات", road2:"✅ إنشاء مجمعات السيولة", road3:"✅ أصول النحاس 4N", road4:"🔄 ٩٩ عملاً صالحاً", road5:"🔄 التوبة عبر ADL", road6:"⏳ حوكمة DAO", footer:"بنك حلال" }
 };
 
-// ==================== ПРИЛОЖЕНИЕ ====================
-let currentLang = localStorage.getItem('lang') || 'ru';
-let wallet = null;
-
-function applyLanguage() {
-    document.querySelectorAll('[data-key]').forEach(el => {
-        const key = el.getAttribute('data-key');
-        if (translations[currentLang] && translations[currentLang][key]) {
-            el.innerText = translations[currentLang][key];
-        }
-    });
-}
-
+let currentLang = localStorage.getItem('lang') || 'en';
+function applyLanguage() { document.querySelectorAll('[data-key]').forEach(el => { const key = el.getAttribute('data-key'); if(translations[currentLang][key]) el.innerText = translations[currentLang][key]; }); }
 document.getElementById('lang-select').value = currentLang;
-document.getElementById('lang-select').addEventListener('change', (e) => {
-    currentLang = e.target.value;
-    localStorage.setItem('lang', currentLang);
-    applyLanguage();
-});
+document.getElementById('lang-select').addEventListener('change', (e) => { currentLang = e.target.value; localStorage.setItem('lang', currentLang); applyLanguage(); });
 applyLanguage();
 
-// ==================== КОШЕЛЬКИ ====================
-async function connectWallet(type) {
-    if (type === 'phantom' && window.solana && window.solana.isPhantom) {
-        await window.solana.connect();
-        wallet = window.solana;
-    } else if (type === 'solflare' && window.solflare) {
-        await window.solflare.connect();
-        wallet = window.solflare;
-    } else if (type === 'backpack' && window.backpack) {
-        await window.backpack.connect();
-        wallet = window.backpack;
-    } else {
-        alert("Install Phantom, Solflare or Backpack for Solana");
-        return;
-    }
-    updateWalletUI();
-    closeWalletModal();
-}
-
-function updateWalletUI() {
-    const addrSpan = document.getElementById('wallet-address');
-    if (wallet && wallet.publicKey) {
-        addrSpan.innerText = wallet.publicKey.toString().slice(0,4)+'...'+wallet.publicKey.toString().slice(-4);
-    } else {
-        addrSpan.innerText = translations[currentLang]?.connect_wallet || "Connect Wallet";
-    }
-}
-
-function openWalletModal() { document.getElementById('wallet-modal').classList.add('active'); }
-function closeWalletModal() { document.getElementById('wallet-modal').classList.remove('active'); }
-document.getElementById('wallet-btn').addEventListener('click', openWalletModal);
+let wallet = null;
+async function connectWallet() { if(window.solana?.isPhantom){await window.solana.connect(); wallet=window.solana; document.getElementById('wallet-address').innerText=wallet.publicKey.toString().slice(0,4)+'...'+wallet.publicKey.toString().slice(-4);}else{alert("Install Phantom");} }
+document.getElementById('wallet-btn').addEventListener('click', connectWallet);
 </script>
 </body>
 </html>
