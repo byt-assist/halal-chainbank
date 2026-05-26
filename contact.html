@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Contact Us — Halal Chain Bank</title>
+    <link rel="icon" href="favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #FDF5E6 0%, #F0E6D2 100%); }
+        .arabic-font { font-family: 'Amiri', serif; }
+        .wallet-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+        .wallet-modal.active { display: flex; }
+        .btn-submit { background: #10b981; transition: all 0.2s; }
+        .btn-submit:hover { background: #059669; transform: translateY(-2px); }
+        .contact-icon { transition: transform 0.2s; }
+        .contact-icon:hover { transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+<!-- Wallet Modal (для единообразия) -->
+<div id="wallet-modal" class="wallet-modal">
+    <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold">Connect Wallet</h3>
+            <button onclick="closeWalletModal()" class="text-gray-400"><i class="fas fa-times text-xl"></i></button>
+        </div>
+        <div class="space-y-2">
+            <button onclick="connectWallet('phantom')" class="w-full flex items-center gap-3 p-3 border rounded-xl"><img src="https://phantom.app/img/logo.png" class="w-6 h-6"><span>Phantom</span></button>
+            <button onclick="connectWallet('solflare')" class="w-full flex items-center gap-3 p-3 border rounded-xl"><i class="fas fa-globe text-orange-500"></i><span>Solflare</span></button>
+            <button onclick="connectWallet('backpack')" class="w-full flex items-center gap-3 p-3 border rounded-xl"><i class="fas fa-backpack text-purple-600"></i><span>Backpack</span></button>
+        </div>
+    </div>
+</div>
+
+<!-- Header -->
+<header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+        <div class="flex items-center space-x-3">
+            <img src="logo.png" class="h-10" onerror="this.src='https://placehold.co/200x60/1a1a1a/FFD700?text=HCB'">
+            <span class="text-xl font-bold arabic-font">Halal Chain Bank</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <select id="lang-select" class="bg-gray-100 border rounded-lg px-3 py-1.5 text-sm">
+                <option value="en">English</option>
+                <option value="ru">Русский</option>
+                <option value="ar">العربية</option>
+                <option value="ur">اردو</option>
+                <option value="fa">فارسی</option>
+                <option value="tr">Türkçe</option>
+            </select>
+            <button id="wallet-btn" class="bg-gray-900 text-white px-4 py-2 rounded-lg"><i class="fas fa-wallet"></i><span id="wallet-address">Connect</span></button>
+        </div>
+    </div>
+    <div class="border-t">
+        <div class="container mx-auto px-4 flex gap-4">
+            <a href="index.html" class="text-gray-600 hover:text-gray-900 py-3 px-1" data-key="nav_home">Home</a>
+            <a href="actions.html" class="text-gray-600 hover:text-gray-900 py-3 px-1" data-key="nav_actions">99 Good Deeds</a>
+            <a href="confession.html" class="text-gray-600 hover:text-gray-900 py-3 px-1" data-key="nav_confession">Tawbah</a>
+            <a href="liquidity.html" class="text-gray-600 hover:text-gray-900 py-3 px-1" data-key="nav_liquidity">Liquidity</a>
+            <a href="whitepaper.html" class="text-gray-600 hover:text-gray-900 py-3 px-1" data-key="nav_whitepaper">Whitepaper</a>
+            <a href="contact.html" class="border-b-2 border-yellow-500 font-semibold py-3 px-1" data-key="nav_contact">Contact</a>
+        </div>
+    </div>
+</header>
+
+<main class="container mx-auto px-4 py-12 max-w-4xl">
+    <div class="text-center mb-10">
+        <i class="fas fa-envelope text-5xl text-yellow-600 mb-4"></i>
+        <h1 class="text-3xl md:text-4xl font-bold mb-2" data-key="title">Contact Us</h1>
+        <p class="text-gray-600 max-w-xl mx-auto" data-key="subtitle">Have questions, feedback, or partnership inquiries? Reach out to us — we'd love to hear from you.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6 mb-10">
+        <!-- Email Card -->
+        <div class="bg-white rounded-xl shadow-md p-5 text-center contact-icon">
+            <i class="fas fa-envelope text-3xl text-amber-600 mb-3"></i>
+            <h3 class="font-bold text-gray-800" data-key="email_title">Email Us</h3>
+            <p class="text-sm text-gray-500 mt-1">oiltrustbank@gmail.com</p>
+            <p class="text-xs text-gray-400 mt-2" data-key="email_desc">We respond within 24-48 hours</p>
+        </div>
+        
+        <!-- Telegram Card -->
+        <div class="bg-white rounded-xl shadow-md p-5 text-center contact-icon">
+            <i class="fab fa-telegram text-3xl text-blue-500 mb-3"></i>
+            <h3 class="font-bold text-gray-800" data-key="telegram_title">Telegram</h3>
+            <p class="text-sm text-gray-500 mt-1">@HalalChainBank</p>
+            <p class="text-xs text-gray-400 mt-2" data-key="telegram_desc">Join our community chat</p>
+        </div>
+        
+        <!-- X (Twitter) Card -->
+        <div class="bg-white rounded-xl shadow-md p-5 text-center contact-icon">
+            <i class="fab fa-twitter text-3xl text-sky-500 mb-3"></i>
+            <h3 class="font-bold text-gray-800" data-key="twitter_title">X (Twitter)</h3>
+            <p class="text-sm text-gray-500 mt-1">@HalalChainBank</p>
+            <p class="text-xs text-gray-400 mt-2" data-key="twitter_desc">Follow for updates</p>
+        </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+        <h2 class="text-2xl font-bold mb-5 flex items-center gap-2"><i class="fas fa-paper-plane text-yellow-600"></i> <span data-key="form_title">Send us a message</span></h2>
+        
+        <form action="https://formsubmit.co/oiltrustbank@gmail.com" method="POST">
+            <!-- Защита от спама -->
+            <input type="text" name="_honey" style="display:none">
+            <!-- Перенаправление после отправки -->
+            <input type="hidden" name="_next" value="https://byt-assist.github.io/halal-chainbank/thankyou.html">
+            <!-- Убираем капчу (опционально) -->
+            <input type="hidden" name="_captcha" value="false">
+            <!-- Тема письма -->
+            <input type="hidden" name="_subject" value="New message from Halal Chain Bank website">
+            
+            <div class="grid md:grid-cols-2 gap-5 mb-5">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2" data-key="name_label">Your Name *</label>
+                    <input type="text" name="name" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2" data-key="email_label">Email Address *</label>
+                    <input type="email" name="email" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                </div>
+            </div>
+            
+            <div class="mb-5">
+                <label class="block text-gray-700 font-medium mb-2" data-key="subject_label">Subject *</label>
+                <input type="text" name="subject" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500" data-key-placeholder="subject_placeholder" placeholder="e.g., Support, Partnership, Question">
+            </div>
+            
+            <div class="mb-5">
+                <label class="block text-gray-700 font-medium mb-2" data-key="message_label">Message *</label>
+                <textarea name="message" rows="6" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500" data-key-placeholder="message_placeholder" placeholder="Write your message here..."></textarea>
+            </div>
+            
+            <button type="submit" class="btn-submit w-full text-white py-3 rounded-lg font-semibold text-lg flex items-center justify-center gap-2">
+                <i class="fas fa-paper-plane"></i> <span data-key="submit_btn">Send Message</span>
+            </button>
+        </form>
+        
+        <p class="text-xs text-gray-400 text-center mt-4" data-key="note">*All messages are sent directly to our team's email. We'll get back to you shortly.</p>
+    </div>
+</main>
+
+<footer class="bg-gray-900 text-white mt-12 py-6 text-center text-sm">
+    <p>© 2025 Halal Chain Bank — <span data-key="footer">Halal blockchain bank</span></p>
+</footer>
+
+<script>
+const translations = {
+    en: {
+        nav_home: "Home", nav_actions: "99 Good Deeds", nav_confession: "Tawbah", nav_liquidity: "Liquidity", nav_whitepaper: "Whitepaper", nav_contact: "Contact",
+        title: "Contact Us", subtitle: "Have questions, feedback, or partnership inquiries? Reach out to us — we'd love to hear from you.",
+        email_title: "Email Us", email_desc: "We respond within 24-48 hours",
+        telegram_title: "Telegram", telegram_desc: "Join our community chat",
+        twitter_title: "X (Twitter)", twitter_desc: "Follow for updates",
+        form_title: "Send us a message", name_label: "Your Name", email_label: "Email Address", subject_label: "Subject", message_label: "Message",
+        submit_btn: "Send Message", note: "*All messages are sent directly to our team's email. We'll get back to you shortly.",
+        footer: "Halal blockchain bank", connect_wallet: "Connect"
+    },
+    ru: {
+        nav_home: "Главная", nav_actions: "99 Добрых дел", nav_confession: "Тауба", nav_liquidity: "Ликвидность", nav_whitepaper: "Whitepaper", nav_contact: "Контакты",
+        title: "Свяжитесь с нами", subtitle: "Есть вопросы, предложения или партнёрские запросы? Напишите нам — мы будем рады ответить.",
+        email_title: "Email", email_desc: "Отвечаем в течение 24-48 часов",
+        telegram_title: "Telegram", telegram_desc: "Присоединяйтесь к чату",
+        twitter_title: "X (Twitter)", twitter_desc: "Подписывайтесь на обновления",
+        form_title: "Отправить сообщение", name_label: "Ваше имя", email_label: "Email адрес", subject_label: "Тема", message_label: "Сообщение",
+        submit_btn: "Отправить", note: "*Все сообщения отправляются напрямую нашей команде. Мы ответим в ближайшее время.",
+        footer: "Халяльный блокчейн-банк", connect_wallet: "Подключить"
+    },
+    ar: {
+        nav_home: "الرئيسية", nav_actions: "99 عملاً صالحاً", nav_confession: "توبة", nav_liquidity: "سيولة", nav_whitepaper: "الورقة البيضاء", nav_contact: "اتصل بنا",
+        title: "اتصل بنا", subtitle: "لديك أسئلة أو ملاحظات أو استفسارات شراكة؟ تواصل معنا — يسعدنا سماع رأيك.",
+        email_title: "البريد الإلكتروني", email_desc: "نرد خلال 24-48 ساعة",
+        telegram_title: "تيليغرام", telegram_desc: "انضم إلى محادثة المجتمع",
+        twitter_title: "تويتر", twitter_desc: "تابع التحديثات",
+        form_title: "أرسل رسالة", name_label: "الاسم", email_label: "البريد الإلكتروني", subject_label: "الموضوع", message_label: "الرسالة",
+        submit_btn: "إرسال", note: "*جميع الرسائل ترسل مباشرة إلى فريقنا. سنرد عليك قريباً.",
+        footer: "بنك حلال", connect_wallet: "ربط"
+    }
+};
+
+let currentLang = localStorage.getItem('lang') || 'en';
+function applyLanguage() {
+    document.querySelectorAll('[data-key]').forEach(el => {
+        const key = el.getAttribute('data-key');
+        if (translations[currentLang] && translations[currentLang][key]) el.innerText = translations[currentLang][key];
+    });
+    document.querySelectorAll('[data-key-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-key-placeholder');
+        if (translations[currentLang] && translations[currentLang][key]) el.placeholder = translations[currentLang][key];
+    });
+}
+document.getElementById('lang-select').value = currentLang;
+document.getElementById('lang-select').addEventListener('change', (e) => { currentLang = e.target.value; localStorage.setItem('lang', currentLang); applyLanguage(); });
+applyLanguage();
+
+let wallet = null;
+async function connectWallet(type) {
+    if (type === 'phantom' && window.solana?.isPhantom) { await window.solana.connect(); wallet = window.solana; }
+    else if (type === 'solflare' && window.solflare) { await window.solflare.connect(); wallet = window.solflare; }
+    else if (type === 'backpack' && window.backpack) { await window.backpack.connect(); wallet = window.backpack; }
+    else { alert("Install Phantom, Solflare or Backpack"); return; }
+    document.getElementById('wallet-address').innerText = wallet.publicKey.toString().slice(0,4)+'...'+wallet.publicKey.toString().slice(-4);
+    closeWalletModal();
+}
+function openWalletModal() { document.getElementById('wallet-modal').classList.add('active'); }
+function closeWalletModal() { document.getElementById('wallet-modal').classList.remove('active'); }
+document.getElementById('wallet-btn').addEventListener('click', openWalletModal);
+</script>
+</body>
+</html>
