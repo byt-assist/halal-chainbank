@@ -113,6 +113,31 @@
     </div>
 
     <div id="actions-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    
+    <!-- Инструкция по покупке токенов -->
+    <div class="mt-8 bg-white rounded-xl shadow-sm p-6">
+        <h3 class="text-lg font-bold mb-3 flex items-center gap-2"><i class="fas fa-shopping-cart text-green-600"></i> How to get tokens?</h3>
+        <div class="grid md:grid-cols-3 gap-4 text-sm">
+            <div class="border rounded-lg p-3">
+                <p class="font-bold text-green-700">SABU</p>
+                <p class="text-xs text-gray-500 break-all">25gGFdNrudjBqhMbLpAmvH4Y8ceuVbwBk1Kh2Kp38xaM</p>
+                <a href="https://jup.ag/swap/SOL-25gGFdNrudjBqhMbLpAmvH4Y8ceuVbwBk1Kh2Kp38xaM" target="_blank" class="text-blue-600 text-xs">Buy on Jupiter ↗</a>
+                <p class="text-xs text-gray-400 mt-2">📤 To burn: Send tokens to ADL contract</p>
+            </div>
+            <div class="border rounded-lg p-3">
+                <p class="font-bold text-blue-700">MUJI</p>
+                <p class="text-xs text-gray-500 break-all">3umgiW7VXyKtUGwd9HpczBADxGPaxXSjUBuaBzPZ251Y</p>
+                <a href="https://jup.ag/swap/SOL-3umgiW7VXyKtUGwd9HpczBADxGPaxXSjUBuaBzPZ251Y" target="_blank" class="text-blue-600 text-xs">Buy on Jupiter ↗</a>
+                <p class="text-xs text-gray-400 mt-2">📤 To burn: Send tokens to ADL contract</p>
+            </div>
+            <div class="border rounded-lg p-3">
+                <p class="font-bold text-gray-800">ADL</p>
+                <p class="text-xs text-gray-500 break-all">8NEsFQ9PpGmZVaz5nHV1zTBWDxgrwxwvY5cJ9ejQvpdN</p>
+                <a href="https://jup.ag/swap/SOL-8NEsFQ9PpGmZVaz5nHV1zTBWDxgrwxwvY5cJ9ejQvpdN" target="_blank" class="text-blue-600 text-xs">Buy on Jupiter ↗</a>
+                <p class="text-xs text-gray-400 mt-2">📤 To burn: Send tokens to SABU contract</p>
+            </div>
+        </div>
+    </div>
 </main>
 
 <footer class="bg-gray-900 text-white mt-12 py-6 text-center text-sm">
@@ -246,15 +271,17 @@ let currentDeed = null;
 
 function getWalletAddress() {
     if (!wallet) return null;
-    if (wallet.publicKey) return wallet.publicKey.toString();
-    if (wallet.selectedAddress) return wallet.selectedAddress;
+    if (wallet.publicKey) {
+        if (typeof wallet.publicKey === 'object' && wallet.publicKey.toString) return wallet.publicKey.toString();
+        if (typeof wallet.publicKey === 'string') return wallet.publicKey;
+    }
     return null;
 }
 
 function updateWalletUI() {
     const t = translations[currentLang];
     const addr = getWalletAddress();
-    if (addr) {
+    if (addr && addr.length > 8) {
         document.getElementById('wallet-address').innerText = addr.slice(0,4) + '...' + addr.slice(-4);
     } else {
         document.getElementById('wallet-address').innerText = t.connect_wallet;
