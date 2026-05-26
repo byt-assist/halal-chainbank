@@ -16,12 +16,11 @@
 </head>
 <body>
 
-<!-- Wallet Modal -->
 <div id="wallet-modal" class="wallet-modal">
     <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-bold" data-key="connect_wallet">Connect Wallet</h3>
-            <button onclick="closeWalletModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
+            <button onclick="closeWalletModal()" class="text-gray-400"><i class="fas fa-times text-xl"></i></button>
         </div>
         <div class="space-y-2">
             <button onclick="connectWallet('phantom')" class="w-full flex items-center gap-3 p-3 border rounded-xl"><img src="https://phantom.app/img/logo.png" class="w-6 h-6"><span>Phantom</span></button>
@@ -31,7 +30,6 @@
     </div>
 </div>
 
-<!-- Header -->
 <header class="bg-white shadow-md sticky top-0 z-50">
     <div class="container mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
         <div class="flex items-center space-x-3">
@@ -54,6 +52,7 @@
             <a href="confession.html" class="border-b-2 border-yellow-500 font-semibold" data-key="nav_confession">Tawbah</a>
             <a href="liquidity.html" data-key="nav_liquidity">Liquidity</a>
             <a href="whitepaper.html" data-key="nav_whitepaper">Whitepaper</a>
+            <a href="contact.html" data-key="nav_contact">Contact</a>
         </div>
     </div>
 </header>
@@ -79,9 +78,9 @@
 
 <script>
 const translations = {
-    en: { connect_wallet:"Connect Wallet", nav_home:"Home", nav_actions:"99 Good Deeds", nav_confession:"Tawbah", nav_liquidity:"Liquidity", nav_whitepaper:"Whitepaper", confession_subtitle:"Tawbah — repentance before Allah through blockchain", ayah:'"Say: O My servants who have transgressed against themselves, do not despair of the mercy of Allah..." (Quran 39:53)', sin_label:"Your sin:", amount_label:"Amount of ADL to burn:", adl_note:"1 ADL ≈ $104 (cleans 1 sin)", burn_btn:"Burn ADL and make Tawbah", history_label:"Past sins (cleansed):", footer_text:"Halal blockchain bank" },
-    ru: { connect_wallet:"Подключить кошелёк", nav_home:"Главная", nav_actions:"99 Добрых дел", nav_confession:"Тауба", nav_liquidity:"Ликвидность", nav_whitepaper:"Whitepaper", confession_subtitle:"Тауба — покаяние перед Аллахом через блокчейн", ayah:'«Скажи: "О рабы Мои, которые преступили против себя, не отчаивайтесь в милости Аллаха..."» (Коран, 39:53)', sin_label:"Ваш грех:", amount_label:"Количество ADL для сжигания:", adl_note:"1 ADL ≈ $104 (очищает 1 грех)", burn_btn:"Сжечь ADL и совершить тауба", history_label:"Прошлые грехи (очищены):", footer_text:"Халяльный блокчейн-банк" },
-    ar: { connect_wallet:"ربط المحفظة", nav_home:"الرئيسية", nav_actions:"99 عملاً صالحاً", nav_confession:"توبة", nav_liquidity:"سيولة", nav_whitepaper:"الورقة البيضاء", confession_subtitle:"التوبة — التوبة إلى الله عبر البلوكتشين", ayah:'«قل يا عبادي الذين أسرفوا على أنفسهم لا تقنطوا من رحمة الله...» (القرآن 39:53)', sin_label:"خطيئتك:", amount_label:"كمية ADL للحرق:", adl_note:"1 ADL ≈ 104 دولاراً (يطهر خطيئة واحدة)", burn_btn:"احرق ADL وتوب", history_label:"الخطايا السابقة (المطهَّرة):", footer_text:"بنك حلال" }
+    en: { connect_wallet:"Connect Wallet", nav_home:"Home", nav_actions:"99 Good Deeds", nav_confession:"Tawbah", nav_liquidity:"Liquidity", nav_whitepaper:"Whitepaper", nav_contact:"Contact", confession_subtitle:"Tawbah — repentance before Allah through blockchain", ayah:'"Say: O My servants who have transgressed against themselves, do not despair of the mercy of Allah..." (Quran 39:53)', sin_label:"Your sin:", amount_label:"Amount of ADL to burn:", adl_note:"1 ADL ≈ $104 (cleans 1 sin)", burn_btn:"Burn ADL and make Tawbah", history_label:"Past sins (cleansed):", footer_text:"Halal blockchain bank" },
+    ru: { connect_wallet:"Подключить кошелёк", nav_home:"Главная", nav_actions:"99 Добрых дел", nav_confession:"Тауба", nav_liquidity:"Ликвидность", nav_whitepaper:"Whitepaper", nav_contact:"Контакты", confession_subtitle:"Тауба — покаяние перед Аллахом через блокчейн", ayah:'«Скажи: "О рабы Мои, которые преступили против себя, не отчаивайтесь в милости Аллаха..."» (Коран, 39:53)', sin_label:"Ваш грех:", amount_label:"Количество ADL для сжигания:", adl_note:"1 ADL ≈ $104 (очищает 1 грех)", burn_btn:"Сжечь ADL и совершить тауба", history_label:"Прошлые грехи (очищены):", footer_text:"Халяльный блокчейн-банк" },
+    ar: { connect_wallet:"ربط المحفظة", nav_home:"الرئيسية", nav_actions:"99 عملاً صالحاً", nav_confession:"توبة", nav_liquidity:"سيولة", nav_whitepaper:"الورقة البيضاء", nav_contact:"اتصل بنا", confession_subtitle:"التوبة — التوبة إلى الله عبر البلوكتشين", ayah:'«قل يا عبادي الذين أسرفوا على أنفسهم لا تقنطوا من رحمة الله...» (القرآن 39:53)', sin_label:"خطيئتك:", amount_label:"كمية ADL للحرق:", adl_note:"1 ADL ≈ 104 دولاراً (يطهر خطيئة واحدة)", burn_btn:"احرق ADL وتوب", history_label:"الخطايا السابقة (المطهَّرة):", footer_text:"بنك حلال" }
 };
 
 let currentLang = localStorage.getItem('lang') || 'en';
