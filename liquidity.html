@@ -23,13 +23,11 @@
 </head>
 <body>
 
-<!-- Lightbox -->
 <div id="lightbox" class="lightbox" onclick="closeLightbox()">
     <img id="lightbox-img" class="lightbox-img" src="">
     <button class="absolute top-4 right-4 text-white text-3xl" onclick="closeLightbox()">&times;</button>
 </div>
 
-<!-- Header -->
 <header class="bg-white shadow-md sticky top-0 z-50">
     <div class="container mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
         <div class="flex items-center space-x-3">
@@ -41,26 +39,23 @@
                 <option value="en">English</option>
                 <option value="ru">Русский</option>
                 <option value="ar">العربية</option>
-                <option value="ur">اردو</option>
-                <option value="fa">فارسی</option>
-                <option value="tr">Türkçe</option>
             </select>
             <button id="wallet-btn" class="bg-gray-900 text-white px-4 py-2 rounded-lg"><i class="fas fa-wallet"></i><span id="wallet-address">Connect</span></button>
         </div>
     </div>
     <div class="border-t">
         <div class="container mx-auto px-4 flex gap-4">
-            <a href="index.html" class="text-gray-600 hover:text-gray-900 py-3 px-1" id="nav-home">Home</a>
-            <a href="actions.html" class="text-gray-600 hover:text-gray-900 py-3 px-1" id="nav-actions">99 Good Deeds</a>
-            <a href="confession.html" class="text-gray-600 hover:text-gray-900 py-3 px-1" id="nav-confession">Tawbah</a>
-            <a href="liquidity.html" class="border-b-2 border-yellow-500 font-semibold py-3 px-1" id="nav-liquidity">Liquidity</a>
-            <a href="whitepaper.html" class="text-gray-600 hover:text-gray-900 py-3 px-1" id="nav-whitepaper">Whitepaper</a>
+            <a href="index.html" id="nav-home">Home</a>
+            <a href="actions.html" id="nav-actions">99 Good Deeds</a>
+            <a href="confession.html" id="nav-confession">Tawbah</a>
+            <a href="liquidity.html" class="border-b-2 border-yellow-500 font-semibold" id="nav-liquidity">Liquidity</a>
+            <a href="whitepaper.html" id="nav-whitepaper">Whitepaper</a>
+            <a href="contact.html" id="nav-contact">Contact</a>
         </div>
     </div>
 </header>
 
 <main class="container mx-auto px-4 py-8 max-w-6xl">
-    <!-- Hero -->
     <div class="text-center mb-8">
         <i class="fas fa-gem text-5xl text-amber-600 mb-4"></i>
         <h1 class="text-3xl md:text-4xl font-bold mb-2" id="main-title">Physical Asset Backing</h1>
@@ -121,8 +116,7 @@
         <div class="aspect-video bg-gray-100 rounded-lg flex items-center justify-center border-2 border-gray-300 overflow-hidden">
             <video id="warehouse-video" class="w-full h-full" controls poster="video-poster.jpg">
                 <source src="warehouse_tour.mp4" type="video/mp4">
-                Your browser does not support the video tag. 
-                <a href="warehouse_tour.mp4" class="text-blue-600">Download video</a>
+                Your browser does not support the video tag.
             </video>
         </div>
         <p class="text-xs text-gray-400 mt-3 text-center">*Video evidence: 100,000 tonnes of 4N Copper ingots | LME approved facility | Inspection Date: 12 May 2026 | SKR Framework</p>
@@ -130,7 +124,6 @@
 
     <!-- Certificates & Calculator -->
     <div class="grid md:grid-cols-2 gap-6 mb-8">
-        <!-- Certificates -->
         <div class="bg-white rounded-xl shadow-lg p-6">
             <div class="flex items-center gap-3 mb-4">
                 <i class="fas fa-certificate text-3xl text-blue-600"></i>
@@ -139,38 +132,25 @@
             <div class="space-y-3">
                 <div class="cert-badge border rounded-lg p-3">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <p class="font-semibold">SGS Audit Report</p>
-                            <p class="text-xs text-gray-500">Report No. MRTEC2301429302 | Date: 12 May 2026</p>
-                            <p class="text-xs text-gray-400">4N Purity Verified (99.99%)</p>
-                        </div>
+                        <div><p class="font-semibold">SGS Audit Report</p><p class="text-xs text-gray-500">Report No. MRTEC2301429302 | Date: 12 May 2026</p><p class="text-xs text-gray-400">4N Purity Verified (99.99%)</p></div>
                         <a href="#" class="bg-blue-600 text-white px-3 py-1 rounded-lg text-sm"><i class="fas fa-download mr-1"></i>PDF</a>
                     </div>
                 </div>
                 <div class="cert-badge border rounded-lg p-3">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <p class="font-semibold">Bureau Veritas Inspection</p>
-                            <p class="text-xs text-gray-500">Certificate No. BV-CU-2026-05</p>
-                            <p class="text-xs text-gray-400">LME Approved Warehouse | UAE</p>
-                        </div>
+                        <div><p class="font-semibold">Bureau Veritas Inspection</p><p class="text-xs text-gray-500">Certificate No. BV-CU-2026-05</p><p class="text-xs text-gray-400">LME Approved Warehouse | UAE</p></div>
                         <a href="#" class="bg-blue-600 text-white px-3 py-1 rounded-lg text-sm"><i class="fas fa-download mr-1"></i>PDF</a>
                     </div>
                 </div>
                 <div class="cert-badge border rounded-lg p-3">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <p class="font-semibold">SKR Framework Certificate</p>
-                            <p class="text-xs text-gray-500">Physical Asset under SKR Framework</p>
-                            <p class="text-xs text-gray-400">Lot: CD-CU-12MAY26 | 100,000 T</p>
-                        </div>
+                        <div><p class="font-semibold">SKR Framework Certificate</p><p class="text-xs text-gray-500">Physical Asset under SKR Framework</p><p class="text-xs text-gray-400">Lot: CD-CU-12MAY26 | 100,000 T</p></div>
                         <a href="#" class="bg-blue-600 text-white px-3 py-1 rounded-lg text-sm"><i class="fas fa-download mr-1"></i>PDF</a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Live Calculator -->
         <div class="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl shadow-lg p-6 border border-amber-200">
             <div class="flex items-center gap-3 mb-4">
                 <i class="fas fa-calculator text-3xl text-amber-600"></i>
@@ -190,7 +170,6 @@
                     <p class="text-3xl font-bold text-amber-800" id="calc-total">$3,500,000,000</p>
                     <p class="text-xs text-gray-500 mt-2">≈ $35.00 per kg | ≈ $15.88 per lb</p>
                 </div>
-                <p class="text-xs text-gray-400 text-center">*4N premium grade — 99.99% pure copper ingots</p>
             </div>
         </div>
     </div>
@@ -207,14 +186,12 @@
                 <div class="h-48 bg-gray-50 rounded-lg p-2">
                     <canvas id="premium-chart"></canvas>
                 </div>
-                <p class="text-xs text-gray-400 mt-2">Source: LME + 4N premium spread</p>
             </div>
             <div>
                 <h3 class="font-semibold mb-2">Premium vs Standard Copper</h3>
                 <div class="h-48 bg-gray-50 rounded-lg p-2">
                     <canvas id="comparison-chart"></canvas>
                 </div>
-                <p class="text-xs text-gray-400 mt-2">Gold: 4N Premium | Blue: Standard LME</p>
             </div>
         </div>
     </div>
@@ -249,11 +226,10 @@
 </footer>
 
 <script>
-// ==================== TRANSLATIONS ====================
 const translations = {
-    en: { nav_home:"Home", nav_actions:"99 Good Deeds", nav_confession:"Tawbah", nav_liquidity:"Liquidity", nav_whitepaper:"Whitepaper", main_title:"Physical Asset Backing", main_subtitle:"100,000 tonnes of 4N Copper (99.99% purity) — premium ingots backing the Halal Chain Bank ecosystem.", footer_text:"Halal blockchain bank", connect_wallet:"Connect" },
-    ru: { nav_home:"Главная", nav_actions:"99 Добрых дел", nav_confession:"Тауба", nav_liquidity:"Ликвидность", nav_whitepaper:"Whitepaper", main_title:"Обеспечение реальным активом", main_subtitle:"100 000 тонн меди 4N (чистота 99.99%) — премиальные слитки, обеспечивающие экосистему Halal Chain Bank.", footer_text:"Халяльный блокчейн-банк", connect_wallet:"Подключить" },
-    ar: { nav_home:"الرئيسية", nav_actions:"99 عملاً صالحاً", nav_confession:"توبة", nav_liquidity:"سيولة", nav_whitepaper:"الورقة البيضاء", main_title:"الأصول المادية", main_subtitle:"100,000 طن من النحاس 4N (نقاء 99.99٪) — سبائك متميزة تدعم نظام Halal Chain Bank البيئي.", footer_text:"بنك حلال", connect_wallet:"ربط" }
+    en: { nav_home:"Home", nav_actions:"99 Good Deeds", nav_confession:"Tawbah", nav_liquidity:"Liquidity", nav_whitepaper:"Whitepaper", nav_contact:"Contact", main_title:"Physical Asset Backing", main_subtitle:"100,000 tonnes of 4N Copper (99.99% purity) — premium ingots backing the Halal Chain Bank ecosystem.", footer_text:"Halal blockchain bank", connect_wallet:"Connect" },
+    ru: { nav_home:"Главная", nav_actions:"99 Добрых дел", nav_confession:"Тауба", nav_liquidity:"Ликвидность", nav_whitepaper:"Whitepaper", nav_contact:"Контакты", main_title:"Обеспечение реальным активом", main_subtitle:"100 000 тонн меди 4N (чистота 99.99%) — премиальные слитки, обеспечивающие экосистему Halal Chain Bank.", footer_text:"Халяльный блокчейн-банк", connect_wallet:"Подключить" },
+    ar: { nav_home:"الرئيسية", nav_actions:"99 عملاً صالحاً", nav_confession:"توبة", nav_liquidity:"سيولة", nav_whitepaper:"الورقة البيضاء", nav_contact:"اتصل بنا", main_title:"الأصول المادية", main_subtitle:"100,000 طن من النحاس 4N (نقاء 99.99٪) — سبائك متميزة تدعم نظام Halal Chain Bank البيئي.", footer_text:"بنك حلال", connect_wallet:"ربط" }
 };
 
 let currentLang = localStorage.getItem('lang') || 'en';
@@ -267,6 +243,7 @@ function applyLanguage() {
     document.getElementById('nav-confession').innerText = t.nav_confession;
     document.getElementById('nav-liquidity').innerText = t.nav_liquidity;
     document.getElementById('nav-whitepaper').innerText = t.nav_whitepaper;
+    document.getElementById('nav-contact').innerText = t.nav_contact;
     document.getElementById('main-title').innerText = t.main_title;
     document.getElementById('main-subtitle').innerText = t.main_subtitle;
     document.getElementById('footer-text').innerText = t.footer_text;
@@ -286,33 +263,12 @@ function openLightbox(src) { document.getElementById('lightbox-img').src = src; 
 function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); }
 
 function createCharts() {
-    new Chart(document.getElementById('premium-chart'), { 
-        type: 'line', 
-        data: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], datasets: [{ label: '4N Premium Copper (USD/tonne)', data: [31000, 32500, 33800, 34500, 35000, 35200], borderColor: 'rgb(245, 158, 11)', fill: true, tension: 0.3 }] }, 
-        options: { responsive: true, maintainAspectRatio: true } 
-    });
-    new Chart(document.getElementById('comparison-chart'), { 
-        type: 'line', 
-        data: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], datasets: [
-            { label: 'Standard LME Copper', data: [10300, 10800, 11200, 11500, 11700, 11850], borderColor: 'rgb(59, 130, 246)', fill: true, tension: 0.3 },
-            { label: '4N Premium Copper', data: [31000, 32500, 33800, 34500, 35000, 35200], borderColor: 'rgb(245, 158, 11)', fill: true, tension: 0.3 }
-        ] }, 
-        options: { responsive: true, maintainAspectRatio: true } 
-    });
+    new Chart(document.getElementById('premium-chart'), { type: 'line', data: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], datasets: [{ label: '4N Premium Copper (USD/tonne)', data: [31000, 32500, 33800, 34500, 35000, 35200], borderColor: 'rgb(245, 158, 11)', fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: true } });
+    new Chart(document.getElementById('comparison-chart'), { type: 'line', data: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], datasets: [{ label: 'Standard LME Copper', data: [10300, 10800, 11200, 11500, 11700, 11850], borderColor: 'rgb(59, 130, 246)', fill: true, tension: 0.3 }, { label: '4N Premium Copper', data: [31000, 32500, 33800, 34500, 35000, 35200], borderColor: 'rgb(245, 158, 11)', fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: true } });
 }
 
-// ==================== WALLET ====================
 let wallet = null;
-async function connectWallet() {
-    if (window.solana && window.solana.isPhantom) {
-        await window.solana.connect();
-        wallet = window.solana;
-        const addr = wallet.publicKey.toString();
-        document.getElementById('wallet-address').innerText = addr.slice(0,4)+'...'+addr.slice(-4);
-    } else {
-        alert("Install Phantom wallet");
-    }
-}
+async function connectWallet() { if (window.solana && window.solana.isPhantom) { await window.solana.connect(); wallet = window.solana; const addr = wallet.publicKey.toString(); document.getElementById('wallet-address').innerText = addr.slice(0,4)+'...'+addr.slice(-4); } else { alert("Install Phantom wallet"); } }
 document.getElementById('wallet-btn').addEventListener('click', connectWallet);
 document.getElementById('lang-select').addEventListener('change', (e) => { currentLang = e.target.value; localStorage.setItem('lang', currentLang); applyLanguage(); });
 
